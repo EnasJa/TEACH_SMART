@@ -1,5 +1,6 @@
 from django.db import models
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator,EmailValidator
+from django.contrib.auth.hashers import make_password
 
 class Student(models.Model):
     GRADE_CHOICES = [
@@ -27,6 +28,36 @@ class Student(models.Model):
             )
         ]
     )
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+    
+
+class Teacher(models.Model):
+    id_number = models.CharField(
+        max_length=9, 
+        unique=True, 
+        validators=[RegexValidator(r'^\d{9}$', "Please enter exactly 9 digits.")]
+    )
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    date_of_birth = models.DateField()
+    email = models.EmailField(unique=True, validators=[EmailValidator(message="Invalid email address.")])
+    phone_number = models.CharField(
+        max_length=10, 
+        validators=[
+            RegexValidator(
+                regex=r'^(05\d|0[23489])\d{7}$',
+                message='Invalid Israeli phone number. Please enter 10 digits starting with 05 .'
+            )
+        ]
+    )
+    password = models.CharField(max_length=128)  # הוספת שדה סיסמה
+    def save(self, *args, **kwargs):
+        # הצפנת הסיסמה לפני שמירה
+        if self.password and not self.password.startswith('pbkdf2_sha256$'):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

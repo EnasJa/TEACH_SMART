@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Registration</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .page-container {
+            display: flex;
+            width: 80%;
+            max-width: 1000px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            margin: 80px auto 20px;
+        }
+        .form-container {
+            flex: 1;
+            padding: 20px;
+        }
+     
+        .image-container {
+            flex: 1;
+            background-image: url('https://i.pinimg.com/736x/3b/ad/9e/3bad9eb58e01cd92272a20b85c1e4141.jpg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            min-height: 400px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #34495e;
+            font-size: 14px;
+        }
+        input, select {
+            padding: 8px;
+            margin-top: 3px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #add8e6;
+            box-shadow: 0 0 5px #add8e6;
+        }
+        button {
+            background-color: #add8e6;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #add8e6;
+        }
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 10px;
+        }
+        .messages li {
+            padding: 8px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .messages .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .messages .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .error-list {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            padding: 5px;
+            margin-top: 3px;
+            list-style-type: none;
+            font-size: 12px;
+        }
+        @media (max-width: 768px) {
+            .page-container {
+                flex-direction: column;
+                width: 95%;
+            }
+            .image-container {
+                min-height: 200px;
+            }
+        }
+
+      /* זה לסיסמה */
+
+      .password-container {
+            position: relative;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .password-container input {
+            padding-right: 35px;
+        }
+        
+        /* Already have an account? */
+        .login-option {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .login-option a {
+            color: #add8e6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .login-option a:hover {
+            text-decoration: underline;
+        }
+
+
+
+        .non-field-errors {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            padding: 5px;
+            margin-top: 3px;
+            list-style-type: none;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <div class="graduation-hat">
+                <div class="hat-top"></div>
+                <div class="hat-base"></div>
+                <div class="hat-tassel"></div>
+            </div>
+            <span>TeachSmart</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="home.html#about">About</a></li>
+                
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <a href="#login" class="login-button">
+                <div class="user-icon"></div>
+                <span class="login-text">Login</span>
+            </a>
+        </div>
+    </header>
+    <style>header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        background-color: #add8e6;
+        color: #0f0f0f;
+    }
+    
+    .logo {
+        display: flex;
+        align-items: center;
+    }
+    
+    .graduation-hat {
+        width: 50px;
+        height: 30px;
+        position: relative;
+        margin-right: 10px;
+    }
+    
+    .hat-top {
+        width: 100%;
+        height: 50%;
+        background-color: #000;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: rotate(-10deg);
+    }
+    
+    .hat-base {
+        width: 50%;
+        height: 10px;
+        background-color: #000;
+        position: absolute;
+        top: 50%;
+        left: 25%;
+    }
+    
+    .hat-tassel {
+        width: 2px;
+        height: 20px;
+        background-color: #000;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .hat-tassel::after {
+        content: '';
+        width: 10px;
+        height: 10px;
+        background-color: #000;
+        border-radius: 50%;
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    nav ul {
+        list-style: none;
+        display: flex;
+        gap: 20px;
+        padding: 0;
+        margin: 0;
+    }
+    
+    nav a {
+        text-decoration: none;
+        color: #0f0f0f;
+    }
+    
+    .auth-buttons {
+        display: flex;
+        align-items: center;
+    }
+    
+    .login-button {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: #0f0f0f;
+        font-size: 18px;
+    }
+    
+    .user-icon {
+        width: 50px; /* Larger size */
+        height: 50px; /* Larger size */
+        background-color: #eff4f6; /* Baby blue color */
+        border-radius: 50%;
+        position: relative;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adding shadow */
+    }
+    
+    .user-icon::before {
+        content: '';
+        width: 60%;
+        height: 60%;
+        background-color: #121111; /* White color */
+        border-radius: 50%;
+        position: absolute;
+        top: 10%;
+    }
+    
+    .user-icon::after {
+        content: '';
+        width: 80%;
+        height: 40%;
+        background-color: #050505; /* White color */
+        border-radius: 0 0 50% 50%;
+        position: absolute;
+        bottom: 10%;
+    }
+    </style>
+
+
+    
+<div class="page-container">
+    <div class="form-container">
+        <h1>Teacher Registration</h1>
+        
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <form method="post" id="teacherSignupForm">
+            {% csrf_token %}
+
+
+         
+
+
+            {% for field in form %}
+                <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                {% if field.name == 'password' or field.name == 'confirm_password' %}
+                    <div class="password-container">
+                        {{ field }}
+                        <span class="toggle-password" onclick="togglePasswordVisibility(this)">👁️</span>
+                    </div>
+
+                    
+                {% if form.non_field_errors %}
+                <ul class="non-field-errors">
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+
+
+            {% endif %}
+                {% else %}
+                    {{ field }}
+                {% endif %}
+                
+                {% if field.errors %}
+                    <ul class="error-list">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endfor %}
+            
+            <button type="submit">Sign Up</button>
+        </form>
+        <div class="login-option">
+            Already have an account? <a href="{% url 'login_teacher' %}">Log In</a>
+        </div>
+    </div>
+    <div class="image-container"></div>
+</div>
+
+<script>
+    function togglePasswordVisibility(element) {
+        var passwordInput = element.previousElementSibling;
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            element.textContent = "🔒";
+        } else {
+            passwordInput.type = "password";
+            element.textContent = "👁️";
+        }
+    }
+</script>
+</body>
+</html>

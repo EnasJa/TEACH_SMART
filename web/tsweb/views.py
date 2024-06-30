@@ -20,5 +20,15 @@ def student_signup(request):
         form = StudentSignUpForm()
     return render(request, 'signup_student.html', {'form': form})
 
-def signup_success (request):
-    return render(request, 'signup_success.html',{})
+def teacher_signup(request):
+    if request.method == 'POST':
+        form = TeacherSignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Registration completed successfully!")
+            return redirect('login')  # או לכל דף אחר שתרצה
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = TeacherSignUpForm()
+    return render(request, 'teacher_signup.html', {'form': form})
