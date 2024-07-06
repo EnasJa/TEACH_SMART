@@ -29,6 +29,13 @@ class Student(models.Model):
         ]
     )
 
+    password = models.CharField(max_length=128)
+
+    def save(self, *args, **kwargs):
+        self.password = make_password(self.password)
+        super().save(*args, **kwargs)
+
+
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
     

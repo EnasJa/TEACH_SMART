@@ -5,6 +5,9 @@ from django.core.exceptions import ValidationError
 
 
 class StudentSignUpForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput, label=("Password"))
+    confirm_password = forms.CharField(widget=forms.PasswordInput, label=("Password verification"))
+
     class Meta:
         model = Student
         fields = ['id_number', 'first_name', 'last_name', 'grade', 'date_of_birth', 'email', 'parent_name', 'parent_phone']
@@ -35,6 +38,19 @@ class StudentSignUpForm(forms.ModelForm):
         if not phone.startswith(('05')):
             raise ValidationError("A phone number must start with 05 .")
         return phone
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if password and confirm_password:
+            if len(password) < 8:
+                raise ValidationError(("The password must be at least 8 characters long."))
+            if password != confirm_password:
+                raise ValidationError(("The passwords do not match."))
+
+        return cleaned_data
     
 class TeacherSignUpForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput, label=("Password"))

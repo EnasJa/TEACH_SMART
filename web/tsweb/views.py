@@ -13,7 +13,7 @@ def student_signup(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Registration completed successfully!")
-            return redirect('login') 
+            return redirect('login_student') 
         else:
             messages.error(request, "Please correct the errors below.")
     else:
@@ -26,7 +26,7 @@ def teacher_signup(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Registration completed successfully!")
-            return redirect('login')  # או לכל דף אחר שתרצה
+            return redirect('login_teacher')  # או לכל דף אחר שתרצה
         else:
             messages.error(request, "Please correct the errors below.")
     else:

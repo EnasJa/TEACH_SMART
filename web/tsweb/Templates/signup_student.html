@@ -1,76 +1,14 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>רישום תלמיד חדש</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-        label {
-            margin-top: 10px;
-            font-weight: bold;
-        }
-        input, select {
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .messages {
-            list-style: none;
-            padding: 0;
-        }
-        .messages li {
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-        }
-        .messages .success {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .messages .error {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>רישום תלמיד חדש</h1>
+{% extends "base.html" %}
+
+{% block title %}Teacher Registration{% endblock %}
+
+{% block content %}
+
+
+    
+<div class="page-container">
+    <div class="form-container">
+        <h1>Student Registration</h1>
         
         {% if messages %}
         <ul class="messages">
@@ -80,11 +18,35 @@
         </ul>
         {% endif %}
 
-        <form method="post">
+        <form method="post" id="StudentSignUpForm">
             {% csrf_token %}
+
+
+         
+
+
             {% for field in form %}
                 <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
-                {{ field }}
+                {% if field.name == 'password' or field.name == 'confirm_password' %}
+                    <div class="password-container">
+                        {{ field }}
+                        <span class="toggle-password" onclick="togglePasswordVisibility(this)">👁️</span>
+                    </div>
+
+                    
+                {% if form.non_field_errors %}
+                <ul class="non-field-errors">
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+
+
+            {% endif %}
+                {% else %}
+                    {{ field }}
+                {% endif %}
+                
                 {% if field.errors %}
                     <ul class="error-list">
                         {% for error in field.errors %}
@@ -93,8 +55,193 @@
                     </ul>
                 {% endif %}
             {% endfor %}
-            <button type="submit">הירשם</button>
+            
+            <button type="submit">Sign Up</button>
         </form>
+        <div class="login-option">
+            Already have an account? <a href="{% url 'login_student' %}">Log In</a>
+        </div>
     </div>
-</body>
-</html>
+    <div class="image-container"></div>
+</div>
+
+<script>
+    function togglePasswordVisibility(element) {
+        var passwordInput = element.previousElementSibling;
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            element.textContent = "🔒";
+        } else {
+            passwordInput.type = "password";
+            element.textContent = "👁️";
+        }
+    }
+</script>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f0f4f8;
+        margin: 0;
+        padding: 0;
+        color: #333;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    .page-container {
+        display: flex;
+        width: 80%;
+        max-width: 1000px;
+        background-color: #ffffff;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        margin: 80px auto 20px;
+    }
+    .form-container {
+        flex: 1;
+        padding: 20px;
+    }
+ 
+    .image-container {
+        flex: 1;
+        background-image: url('https://i.pinimg.com/originals/1d/e2/8f/1de28fec9c6b888d3c7084f8fd9712e1.jpg');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        min-height: 400px;
+    }
+    
+    h1 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+    label {
+        margin-top: 10px;
+        font-weight: bold;
+        color: #34495e;
+        font-size: 14px;
+    }
+    input, select {
+        padding: 8px;
+        margin-top: 3px;
+        border: 1px solid #bdc3c7;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    input:focus, select:focus {
+        outline: none;
+        border-color: #add8e6;
+        box-shadow: 0 0 5px #add8e6;
+    }
+    button {
+        background-color: #add8e6;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 15px;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    button:hover {
+        background-color: #add8e6;
+    }
+    .messages {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 10px;
+    }
+    .messages li {
+        padding: 8px;
+        margin-bottom: 5px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    .messages .success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    .messages .error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    .error-list {
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: 4px;
+        padding: 5px;
+        margin-top: 3px;
+        list-style-type: none;
+        font-size: 12px;
+    }
+    @media (max-width: 768px) {
+        .page-container {
+            flex-direction: column;
+            width: 95%;
+        }
+        .image-container {
+            min-height: 200px;
+        }
+    }
+
+  /* זה לסיסמה */
+
+  .password-container {
+        position: relative;
+    }
+    .toggle-password {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 20px;
+    }
+    .password-container input {
+        padding-right: 35px;
+    }
+    
+    /* Already have an account? */
+    .login-option {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+    }
+    .login-option a {
+        color: #add8e6;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .login-option a:hover {
+        text-decoration: underline;
+    }
+
+
+
+    .non-field-errors {
+        color: #721c24;
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        border-radius: 4px;
+        padding: 5px;
+        margin-top: 3px;
+        list-style-type: none;
+        font-size: 12px;
+    }
+</style>
+
+
+
+{% endblock %}

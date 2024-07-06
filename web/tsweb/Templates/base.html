@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Link to your CSS file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    
+    <title>Teach Smart</title>
+</head>
+<body>
+    
+    <header>
+        <div class="logo">
+            <div class="graduation-hat">
+                <div class="hat-top"></div>
+                <div class="hat-base"></div>
+                <div class="hat-tassel"></div>
+            </div>
+            <span>TeachSmart</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="home.html#about">About</a></li>
+                
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <a href="#login" class="login-button">
+                <div class="user-icon"></div>
+                <span class="login-text">Login</span>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- כאן יבוא התוכן הספציפי לכל דף -->
+        {% endblock %}
+    </main>
+
+</body>
+</html>
