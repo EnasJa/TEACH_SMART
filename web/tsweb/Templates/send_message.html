@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send a New Message</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+      
+        
+/* הסגנונות הקיימים של ה-header נשארים כפי שהם */
+header {
+    background-color: #add8e6;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.graduation-hat {
+    width: 25px; /* Small size */
+    height: 15px; /* Small size */
+    position: relative;
+    margin-right: 10px;
+}
+
+.hat-top {
+    width: 100%;
+    height: 50%;
+    background-color: #000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: rotate(-10deg);
+}
+
+.hat-base {
+    width: 50%;
+    height: 5px; /* Small size */
+    background-color: #000;
+    position: absolute;
+    top: 50%;
+    left: 25%;
+}
+
+.hat-tassel {
+    width: 1px; /* Small size */
+    height: 10px; /* Small size */
+    background-color: #000;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.hat-tassel::after {
+    content: '';
+    width: 5px; /* Small size */
+    height: 5px; /* Small size */
+    background-color: #000;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+}
+
+nav a {
+    text-decoration: none;
+    color: #0f0f0f;
+}
+
+.auth-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.login-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #0f0f0f;
+    font-size: 18px;
+}
+
+.user-icon {
+    width: 25px; /* Small size */
+    height: 25px; /* Small size */
+    background-color: #eff4f6;
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-icon::before {
+    content: '';
+    width: 60%;
+    height: 60%;
+    background-color: #121111;
+    border-radius: 50%;
+    position: absolute;
+    top: 10%;
+}
+
+.user-icon::after {
+    content: '';
+    width: 80%;
+    height: 40%;
+    background-color: #050505;
+    border-radius: 0 0 50% 50%;
+    position: absolute;
+    bottom: 10%;
+}
+
+
+/* כאן חלס אלהידר */
+        .page-container {
+            display: flex;
+            width: 100%;
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+        }
+        
+        .side-design {
+            flex: 1;
+            background-color: #add8e6;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .design-element {
+            width: 70px;
+            height: 70px;
+            background-color: rgba(255, 255, 255, 0.7);
+            margin: 15px 0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            color: #add8e6;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .message-form-container {
+            flex: 2;
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 26px;
+            text-align: center;
+            position: relative;
+        }
+        
+        h1::after {
+            content: "";
+            display: block;
+            width: 50px;
+            height: 3px;
+            background-color: #add8e6;
+            margin: 10px auto 0;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            font-weight: bold;
+            color: #34495e;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #add8e6;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+        }
+        
+        input[type="text"]:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #87ceeb;
+            box-shadow: 0 0 10px rgba(173, 216, 230, 0.3);
+            background-color: #fff;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            max-height: 200px;
+        }
+        
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%2334495e" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px top 50%;
+            background-size: 20px auto;
+            padding-right: 30px;
+        }
+        
+        button {
+            background-color: #add8e6;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(173, 216, 230, 0.4);
+        }
+        
+        button:hover {
+            background-color: #87ceeb;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(173, 216, 230, 0.6);
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .page-container {
+                flex-direction: column;
+            }
+            .side-design {
+                flex-direction: row;
+                padding: 15px;
+            }
+            .design-element {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+                margin: 0 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .page-container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            .message-form-container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 22px;
+            }
+            input[type="text"], textarea, select, button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <div class="graduation-hat">
+                <div class="hat-top"></div>
+                <div class="hat-base"></div>
+                <div class="hat-tassel"></div>
+            </div>
+            <span>TeachSmart</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="home.html#about">About</a></li>
+                
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <a href="#login" class="login-button">
+                <div class="user-icon"></div>
+                <span class="login-text">Login</span>
+            </a>
+        </div>    </header>
+    <div class="page-container">
+        <div class="side-design">
+            <div class="design-element">✉️</div>
+            <div class="design-element">📝</div>
+            <div class="design-element">🚀</div>
+        </div>
+        <div class="message-form-container">
+            <h1>Send a New Message</h1>
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        {% if field.name == 'content' %}
+                            <textarea name="{{ field.name }}" rows="5">{{ field.value|default:'' }}</textarea>
+                        {% elif field.name == 'recipients' %}
+                            <select name="{{ field.name }}" multiple>
+                                {% for value, label in field.field.choices %}
+                                    <option value="{{ value }}" {% if value in field.value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                        {% if field.errors %}
+                            {% for error in field.errors %}
+                                <p class="error-message">{{ error }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+                <button type="submit">Send Message</button>
+            </form>
+            
+        </div>
+    </div>
+</body>
+</html>

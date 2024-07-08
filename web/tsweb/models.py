@@ -68,3 +68,29 @@ class Teacher(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+
+
+
+class Admin(models.Model):
+    username = models.CharField(max_length=30, unique=True)
+    password = models.CharField(max_length=128)
+
+    def save(self, *args, **kwargs):
+        # הצפנת הסיסמה לפני שמירה
+        if self.password and not self.password.startswith('pbkdf2_sha256$'):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
+
+        return self.username
+
+
+class Message(models.Model):
+    sender = models.ForeignKey(Admin, on_delete=models.CASCADE, related_name='sent_messages')
+    recipients = models.ManyToManyField(Teacher, related_name='received_messages')
+    subject = models.CharField(max_length=200)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.subject
