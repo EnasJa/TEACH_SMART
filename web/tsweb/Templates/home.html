@@ -1,1 +1,388 @@
-<h1>HELLO</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeachSmart - Home</title>
+    
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <div class="graduation-hat">
+                <div class="hat-top"></div>
+                <div class="hat-base"></div>
+                <div class="hat-tassel"></div>
+            </div>
+            <span>TeachSmart</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+            <a href="#login" class="login-button">
+                <div class="user-icon"></div>
+                <span class="login-text">Login</span>
+            </a>
+        </div>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="text-content">
+                <h1>A new way to learn & get knowledge</h1>
+            
+            </div>
+            <div class="image-content">
+                <img src="https://i.pinimg.com/736x/fc/82/ff/fc82ff9b3abbd765be4f62bbe16e85bc.jpg" alt="Learning Illustration">
+            </div>
+        </div>
+    </section>
+
+   
+
+    <section class="features" id="about">
+        <h2>Our Features</h2>
+        <div class="feature blue">
+            <h3>Automated Test Creation</h3>
+            <p>Create tests based on pre-selected topics and difficulty levels.</p>
+        </div>
+        <div class="feature white">
+            <h3>Instant Feedback and Correction</h3>
+            <p>AI provides immediate feedback and corrects wrong answers after tests.</p>
+        </div>
+        <div class="feature blue">
+            <h3>Progress Analysis</h3>
+            <p>AI analyzes and provides visual reports on student performance over time.</p>
+        </div>
+        <div class="feature white">
+            <h3>Teacher Interaction</h3>
+            <p>Chatbot understands natural language and assists teachers with teaching methods and additional resources.</p>
+        </div>
+    </section>
+    
+
+    
+
+    <footer>
+        <div class="footer-links">
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+        </div>
+        <div class="contact-info">
+            <p>Email: info@teachsmart.com</p>
+            <p>Phone: +123-456-7890</p>
+        </div>
+        <div class="social-media">
+            <!-- Add social media links here -->
+        </div>
+    </footer>
+    <style>
+        /* General styles */
+body {
+    font-family: "Lucida Console", "Courier New", monospace;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #add8e6; /* Using the background color from the image */
+}
+
+/* Header styles */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #add8e6;
+    color: #0f0f0f;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.graduation-hat {
+    width: 50px;
+    height: 30px;
+    position: relative;
+    margin-right: 10px;
+}
+
+.hat-top {
+    width: 100%;
+    height: 50%;
+    background-color: #000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: rotate(-10deg);
+}
+
+.hat-base {
+    width: 50%;
+    height: 10px;
+    background-color: #000;
+    position: absolute;
+    top: 50%;
+    left: 25%;
+}
+
+.hat-tassel {
+    width: 2px;
+    height: 20px;
+    background-color: #000;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.hat-tassel::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background-color: #000;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+}
+
+nav a {
+    text-decoration: none;
+    color: #0f0f0f;
+}
+
+.auth-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.login-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #0f0f0f;
+    font-size: 18px;
+}
+
+.user-icon {
+    width: 50px; /* Larger size */
+    height: 50px; /* Larger size */
+    background-color: #eff4f6; /* Baby blue color */
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adding shadow */
+}
+
+.user-icon::before {
+    content: '';
+    width: 60%;
+    height: 60%;
+    background-color: #121111; /* White color */
+    border-radius: 50%;
+    position: absolute;
+    top: 10%;
+}
+
+.user-icon::after {
+    content: '';
+    width: 80%;
+    height: 40%;
+    background-color: #050505; /* White color */
+    border-radius: 0 0 50% 50%;
+    position: absolute;
+    bottom: 10%;
+}
+
+
+/* Hero section styles */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff; /* Using the background color */
+    padding: 50px 15px;
+    color: #000;
+}
+
+.hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1000px;
+    width: 100%; /* Adjusted width to fill the container */
+}
+
+.text-content {
+    flex: 1;
+    margin-right: 20px; /* Add margin to separate text and image */
+}
+
+.image-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.image-content img {
+    max-width: 100%; /* Adjusted to ensure it doesn't overflow */
+    height: auto;
+}
+
+.hero h1 {
+    font-size: 24px; /* Adjusted font size */
+    margin-bottom: 5px;
+    white-space: nowrap; /* Ensures text stays on one line */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Adding shadow effect */
+}
+
+.hero p {
+    font-size: 18px;
+    margin-bottom: 40px;
+}
+
+
+
+/* Stats section styles */
+.stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 50px 20px;
+    background-color: #f7f7f7;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat h2 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+.stat p {
+    font-size: 18px;
+}
+
+/* Features section styles */
+/* Features section styles */
+.features {
+    padding: 50px 20px;
+    text-align: center;
+    background-color: #fff;
+}
+
+.features h2 {
+    font-size: 36px;
+    margin-bottom: 40px;
+}
+
+.feature {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 1200px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.feature h3 {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.feature p {
+    font-size: 16px;
+}
+
+/* Alternating background colors */
+.feature.blue {
+    background-color: #add8e6;
+    color: #0f0f0f;
+}
+
+.feature.white {
+    background-color: #fff;
+    color: #000;
+}
+
+/* Hover effect */
+.feature:hover {
+    transform: scale(1.05);
+}
+
+
+/* Testimonials section styles */
+.testimonials {
+    padding: 50px 20px;
+    background-color: #f7f7f7;
+    text-align: center;
+}
+
+.testimonials h2 {
+    font-size: 36px;
+    margin-bottom: 40px;
+}
+
+/* How it works section styles */
+.how-it-works {
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.how-it-works h2 {
+    font-size: 36px;
+    margin-bottom: 40px;
+}
+
+/* Footer styles */
+footer {
+    padding: 20px;
+    background-color: #add8e6;
+    color: #0f0f0f;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-links a {
+    margin-right: 15px;
+    text-decoration: none;
+    color: #0f0f0f;
+}
+
+.contact-info p {
+    margin: 0;
+}
+
+.social-media {
+    display: flex;
+    gap: 10px;
+}
+
+    </style>
+</body>
+
+</html>

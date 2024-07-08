@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+    
+    environment {
+        DOCKER_IMAGE = 'latest ' // Replace with your Docker image name
+        REGISTRY_CREDENTIALS = ' eb40dcf64078 ' // Replace with your Docker Hub credentials ID
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout your source code repository
+                git 'https://github.com/EnasJa/TEACH_SMART.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build Docker image
+                    docker.build "${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                script {
+                    // Run tests inside Docker container
+                    docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").withRun('-p 8000:8000') {
+                        sh 'python manage.py test'
+                    }
+                }
+            }
+        }
+
+        stage('Push to Docker Registry') {
+            steps {
+                script {
+                    // Push Docker image to Docker Hub or another registry
+                    docker.withRegistry('', "${REGISTRY_CREDENTIALS}") {
+                        docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push()
+                    }
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                // Add deployment steps here, if applicable
+                // Example: Deploy to Kubernetes or another platform
+                // sh 'kubectl apply -f deployment.yaml'
+            }
+        }
+    }
+}
