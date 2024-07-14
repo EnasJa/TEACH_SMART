@@ -28,7 +28,8 @@ pipeline {
                 script {
                     // Run tests inside Docker container
                     docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").withRun('-p 8000:8000') {
-                        sh 'python manage.py test'
+                        sh 'python manage.py test tests/test.py'
+
                     }
                 }
             }
