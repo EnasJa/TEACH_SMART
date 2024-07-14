@@ -72,6 +72,17 @@ class Teacher(models.Model):
 
 
 
+class Admin(models.Model):
+    username = models.CharField(max_length=30, unique=True)
+    password = models.CharField(max_length=128)
+
+    def save(self, *args, **kwargs):
+        # הצפנת הסיסמה לפני שמירה
+        if self.password and not self.password.startswith('pbkdf2_sha256$'):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
+
+        return self.username
 
 
 class Message(models.Model):
