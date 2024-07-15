@@ -71,20 +71,20 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // Build Docker image
-                    docker.build "${django}:${env.BUILD_NUMBER}"
-                }
-            }
-        }
+        // stage('Build Docker Image') {
+        //     steps {
+        //         script {
+        //             // Build Docker image
+        //             docker.build "${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
+        //         }
+        //     }
+        // }
 
         stage('Run Tests') {
             steps {
                 script {
                     // Run tests inside Docker container
-                    docker.image("${django}:${env.BUILD_NUMBER}").inside {
+                    docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").inside {
                         sh 'python manage.py test'
                     }
                 }
@@ -96,7 +96,7 @@ pipeline {
                 script {
                     // Push Docker image to Docker Hub or another registry
                     docker.withRegistry('', "${REGISTRY_CREDENTIALS}") {
-                        docker.image("${django}:${env.BUILD_NUMBER}").push()
+                        docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push()
                     }
                 }
             }
