@@ -60,7 +60,6 @@ pipeline {
     
     environment {
         DOCKER_IMAGE = 'django' // Your Docker image name
-        IMAGE_TAG = 'latest'
         REGISTRY_CREDENTIALS = 'eb40dcf64078' // Your Docker Hub credentials ID
     }
 
@@ -72,47 +71,43 @@ pipeline {
             }
         }
 
-        // stage('Build Docker Image') {
-        //     steps {
-        //         script {
-        //             // Build Docker image
-        //             docker.build "${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
-        //         }
-        //     }
-        // }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build Docker image
+                    docker.build "${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
+                }
+            }
+        }
 
         stage('Run Tests') {
             steps {
                 script {
-                    // Pull Docker image
-                    docker.pull("${DOCKER_IMAGE}:${IMAGE_TAG}")
                     // Run tests inside Docker container
-                    docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").inside {
+                    docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").withRun('-p 8000:8000') {
                         sh 'python manage.py test'
                     }
                 }
             }
         }
 
-         stage('Push to Docker Registry') {
+        stage('Push to Docker Registry') {
             steps {
                 script {
-                    // Tag Docker image for registry
-                    docker.tag("${DOCKER_IMAGE}:${IMAGE_TAG}", "${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${IMAGE_TAG}")
-
-                    // Push Docker image to registry
+                    // Push Docker image to Docker Hub or another registry
                     docker.withRegistry('', "${REGISTRY_CREDENTIALS}") {
-                        docker.image("${DOCKER_IMAGE}:${IMAGE_TAG}").push()
+                        docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push()
                     }
                 }
             }
+        }
 
        // Uncomment and add steps if you have deployment steps
         stage('Deploy') {
             steps {
                 // Add deployment steps here, if applicable
                 // Example: Deploy to Kubernetes or another platform
-                   sh 'kubectl apply -f deployment.yaml'
+                sh 'kubectl apply -f deployment.yaml'
             }
         }
     }
