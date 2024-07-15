@@ -1,0 +1,12 @@
+{% block title %}Student Profile{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h2>Welcome, {{ student.user.username }}</h2>
+    <ul>
+        <li>ID Number: {{ student.id_number }}</li>
+        <li>Email: {{ student.user.email }}</li>
+        <!-- Add more fields as per your Student model -->
+    </ul>
+</div>
+{% endblock %}

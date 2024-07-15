@@ -3,6 +3,8 @@ from django.contrib import messages
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.hashers import make_password, check_password
+
 
 # Create your views here.
 
@@ -77,3 +79,38 @@ def inbox(request):
 def message_sent(request):
     messages.success(request, 'ההודעה נשלחה בהצלחה!')
     return render(request, 'message_sent.html')
+
+def login_student(request):
+    print("Request method:", request.method)  # Debug print statement
+    if request.method == 'POST':
+        form = StudentLoginForm(request.POST)
+        if form.is_valid():  # Validate form data
+            print("Form is valid")  # Debug print statement
+            # Access cleaned data
+            id_number = form.cleaned_data['id_number']
+            password = form.cleaned_data['password']
+            try:
+                student = Student.objects.get(id_number=id_number)
+                if check_password(password, student.password):
+                    messages.success(request, 'Login successful')
+                    # Log the user in
+                    request.session['student_id'] = student.id
+                    return redirect('profile_student')
+                else:
+                    messages.error(request, 'Invalid password')
+                    print("Invalid password")  # Debug print statement
+            except Student.DoesNotExist:
+                messages.error(request, 'Invalid ID number')
+                print("Invalid ID number")  # Debug print statement
+        else:
+            print("Form is not valid")  # Debug print statement
+            print(form.errors)  # Print form errors
+    else:
+        form = StudentLoginForm()
+
+    return render(request, 'login_student.html', {'form': form})
+
+
+@login_required
+def profile_student(request):
+    return render(request, 'profile_student.html')

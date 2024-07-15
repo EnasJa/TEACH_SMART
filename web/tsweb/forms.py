@@ -116,3 +116,8 @@ class MessageForm(forms.ModelForm):
             raise forms.ValidationError("You must select at least one recipient or choose 'Send to all teachers.")
 
         return cleaned_data
+
+# login form
+class StudentLoginForm(forms.Form):
+    id_number = forms.CharField(max_length=9, widget=forms.TextInput(attrs={'placeholder': 'id_number'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'password'}))
