@@ -88,10 +88,10 @@ class StudentModelTests(TestCase):
         except ValidationError as e:
             self.fail(f"Validation error: {e}")
 
-    # def test_valid_password(self):
-    #     # Test case for valid password
-    #     student = Student(**self.valid_student_data)
-    #     try:
-    #         student.full_clean()
-    #     except ValidationError as e:
-    #         self.fail(f"Validation error: {e}")
+    def test_valid_password(self):
+        # Test case for valid password
+        student = Student(**self.valid_student_data)
+        try:
+            student.full_clean()
+        except ValidationError as e:
+            self.fail(f"Validation error: {e}")
