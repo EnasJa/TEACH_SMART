@@ -84,7 +84,7 @@ pipeline {
             steps {
                 script {
                     // Run tests inside Docker container
-                    docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").inside('-p 8000:8000') {
+                    docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").inside {
                         sh 'python manage.py test'
                     }
                 }
