@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_IMAGE = 'latest ' // Replace with your Docker image name
+        DOCKER_IMAGE = 'django ' // Replace with your Docker image name
         REGISTRY_CREDENTIALS = ' eb40dcf64078 ' // Replace with your Docker Hub credentials ID
     }
 
@@ -28,7 +28,7 @@ pipeline {
                 script {
                     // Run tests inside Docker container
                     docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").withRun('-p 8000:8000') {
-                        sh 'python manage.py  test.py'
+                        sh 'python manage.py  test'
 
                     }
                 }
@@ -50,7 +50,7 @@ pipeline {
             steps {
                 // Add deployment steps here, if applicable
                 // Example: Deploy to Kubernetes or another platform
-                // sh 'kubectl apply -f deployment.yaml'
+                 sh 'kubectl apply -f deployment.yaml'
             }
         }
     }
