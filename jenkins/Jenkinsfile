@@ -60,6 +60,7 @@ pipeline {
     
     environment {
         DOCKER_IMAGE = 'django' // Your Docker image name
+        IMAGE_TAG = 'latest'
         REGISTRY_CREDENTIALS = 'eb40dcf64078' // Your Docker Hub credentials ID
     }
 
@@ -83,6 +84,8 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
+                    // Pull Docker image
+                    docker.pull("${DOCKER_IMAGE}:${IMAGE_TAG}")
                     // Run tests inside Docker container
                     docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").inside {
                         sh 'python manage.py test'
@@ -91,16 +94,18 @@ pipeline {
             }
         }
 
-        stage('Push to Docker Registry') {
+         stage('Push to Docker Registry') {
             steps {
                 script {
-                    // Push Docker image to Docker Hub or another registry
+                    // Tag Docker image for registry
+                    docker.tag("${DOCKER_IMAGE}:${IMAGE_TAG}", "${DOCKER_REGISTRY}/${DOCKER_IMAGE}:${IMAGE_TAG}")
+
+                    // Push Docker image to registry
                     docker.withRegistry('', "${REGISTRY_CREDENTIALS}") {
-                        docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push()
+                        docker.image("${DOCKER_IMAGE}:${IMAGE_TAG}").push()
                     }
                 }
             }
-        }
 
        // Uncomment and add steps if you have deployment steps
         stage('Deploy') {
