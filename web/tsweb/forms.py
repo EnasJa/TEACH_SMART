@@ -121,3 +121,8 @@ class MessageForm(forms.ModelForm):
 class StudentLoginForm(forms.Form):
     id_number = forms.CharField(max_length=9, widget=forms.TextInput(attrs={'placeholder': 'id_number'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'password'}))
+
+
+class loginTeacherForm(forms.Form):
+    id_number = forms.CharField(max_length=9, widget=forms.TextInput(attrs={'placeholder': 'id_number'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'password'}))
