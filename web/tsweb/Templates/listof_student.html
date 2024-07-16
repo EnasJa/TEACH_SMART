@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html>
+{% comment %} {% extends "masterpage.html" %}
+{% block connect %}
+{% load static %} {% endcomment %}
+{% comment %} <link rel="stylesheet" type="text/css" href="{% static 'css/admintabels.css' %}"> {% endcomment %}
+
+
+
+<div class="container">
+	<table>
+		<thead>
+            
+			<tr>
+				<th>FIRST NAME</th><p>
+				<th>LAST NAME</th>
+				
+                <th>USERNAME</th>
+				<th>EMAIL</th>
+                
+               
+               
+			</tr>
+        </br>
+    </br>
+
+    </thead>
+		<tbody>
+            {% for s in soft %}
+		<tr>
+               
+				<td>{{s.first_name}}</td>
+        </br>
+				<td>{{s.last_name}}</td>
+    </br>
+               
+</br>
+                <td>{{s.username}}</td>
+</br>
+				
+                <td>{{s.email}}</td>
+           
+				
+                {%endfor%}
+			</tr>
+		
+		</tbody>
+	</table>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+
+</br></br>
+</br></br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</div>
+</html>
+{% comment %} {%endblock connect%} {% endcomment %}
+
+

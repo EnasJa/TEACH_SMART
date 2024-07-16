@@ -114,3 +114,46 @@ def login_student(request):
 @login_required
 def profile_student(request):
     return render(request, 'profile_student.html')
+
+
+
+def login_teacher(request):
+    print("Request method:", request.method)  # Debug print statement
+    if request.method == 'POST':
+        form = loginTeacherForm(request.POST)
+        if form.is_valid():  # Validate form data
+            print("Form is valid")  # Debug print statement
+            # Access cleaned data
+            id_number = form.cleaned_data['id_number']
+            password = form.cleaned_data['password']
+            try:
+                teacher = Teacher.objects.get(id_number=id_number)
+                if check_password(password, teacher.password):
+                    messages.success(request, 'Login successful')
+                    # Log the user in
+                    request.session['teacher_id'] = teacher.id
+                    return redirect('profile_teacher')
+                else:
+                    messages.error(request, 'Invalid password')
+                    print("Invalid password")  # Debug print statement
+            except Student.DoesNotExist:
+                messages.error(request, 'Invalid ID number')
+                print("Invalid ID number")  # Debug print statement
+        else:
+            print("Form is not valid")  # Debug print statement
+            print(form.errors)  # Print form errors
+    else:
+        form = loginTeacherForm()
+
+    return render(request, 'login_teacher.html', {'form': form})
+
+
+@login_required
+def profile_teacher(request):
+    return render(request, 'profile_teacher.html')
+
+
+def listof_student (request):
+     soft=Student.objects.all()
+     return render(request,'listof_student.html')
+#  ,{'soft':soft}
