@@ -1,6 +1,11 @@
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from .forms import *
+from django.contrib.auth import authenticate, login, logout
+from django.views.generic.edit import CreateView
+from django.contrib.auth.decorators import login_required
+from .forms import AdminLoginForm
+from django.contrib.auth.models import User
 
 # Create your views here.
 
@@ -22,3 +27,46 @@ def student_signup(request):
 
 def signup_success (request):
     return render(request, 'signup_success.html',{})
+
+
+######################################################################33
+#asia
+
+def login_admin(request):
+    if request.method == 'POST':
+        form = AdminLoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            print(username,password)
+            try:
+                user = Admin.objects.get(Username=username)
+                if user.Password == password:
+                # if user.check_password(password):
+                    print("anfal")
+                    # login(request, user)
+                    request.session['user_id'] = user.id  # Example usage of session
+
+                    return redirect(admin_homepage)
+                else:
+                    messages.error(request, 'Invalid username or password')
+            except User.DoesNotExist:
+                messages.error(request, 'Invalid username or password')
+            return redirect('login_admin')
+    else:
+        form = AdminLoginForm()
+    return render(request, 'login_admin.html', {'form': form})
+
+
+
+
+
+# @login_required
+def admin_homepage(request):
+    return render(request, 'admin_homepage.html')
+
+
+
+
+
+

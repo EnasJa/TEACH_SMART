@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.validators import RegexValidator
+from django.contrib.auth.models import AbstractUser
+
 
 class Student(models.Model):
     GRADE_CHOICES = [
@@ -30,3 +32,17 @@ class Student(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+    
+
+
+
+
+    ######################################Asia##################################
+
+
+class Admin(models.Model):
+    Username = models.CharField(max_length=200)
+    Password = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.Username

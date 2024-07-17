@@ -2,6 +2,9 @@ from datetime import date
 from django import forms
 from .models import *
 from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
 
 
 class StudentSignUpForm(forms.ModelForm):
@@ -35,3 +38,18 @@ class StudentSignUpForm(forms.ModelForm):
         if not phone.startswith(('05')):
             raise ValidationError("A phone number must start with 05 .")
         return phone
+
+
+
+
+
+##############################################################3
+#asia
+# class adminRegistrationForm(UserCreationForm):
+#     class Meta:
+#         model = User
+#         fields = ['username', 'password']
+
+class AdminLoginForm(forms.Form):
+    username = forms.CharField(max_length=150)
+    password = forms.CharField(widget=forms.PasswordInput)
