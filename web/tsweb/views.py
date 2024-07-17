@@ -4,6 +4,7 @@ from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth import logout
 
 
 # Create your views here.
@@ -94,7 +95,7 @@ def login_student(request):
                 if check_password(password, student.password):
                     messages.success(request, 'Login successful')
                     # Log the user in
-                    request.session['student_id'] = student.id
+                    request.session['student_id'] = student.id_number
                     return redirect('profile_student')
                 else:
                     messages.error(request, 'Invalid password')
@@ -111,9 +112,24 @@ def login_student(request):
     return render(request, 'login_student.html', {'form': form})
 
 
-@login_required
 def profile_student(request):
-    return render(request, 'profile_student.html')
+    student_id = request.session.get('student_id')
+    if not student_id:
+        return redirect('login_student')
+
+    try:
+        student = Student.objects.get(id_number=student_id)
+    except Student.DoesNotExist:
+        messages.error(request, 'Student not found')
+        return redirect('login_student')
+
+    return render(request, 'profile_student.html', {'student': student})
+
+def logout_student(request):
+    return render(request, 'home.html')
+
+def LogIn(request):
+    return render(request, 'LogIn.html')
 
 
 
@@ -154,6 +170,6 @@ def profile_teacher(request):
 
 
 def listof_student (request):
-     soft=Student.objects.all()
-     return render(request,'listof_student.html')
+    soft=Student.objects.all()
+    return render(request,'listof_student.html')
 #  ,{'soft':soft}

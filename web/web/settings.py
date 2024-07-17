@@ -49,7 +49,17 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
+# Session cookie settings
+SESSION_COOKIE_NAME = 'sessionid'  # Cookie name (default: 'sessionid')
+SESSION_COOKIE_AGE = 1209600  # Two weeks, in seconds (default: 1209600)
+SESSION_COOKIE_SECURE = False  # Use HTTPS for the cookie (default: False)
+SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access to the cookie (default: True)
+
+# Other session settings
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Keep session alive after browser is closed (default: False)
+SESSION_SAVE_EVERY_REQUEST = False  # Save the session to the database on every request (default: False)
 ROOT_URLCONF = 'web.urls'
 
 TEMPLATES = [

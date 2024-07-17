@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="en">
+{% extends "base.html" %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Log In</title>
+    <div class="header">
+        <h1>Select User Type</h1>
+    </div>
+</head>
+<body>
+   
+    <div class="container">
+        <div class="card">
+            <a href="#">
+                <img src="https://i.pinimg.com/736x/03/cc/85/03cc8547a34747782f418e6dc0667a00.jpg" alt="Admin">
+                <p>Admin</p>
+            </a>
+        </div>
+        <div class="card">
+            <a href="{% url 'login_teacher' %}">
+                <img src="https://i.pinimg.com/736x/36/a8/26/36a826a0932a2a6ba41853f2b4e2550b.jpg" alt="Teacher">
+                <p>Teacher</p>
+            </a>
+        </div>
+        <div class="card">
+            <a href="{% url 'login_student' %}">
+                <img src="https://i.pinimg.com/736x/02/1a/b6/021ab6681d7117786f6d5d56b4060010.jpg" alt="Student">
+                <p>Student</p>
+            </a>
+        </div>
+    </div>
+</body>
+<style> 
+    body {
+    /* display:contents; */
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4;
+    font-family: "Lucida Console", "Courier New", monospace;
+}
+header {
+    text-align: center;
+
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    text-align: center;
+
+    font-size: 24px;
+}
+
+.container {
+    display: flex;
+    justify-content: space-around;
+    width: 80%;
+}
+
+.card {
+    align-items: center;
+
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    width: 30%;
+}
+
+.card img {
+    align-items: center;
+
+    text-align: center;
+
+    width: 100%;
+    height: auto;
+}
+
+.card p {
+    text-align: center;
+
+    margin: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+</style>
+{% endblock %}
+
+</html>
