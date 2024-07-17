@@ -42,7 +42,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>teacher Profile</title>
+    <title>Student Profile</title>
 </head>
 <body>
     <h1>Welcome, {{ teacher.first_name }}</h1>
@@ -53,7 +53,7 @@
         <div class="courses">
             <h2>My Courses</h2>
             <!-- List of courses -->
-            <ul> 
+            <ul>
                 <li>Course 1</li>
                 <li>Course 2</li>
                 <!-- Add more courses dynamically if needed -->
@@ -76,6 +76,10 @@
             </div>
         </aside>
     </section>
+      <!-- Button to view list of students -->
+      <div class="student-list-button">
+        <a href="{% url 'teacher_students_list' teacher.id_number %}" class="btn">View List of Students</a>
+    </div>
 </body>
 </html>
 

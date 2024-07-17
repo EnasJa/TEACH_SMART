@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
+from django.shortcuts import render, get_object_or_404
+
 
 
 # Create your views here.
@@ -147,7 +149,7 @@ def login_teacher(request):
                 if check_password(password, teacher.password):
                     messages.success(request, 'Login successful')
                     # Log the user in
-                    request.session['teacher_id'] = teacher.id
+                    request.session['teacher_id'] = teacher.id_number
                     return redirect('profile_teacher')
                 else:
                     messages.error(request, 'Invalid password')
@@ -164,12 +166,29 @@ def login_teacher(request):
     return render(request, 'login_teacher.html', {'form': form})
 
 
-@login_required
-def profile_teacher(request):
-    return render(request, 'profile_teacher.html')
-
-
 def listof_student (request):
     soft=Student.objects.all()
     return render(request,'listof_student.html')
-#  ,{'soft':soft}
+
+# def profile_teacher(request):
+#        return render(request, 'profile_teacher.html',{})
+def profile_teacher(request):
+    teacher_id = request.session.get('teacher_id')
+    if not teacher_id:
+        return redirect('login_teacher')
+    print(teacher_id)
+    try:
+        teacher = Teacher.objects.get(id_number=teacher_id)
+    except Teacher.DoesNotExist:
+        messages.error(request, 'teacher not found')
+        return redirect('login_teacher')
+    return render(request, 'profile_teacher.html', {'teacher': teacher})
+
+def logout_teacher(request):
+    return render(request, 'home.html')
+
+
+def teacher_students_list(request, id_number):
+    teacher = get_object_or_404(Teacher, id_number=id_number)
+    students = Student.objects.filter(grade=teacher.classes).distinct()
+    return render(request, 'teacher_students_list.html', {'teacher': teacher, 'students': students})
