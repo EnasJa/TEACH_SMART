@@ -66,7 +66,10 @@ def admin_homepage(request):
     return render(request, 'admin_homepage.html')
 
 
-
+def logout_admin(request):
+    if 'admin_user_id' in request.session:
+        del request.session['admin_user_id']
+    return redirect('login_admin')
 
 
 
