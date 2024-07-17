@@ -1,12 +1,86 @@
-{% block title %}teacher Profile{% endblock %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Link to your CSS file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    
+    <title>Teach Smart</title>
+</head>
+<body>
+    
+    <header>
+        <div class="logo">
+            <div class="graduation-hat">
+                <div class="hat-top"></div>
+                <div class="hat-base"></div>
+                <div class="hat-tassel"></div>
+            </div>
+            <span>TeachSmart</span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="home.html#about">About</a></li>
+                
+            </ul>
+        </nav>
+        <div class="auth-buttons">
+                <a href="{% url 'logout_student' %}" class="login-button">
+                    <div class="user-icon"></div>
+                    <span class="login-text">LogOut</span>
+                </a>
+        </div>
+        <div class="notification-icon"></div>
+    </header>
 
-{% block content %}
-<div class="profile-container">
-    <h2>Welcome, {{ teacher.user.username }}</h2>
-    <ul>
-        <li>ID Number: {{ teacher.id_number }}</li>
-        <li>Email: {{ teacher.user.email }}</li>
-        <!-- Add more fields as per your Student model -->
-    </ul>
-</div>
-{% endblock %}
+    <main>
+       
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>teacher Profile</title>
+</head>
+<body>
+    <h1>Welcome, {{ teacher.first_name }}</h1>
+    <p>ID: {{ teacher.id_number }}</p>
+    <p>Email: {{ teacher.email }}</p>
+    <!-- Add more student information as needed -->
+    <section class="dashboard">
+        <div class="courses">
+            <h2>My Courses</h2>
+            <!-- List of courses -->
+            <ul> 
+                <li>Course 1</li>
+                <li>Course 2</li>
+                <!-- Add more courses dynamically if needed -->
+            </ul>
+        </div>
+        <div class="exams">
+            <h2>Exams</h2>
+            <!-- List of upcoming exams -->
+            <ul>
+                <li>Exam 1</li>
+                <li>Exam 2</li>
+                <!-- Add more exams dynamically if needed -->
+            </ul>
+        </div>
+        <aside class="sidebar">
+            <h2>Calendar</h2>
+            <!-- Calendar widget or upcoming events -->
+            <div class="calendar">
+                <!-- Calendar content -->
+            </div>
+        </aside>
+    </section>
+</body>
+</html>
+
+
+    </main>
+
+</body>
+</html>
