@@ -41,6 +41,20 @@ class Student(models.Model):
     
 
 class Teacher(models.Model):
+    SUBJECT_CHOICES = [
+        ('Math', 'Math'),
+        ('English', 'English'),
+        ('Science', 'Science'),
+        # ניתן להוסיף כאן מקצועות נוספים לפי הצורך
+    ]
+    CLASS_CHOICES = [
+        ('A', 'First grade'),
+        ('B', 'Second grade'),
+        ('C', 'Third grade'),
+        ('D', 'Fourth grade'),
+        ('E', 'Fifth grade'),
+        ('F', 'Sixth grade'),
+    ]
     id_number = models.CharField(
         max_length=9, 
         unique=True, 
@@ -58,8 +72,19 @@ class Teacher(models.Model):
                 message='Invalid Israeli phone number. Please enter 10 digits starting with 05 .'
             )
         ]
+        
     )
     password = models.CharField(max_length=128)  # הוספת שדה סיסמה
+    subjects = models.CharField(
+        max_length=50,
+        choices=SUBJECT_CHOICES,
+        help_text="Select the subject the teacher can teach"
+    )
+    classes = models.CharField(
+        max_length=1,
+        choices=CLASS_CHOICES,
+        help_text="Select the grade the teacher can educate"
+    )
     def save(self, *args, **kwargs):
         # הצפנת הסיסמה לפני שמירה
         if self.password and not self.password.startswith('pbkdf2_sha256$'):
