@@ -159,32 +159,27 @@ pipeline {
         stage('Build') {
             agent {
                 docker {
-                    // Use the custom image built from your Dockerfile
                     image 'django:latest'
                 }
             }
-            steps {
-                // Run migrations or other build-related steps
-                sh 'python manage.py migrate'
-            }
+          
         }
         stage('Test') {
             agent {
                 docker {
-                    // Use the same custom image for testing
-                    image 'your-custom-django-image:latest'
+                    image 'django:latest'
                 }
             }
             steps {
-                // Run Django tests
+                // Run tests
                 sh 'python manage.py test --verbosity=2 --junit-xml=test-reports/results.xml'
             }
             post {
                 always {
-                    // Collect and publish test results
                     junit 'test-reports/results.xml'
                 }
             }
         }
     }
 }
+
