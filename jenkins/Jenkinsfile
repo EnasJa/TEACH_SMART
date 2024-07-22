@@ -1,16 +1,73 @@
+// // pipeline {
+// //     agent any
+    
+// //     environment {
+// //         DOCKER_IMAGE = 'django ' // Replace with your Docker image name
+// //         REGISTRY_CREDENTIALS = ' eb40dcf64078 ' // Replace with your Docker Hub credentials ID
+// //     }
+
+// //     stages {
+// //         stage('Checkout') {
+// //             steps {
+// //                 // Checkout your source code repository
+// //                 git 'https://github.com/EnasJa/TEACH_SMART.git'
+// //             }
+// //         }
+
+// //         stage('Build Docker Image') {
+// //             steps {
+// //                 script {
+// //                     // Build Docker image
+// //                     docker.build "${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
+// //                 }
+// //             }
+// //         }
+
+// //         stage('Run Tests') {
+// //             steps {
+// //                 script {
+// //                     // Run tests inside Docker container
+// //                     docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").withRun('-p 8000:8000') {
+// //                         sh 'python manage.py  test'
+
+// //                     }
+// //                 }
+// //             }
+// //         }
+
+// //         stage('Push to Docker Registry') {
+// //             steps {
+// //                 script {
+// //                     // Push Docker image to Docker Hub or another registry
+// //                     docker.withRegistry('', "${REGISTRY_CREDENTIALS}") {
+// //                         docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push()
+// //                     }
+// //                 }
+// //             }
+// //         }
+
+// //         stage('Deploy') {
+// //             steps {
+// //                 // Add deployment steps here, if applicable
+// //                 // Example: Deploy to Kubernetes or another platform
+// //                  sh 'kubectl apply -f deployment.yaml'
+// //             }
+// //         }
+// //     }
+// // }
 // pipeline {
 //     agent any
     
 //     environment {
-//         DOCKER_IMAGE = 'django ' // Replace with your Docker image name
-//         REGISTRY_CREDENTIALS = ' eb40dcf64078 ' // Replace with your Docker Hub credentials ID
+//         DOCKER_IMAGE = 'django' // Your Docker image name
+//         REGISTRY_CREDENTIALS = 'eb40dcf64078' // Your Docker Hub credentials ID
 //     }
 
 //     stages {
 //         stage('Checkout') {
 //             steps {
 //                 // Checkout your source code repository
-//                 git 'https://github.com/EnasJa/TEACH_SMART.git'
+//                 git branch: 'main', url: 'https://github.com/EnasJa/TEACH_SMART.git'
 //             }
 //         }
 
@@ -28,8 +85,7 @@
 //                 script {
 //                     // Run tests inside Docker container
 //                     docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").withRun('-p 8000:8000') {
-//                         sh 'python manage.py  test'
-
+//                         sh 'python manage.py test'
 //                     }
 //                 }
 //             }
@@ -46,75 +102,53 @@
 //             }
 //         }
 
+//        // Uncomment and add steps if you have deployment steps
 //         stage('Deploy') {
 //             steps {
 //                 // Add deployment steps here, if applicable
 //                 // Example: Deploy to Kubernetes or another platform
-//                  sh 'kubectl apply -f deployment.yaml'
+//                 sh 'kubectl apply -f deployment.yaml'
 //             }
+//         }
+//     }
+    
+//     post {
+//         always {
+//             echo 'Pipeline execution complete.'
 //         }
 //     }
 // }
 pipeline {
-    agent any
-    
-    environment {
-        DOCKER_IMAGE = 'django' // Your Docker image name
-        REGISTRY_CREDENTIALS = 'eb40dcf64078' // Your Docker Hub credentials ID
-    }
-
+    agent none
     stages {
-        stage('Checkout') {
-            steps {
-                // Checkout your source code repository
-                git branch: 'main', url: 'https://github.com/EnasJa/TEACH_SMART.git'
-            }
-        }
-
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // Build Docker image
-                    docker.build "${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
+        stage('Build') {
+            agent {
+                docker {
+                    image 'django:latest'
                 }
             }
-        }
-
-        stage('Run Tests') {
             steps {
-                script {
-                    // Run tests inside Docker container
-                    docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").withRun('-p 8000:8000') {
-                        sh 'python manage.py test'
-                    }
+                // Any build-related steps, if necessary
+                // For Django, you might run migrations as part of the build process
+                sh 'python manage.py migrate'
+            }
+        }
+        stage('Test') {
+            agent {
+                docker {
+                    image 'django:latest'
                 }
             }
-        }
-
-        stage('Push to Docker Registry') {
             steps {
-                script {
-                    // Push Docker image to Docker Hub or another registry
-                    docker.withRegistry('', "${REGISTRY_CREDENTIALS}") {
-                        docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push()
-                    }
+                // Run Django tests
+                sh 'python manage.py test --verbosity=2 --junit-xml=test-reports/results.xml'
+            }
+            post {
+                always {
+                    // Collect and publish test results
+                    junit 'test-reports/results.xml'
                 }
             }
-        }
-
-       // Uncomment and add steps if you have deployment steps
-        stage('Deploy') {
-            steps {
-                // Add deployment steps here, if applicable
-                // Example: Deploy to Kubernetes or another platform
-                sh 'kubectl apply -f deployment.yaml'
-            }
-        }
-    }
-    
-    post {
-        always {
-            echo 'Pipeline execution complete.'
         }
     }
 }
