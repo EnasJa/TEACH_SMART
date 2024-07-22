@@ -2,6 +2,9 @@ from datetime import date
 from django import forms
 from .models import *
 from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
 
 
 class StudentSignUpForm(forms.ModelForm):
@@ -126,3 +129,18 @@ class StudentLoginForm(forms.Form):
 class loginTeacherForm(forms.Form):
     id_number = forms.CharField(max_length=9, widget=forms.TextInput(attrs={'placeholder': 'id_number'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'password'}))
+
+
+
+
+
+##############################################################3
+#asia
+# class adminRegistrationForm(UserCreationForm):
+#     class Meta:
+#         model = User
+#         fields = ['username', 'password']
+
+class AdminLoginForm(forms.Form):
+    username = forms.CharField(max_length=150)
+    password = forms.CharField(widget=forms.PasswordInput)
