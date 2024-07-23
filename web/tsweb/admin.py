@@ -8,4 +8,4 @@ admin.site.register(Teacher)
 admin.site.register(Admin)
 admin.site.register(Message)
 
-admin.site.register(Admin)
+

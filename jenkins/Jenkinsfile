@@ -118,6 +118,41 @@
 //         }
 //     }
 // }
+pipeline {
+    agent none
+    stages {
+        stage('Build') {
+            agent {
+                docker {
+                    image 'django:latest'
+                    // Set the working directory for Django project
+                    args '-w /var/jenkins_home/workspace/Team-11/TeachSmart/your-django-project-directory'
+                }
+            }
+            
+        }
+        stage('Test') {
+            agent {
+                docker {
+                    image 'django:latest'
+                    // Set the working directory for Django project
+                    args '-w /var/jenkins_home/workspace/Team-11/TeachSmart/your-django-project-directory'
+                }
+            }
+            steps {
+                // Run tests
+                sh 'python manage.py test --verbosity=2 --junit-xml=test-reports/results.xml'
+            }
+            post {
+                always {
+                    // Publish test results
+                    junit 'test-reports/results.xml'
+                }
+            }
+        }
+    }
+}
+
 // pipeline {
 //     agent none
 //     stages {
@@ -127,11 +162,7 @@
 //                     image 'django:latest'
 //                 }
 //             }
-//             steps {
-//                 // Any build-related steps, if necessary
-//                 // For Django, you might run migrations as part of the build process
-//                 sh 'python manage.py migrate'
-//             }
+          
 //         }
 //         stage('Test') {
 //             agent {
@@ -140,46 +171,15 @@
 //                 }
 //             }
 //             steps {
-//                 // Run Django tests
+//                 // Run tests
 //                 sh 'python manage.py test --verbosity=2 --junit-xml=test-reports/results.xml'
 //             }
 //             post {
 //                 always {
-//                     // Collect and publish test results
 //                     junit 'test-reports/results.xml'
 //                 }
 //             }
 //         }
 //     }
 // }
-//
-pipeline {
-    agent none
-    stages {
-        stage('Build') {
-            agent {
-                docker {
-                    image 'django:latest'
-                }
-            }
-          
-        }
-        stage('Test') {
-            agent {
-                docker {
-                    image 'django:latest'
-                }
-            }
-            steps {
-                // Run tests
-                sh 'python manage.py test --verbosity=2 --junit-xml=test-reports/results.xml'
-            }
-            post {
-                always {
-                    junit 'test-reports/results.xml'
-                }
-            }
-        }
-    }
-}
 
