@@ -9,9 +9,9 @@ urlpatterns = [
   path('logout_student/', views.logout_student, name='logout_student'),
   path('logout_teacher/', views.logout_teacher, name='logout_teacher'),
   path('student_signup/', views.student_signup, name='student_signup'),
- path('profile_student/', views.profile_student, name='profile_student'),
- path('login_teacher/', views.login_teacher, name='login_teacher'),
- path('profile_teacher/', views.profile_teacher, name='profile_teacher'),
+  path('profile_student/', views.profile_student, name='profile_student'),
+  path('login_teacher/', views.login_teacher, name='login_teacher'),
+  path('profile_teacher/', views.profile_teacher, name='profile_teacher'),
   path('teacher/<str:id_number>/students/', views.teacher_students_list, name='teacher_students_list'),
   path('login_student/', views.login_student, name='login_student'),
   path('teacher_signup/', views.teacher_signup, name='teacher_signup'),
@@ -22,5 +22,7 @@ urlpatterns = [
   path('login_admin/', views.login_admin, name='login_admin'),
   path('admin_homepage/', views.admin_homepage, name='admin_homepage'),
   path('logout_admin/',views.logout_admin, name="logout_admin"), #admin logout
+  path('add_teacher/',views.add_teacher, name="add_teacher"), 
+  path('teacher_list/',views.teacher_list, name="teacher_list"), 
 
 ]

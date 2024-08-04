@@ -245,3 +245,28 @@ def logout_admin(request):
 
 
 
+
+def add_teacher(request):
+    if request.method == 'POST':
+        form = addTeacherForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Registration completed successfully!")
+            return redirect('teacher_list')  # או לכל דף אחר שתרצה
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = addTeacherForm()
+    return render(request, 'add_teacher.html', {'form': form})
+
+
+
+def teacher_list(request):
+    teachers = Teacher.objects.all()
+    return render(request, 'teacher_list.html', {'teachers': teachers})
+
+
+# def delete_teacher(request, id):
+#     obj =Teacher.objects.get(pk=id)
+#     obj.delete()
+#     return redirect('teacher_list')

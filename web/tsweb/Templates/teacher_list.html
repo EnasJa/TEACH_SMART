@@ -1,9 +1,27 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher List</title>
+</head>
+<body>
+    <h1>Teacher List</h1>
+    <ul>
+        {% for teacher in teachers %}
+            <li>{{ teacher.first_name }} {{ teacher.last_name }} - {{ teacher.subject }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html> -->
+
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TeachSmart - Home</title>
+    <title>TeachSmart - Teacher List</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -82,26 +100,6 @@
             text-decoration: none;
             color: #0f0f0f;
         }
-        .search-bar {
-            display: flex;
-            align-items: center;
-        }
-        .search-bar input[type="text"] {
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        .search-bar button {
-            padding: 5px 10px;
-            margin-left: 5px;
-            background-color: #add8e6;
-            border: none;
-            border-radius: 4px;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-        }
         .auth-buttons {
             display: flex;
             align-items: center;
@@ -158,67 +156,43 @@
             font-size: 36px;
             margin-bottom: 20px;
         }
-        .main-content p {
-            color: #34495e;
-            font-size: 18px;
-            margin-bottom: 20px;
+        .teacher-list {
+            width: 100%;
             max-width: 800px;
-        }
-        .main-content a {
-            background-color: #add8e6;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-        .main-content a:hover {
-            background-color: #87ceeb;
-        }
-        .main-content .button-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-        }
-        .main-content .button {
-            background-color: #add8e6;
-            color: white;
+            background-color: #fff;
             padding: 20px;
-            border-radius: 50%;
-            text-decoration: none;
-            font-size: 18px;
-            transition: background-color 0.3s ease;
-            width: 150px;
-            height: 150px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: left;
         }
-        .main-content .button:hover {
-            background-color: #87ceeb;
+        .teacher-list table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .main-content .button img {
-            width: 50px;
-            height: 50px;
-            margin-bottom: 10px;
+        .teacher-list th, .teacher-list td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .teacher-list th {
+            background-color: #add8e6;
+            color: #0f0f0f;
+        }
+        .teacher-list td button {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .teacher-list td button:hover {
+            background-color: #ff1a1a;
         }
         footer {
             background-color: #add8e6;
             color: #0f0f0f;
             text-align: center;
             padding: 10px;
-        }
-        @media (max-width: 768px) {
-            .main-content h1 {
-                font-size: 28px;
-            }
-            .main-content p {
-                font-size: 16px;
-            }
         }
     </style>
 </head>
@@ -235,68 +209,49 @@
     </div>
     <nav>
         <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/">about</a></li>
-            <li class="search-bar">
-                <input type="text" placeholder="Search...">
-                <button>Search</button>
-            </li>
+            <li><a href="{% url 'admin_homepage' %}">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/teacher-list">Teacher List</a></li>
         </ul>
     </nav>
     <div class="auth-buttons">
-        <a href="{%url 'logout_admin'%}" class="login-button">
+        <a href="{% url 'logout_admin' %}" class="login-button">
             <div class="user-icon"></div>
             <span class="login-text">Logout</span>
         </a>
     </div>
 </header>
-
+  
 <div class="main-content">
-    <h1>Welcome to TeachSmart</h1>
- 
-</div>
+    <h1>Teacher List</h1>
+    
+    <div class="teacher-list">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for teacher in teachers %}
+                <tr>    
+                    <td>{{ teacher }}</td>
+                    <!-- <td>{{ teacher.name }}</td> -->
+                    <td>{{ teacher.email }}</td>
 
-<div class="main-content" id="educational-system">
-    <h2>Educational System</h2>
-    <div class="button-container">
-        <a href="#view-curriculum" class="button">
-            <!-- <img src="curriculum-icon.png" alt="Curriculum Icon"> -->
-            View Curriculum
-        </a>
-    </div>
-</div>
-
-<div class="main-content" id="notify-teachers">
-    <h2>Notify Teachers</h2>
-    <div class="button-container">
-        <a href="#send-notification" class="button">
-            <!-- <img src="notification-icon.png" alt="Notification Icon"> -->
-            Send Notification
-        </a>
-    </div>
-</div>
-
-<div class="main-content" id="manage-teachers">
-    <h2>Manage Teachers</h2>
-    <div class="button-container">
-        <a href="{% url 'add_teacher' %}" class="button">
-            <!-- <img src="add-delete-icon.png" alt="Add/Delete Teacher Icon"> -->
-            Add/Delete Teacher
-        </a>
-        <a href="{% url 'teacher_list' %}" class="button">
-            <!-- <img src="list-icon.png" alt="List of Teachers Icon"> -->
-            List of Teachers
-        </a>
-    </div>
-</div>
-
-<div class="main-content" id="manage-students">
-    <h2>Manage Students</h2>
-    <div class="button-container">
-        <a href="#add-delete-student" class="button">
-            <!-- <img src="add-delete-icon.png" alt="Add/Delete Student Icon"> -->
-            Add/Delete Student
-        </a>
+                    <td>
+                        <a href="#" class="btn btn-danger">delete</a>                        
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No teachers available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 
