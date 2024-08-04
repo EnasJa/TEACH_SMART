@@ -13,4 +13,7 @@ urlpatterns = [
   path('inbox/', views.inbox, name='inbox'),
   path('message-sent/', views.message_sent, name='message_sent'),
 
+
+  path('delete_teacher/<str:id_number>/', views.delete_teacher, name='delete_teacher'),
+
 ]

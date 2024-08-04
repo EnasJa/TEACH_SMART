@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from .forms import *
 from django.contrib.auth.decorators import login_required
@@ -77,3 +77,15 @@ def inbox(request):
 def message_sent(request):
     messages.success(request, 'ההודעה נשלחה בהצלחה!')
     return render(request, 'message_sent.html')
+
+
+
+
+def delete_teacher(request, id_number):
+    teacher = get_object_or_404(Teacher, id_number=id_number)
+
+    if request.method == 'POST':
+        teacher.delete()
+        messages.success(request, f'the teacher {teacher.first_name} {teacher.last_name} deleted successfully.')
+        return redirect('teacher_list')
+    return render(request, 'confirm_delete_teacher.html', {'teacher': teacher})
