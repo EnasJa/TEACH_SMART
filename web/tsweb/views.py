@@ -6,8 +6,8 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
 from django.shortcuts import render, get_object_or_404
-
-
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+from django.urls import reverse_lazy
 
 # Create your views here.
 
@@ -192,3 +192,12 @@ def teacher_students_list(request, id_number):
     teacher = get_object_or_404(Teacher, id_number=id_number)
     students = Student.objects.filter(grade=teacher.classes).distinct()
     return render(request, 'teacher_students_list.html', {'teacher': teacher, 'students': students})
+
+
+
+def about_us(request):
+    return render(request, 'about_us.html')
+
+
+ 
+

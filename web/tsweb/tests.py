@@ -62,22 +62,66 @@ from django.contrib.auth.hashers import make_password
 #         self.assertTemplateUsed(response, 'signup_student.html')
 #         self.assertContains(response, "Please correct the errors below.")
         
-class TeacherModelTests(TestCase):
-    
+class TeacherViewsTest(TestCase):
     def setUp(self):
-        # Set up initial data or objects needed for the tests
+        # Create a test client
+        self.client = Client()
+        
+        # Create a teacher and a student for testing
+        self.teacher = Teacher.objects.create(id_number="12345", name="Test Teacher", classes="A", subjects="Math")
+        self.student = Student.objects.create(name="Test Student", grade="A")
+
+        # Create a user and login
+        self.user = User.objects.create_user(username='testuser', password='12345')
+        self.client.login(username='testuser', password='12345')
+
+        # Set teacher_id in session
+        session = self.client.session
+        session['teacher_id'] = self.teacher.id_number
+        session.save()
+
+    def test_teacher_students_list(self):
+        response = self.client.get(reverse('teacher_students_list', args=[self.teacher.id_number]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'teacher_students_list.html')
+        self.assertContains(response, self.teacher.name)
+        self.assertContains(response, self.student.name)
+
+    def test_profile_teacher(self):
+        response = self.client.get(reverse('profile_teacher'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'profile_teacher.html')
+        self.assertContains(response, self.teacher.name)
+
+    def test_profile_teacher_no_session(self):
+        # Clear the session
+        session = self.client.session
+        session['teacher_id'] = None
+        session.save()
+
+        response = self.client.get(reverse('profile_teacher'))
+        self.assertRedirects(response, reverse('login_teacher'))
+
+    def test_profile_teacher_not_found(self):
+        # Set an invalid teacher_id in session
+        session = self.client.session
+        session['teacher_id'] = 'invalid_id'
+        session.save()
+
+        response = self.client.get(reverse('profile_teacher'))
+        self.assertRedirects(response, reverse('login_teacher'))
+
+class TeacherModelTests(TestCase):
+    def setUp(self):
         self.valid_teacher_data = {
-            'id_number': '123456789',  # Example valid ID number
-            'first_name': 'Alice',
-            'last_name': 'Smith',
-            'date_of_birth': '1980-05-15',
-            'email': 'alice.smith@example.com',
-            'phone_number': '0523456789',  # Valid Israeli phone number
-            'password': 'secure_password123'  # Example valid password
+            'id_number': '12345',
+            'name': 'Test Teacher',
+            'classes': 'A',
+            'subjects': 'Math'
         }
+        self.signup_url = reverse('signup_teacher')
 
     def test_valid_id_number(self):
-        # Test case for valid ID number
         teacher = Teacher(**self.valid_teacher_data)
         try:
             teacher.full_clean()
@@ -86,63 +130,35 @@ class TeacherModelTests(TestCase):
 
     def test_signup_POST_invalid(self):
         form_data = {
-            'email': 'invalid_email',
-            'password': 'short',
-            'confirm_password': 'mismatch'
+            'id_number': '',
+            'name': '',
+            'classes': '',
+            'subjects': ''
         }
         response = self.client.post(self.signup_url, data=form_data)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'signup_student.html')
-        self.assertContains(response, "Please correct the errors below.")
+        self.assertFormError(response, 'form', 'id_number', 'This field is required.')
+        self.assertFormError(response, 'form', 'name', 'This field is required.')
+        self.assertFormError(response, 'form', 'classes', 'This field is required.')
+        self.assertFormError(response, 'form', 'subjects', 'This field is required.')
 
-
-#test for login student 
 class StudentModelTests(TestCase):
-    
     def setUp(self):
-        # Set up initial data or objects needed for the tests
-        self.valid_student_data = {
-            'id_number': '123456789',  # Example valid ID number
-            'first_name': 'John',
-            'last_name': 'Doe',
-            'grade': 'A',
-            'date_of_birth': '2000-01-01',
-            'email': 'john.doe@example.com',
-            'parent_name': 'Jane Doe',
-            'parent_phone': '0523456789',  # Valid Israeli phone number
-            'password': 'secure_password123'  # Example valid password
+        self.valid_teacher_data = {
+            'id_number': '12345',
+            'name': 'Test Teacher',
+            'classes': 'A',
+            'subjects': 'Math'
         }
 
-    def test_valid_id_number(self):
-        # Test case for valid ID number
-        student = Student(**self.valid_student_data)
-        try:
-            student.full_clean()
-        except ValidationError as e:
-            self.fail(f"Validation error: {e}")
-
     def test_valid_password(self):
-        # Test case for valid password
-        student = Student(**self.valid_student_data)
-        try:
-            student.full_clean()
-        except ValidationError as e:
-            self.fail(f"Validation error: {e}")
-    def test_valid_password(self):
-        # Test case for valid password
         teacher = Teacher(**self.valid_teacher_data)
-        try:
-            teacher.full_clean()
-        except ValidationError as e:
-            self.fail(f"Validation error: {e}")
+        teacher.full_clean()
 
-    
     def test_invalid_id_number(self):
-        # Test case for invalid ID number
         invalid_teacher_data = self.valid_teacher_data.copy()
-        invalid_teacher_data['id_number'] = '12345'  # Invalid ID number
+        invalid_teacher_data['id_number'] = ''
         teacher = Teacher(**invalid_teacher_data)
         with self.assertRaises(ValidationError):
             teacher.full_clean()
 
-    

@@ -2,7 +2,7 @@ from datetime import date
 from django import forms
 from .models import *
 from django.core.exceptions import ValidationError
-
+from django.contrib.auth.forms import PasswordResetForm
 
 class StudentSignUpForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput, label=("Password"))
@@ -126,3 +126,5 @@ class StudentLoginForm(forms.Form):
 class loginTeacherForm(forms.Form):
     id_number = forms.CharField(max_length=9, widget=forms.TextInput(attrs={'placeholder': 'id_number'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'password'}))
+
+

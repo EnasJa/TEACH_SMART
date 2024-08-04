@@ -1,7 +1,9 @@
-from django.urls import path
+from django.urls import path ,  include
 from . import views
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
+
+
 
 urlpatterns = [
   path('',views.home,name='home'),
@@ -18,5 +20,7 @@ urlpatterns = [
   path('send/', views.send_message, name='send_message'),
   path('inbox/', views.inbox, name='inbox'),
   path('message-sent/', views.message_sent, name='message_sent'),
-
+  path('about_us/', views.about_us, name='about_us'),
+  
 ]
+
