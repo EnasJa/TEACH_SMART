@@ -22,5 +22,8 @@ urlpatterns = [
   path('login_admin/', views.login_admin, name='login_admin'),
   path('admin_homepage/', views.admin_homepage, name='admin_homepage'),
   path('logout_admin/',views.logout_admin, name="logout_admin"), #admin logout
+  path('the_subjects/', views.the_subjects, name='the_subjects'),
+   path('subject_detail/<str:name>/', views.subject_detail, name='subject_detail'),
+    path('add_subject_class/<str:name>/', views.add_subject_class, name='add_subject_class'),
 
 ]

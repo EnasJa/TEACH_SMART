@@ -245,3 +245,26 @@ def logout_admin(request):
 
 
 
+def the_subjects(request):
+    return render(request, 'the_subjects.html')
+def subject_detail(request, name):
+    subject = get_object_or_404(Subject, name=name)
+    subject_classes = subject.subject_classes.all()  # Access related classes
+    return render(request, 'subject_detail.html', {'subject': subject, 'subject_classes': subject_classes})
+def add_subject_class(request, name):
+    subject = get_object_or_404(Subject, name=name)
+    teachers = Teacher.objects.filter(subject=subject)
+    
+    if request.method == 'POST':
+        form = SubjectClassForm(request.POST)
+        if form.is_valid():
+            # Handle form submission
+            subject_class = form.save(commit=False)
+            subject_class.subject = subject
+            subject_class.save()
+            # Redirect or handle success
+    else:
+        form = SubjectClassForm()
+        form.fields['teachers'].queryset = teachers
+    
+    return render(request, 'add_subject_class.html', {'form': form, 'subject': subject})

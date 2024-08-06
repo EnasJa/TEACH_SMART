@@ -144,3 +144,15 @@ class loginTeacherForm(forms.Form):
 class AdminLoginForm(forms.Form):
     username = forms.CharField(max_length=150)
     password = forms.CharField(widget=forms.PasswordInput)
+
+
+class SubjectClassForm(forms.ModelForm):
+    class Meta:
+        model = SubjectClass
+        fields = ['class_name', 'description', 'syllabus', 'teachers']
+    
+    teachers = forms.ModelMultipleChoiceField(
+        queryset=Teacher.objects.none(),  # Initialize with an empty queryset
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
