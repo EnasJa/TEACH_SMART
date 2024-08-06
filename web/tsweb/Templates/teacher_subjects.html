@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+    
+<head>    
+    {% csrf_token %}
+    <title>Subjects Taught by {{ teacher.first_name }} {{ teacher.last_name }}</title>
+    <style>
+        body {
+            background-image: url('https://i.pinimg.com/736x/97/c3/b7/97c3b7fbc2c00c0d1b3276cadf937c3f.jpg');
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 36px;
+        }
+        ul.subject-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul.subject-list li {
+            margin: 10px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        ul.subject-list li:hover {
+            background-color: #f9f9f9;
+            transform: scale(1.02);
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .back-link:hover {
+            color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Subjects Taught by {{ teacher.first_name }} {{ teacher.last_name }}</h1>
+        <ul class="subject-list">
+            {% for subject_class in subjects %}
+            <li>
+                <p><strong>Subject:</strong> {{ subject_class.subject.name }}</p>
+                <p><strong>Class:</strong> {{ subject_class.class_name }}</p>
+                <p><strong>Description:</strong> {{ subject_class.description }}</p>
+                <p><strong>Syllabus:</strong> {{ subject_class.syllabus }}</p>
+            </li>
+            {% empty %}
+            <li>No subjects assigned to this teacher.</li>
+            {% endfor %}
+        </ul>
+        <a class="back-link" href="{% url 'profile_teacher' %}">Back to Home</a>
+    </div>
+</body>
+</html>
+
+{% endblock %}

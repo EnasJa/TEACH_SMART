@@ -29,6 +29,7 @@ urlpatterns = [
     path('add_subject_class/<str:name>/', views.add_subject_class, name='add_subject_class'),
 
   path('about_us/', views.about_us, name='about_us'),
+  path('teacher_subjects/<int:teacher_id>/', views.teacher_subjects, name='teacher_subjects'),
   
 ]
 

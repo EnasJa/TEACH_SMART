@@ -42,7 +42,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Profile</title>
+    <title>Teacher Profile</title>
 </head>
 <body>
     <h1>Welcome, {{ teacher.first_name }}</h1>
@@ -80,6 +80,7 @@
       <div class="student-list-button">
         <a href="{% url 'teacher_students_list' teacher.id_number %}" class="btn">View List of Students</a>
     </div>
+    <!-- Button to view learning subjects --> <div class="learning-subjects-button"> <a href="{% url 'teacher_subjects' teacher.id_number %}" class="btn">View Learning Subjects</a> </div>
 </body>
 </html>
 

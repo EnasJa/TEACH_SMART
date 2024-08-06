@@ -275,5 +275,16 @@ def about_us(request):
     return render(request, 'about_us.html')
 
 
+def teacher_subjects(request, teacher_id):
+    # Fetch the teacher based on the ID
+    teacher = get_object_or_404(Teacher, id_number=teacher_id)
+    
+    # Get the subjects the teacher is teaching
+    subjects = teacher.subject_classes.all()
+    
+    return render(request, 'teacher_subjects.html', {
+        'teacher': teacher,
+        'subjects': subjects
+    })
  
 
