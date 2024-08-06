@@ -268,3 +268,12 @@ def add_subject_class(request, name):
         form.fields['teachers'].queryset = teachers
     
     return render(request, 'add_subject_class.html', {'form': form, 'subject': subject})
+
+
+
+def about_us(request):
+    return render(request, 'about_us.html')
+
+
+ 
+

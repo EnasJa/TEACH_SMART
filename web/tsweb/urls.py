@@ -3,6 +3,8 @@ from . import views
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
 
+
+
 urlpatterns = [
   path('',views.home,name='home'),
   path('LogIn/', views.LogIn, name='LogIn'),
@@ -26,4 +28,7 @@ urlpatterns = [
    path('subject_detail/<str:name>/', views.subject_detail, name='subject_detail'),
     path('add_subject_class/<str:name>/', views.add_subject_class, name='add_subject_class'),
 
+  path('about_us/', views.about_us, name='about_us'),
+  
 ]
+
