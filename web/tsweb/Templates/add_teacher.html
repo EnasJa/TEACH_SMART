@@ -1,0 +1,614 @@
+<!-- <!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeachSmart - Add Teacher</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #add8e6;
+            color: #0f0f0f;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .graduation-hat {
+            width: 50px;
+            height: 30px;
+            position: relative;
+            margin-right: 10px;
+        }
+        .hat-top {
+            width: 100%;
+            height: 50%;
+            background-color: #000;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: rotate(-10deg);
+        }
+        .hat-base {
+            width: 50%;
+            height: 10px;
+            background-color: #000;
+            position: absolute;
+            top: 50%;
+            left: 25%;
+        }
+        .hat-tassel {
+            width: 2px;
+            height: 20px;
+            background-color: #000;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .hat-tassel::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background-color: #000;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            padding: 0;
+            margin: 0;
+            align-items: center;
+        }
+        nav a {
+            text-decoration: none;
+            color: #0f0f0f;
+        }
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+        }
+        .login-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #0f0f0f;
+            font-size: 18px;
+        }
+        .user-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #eff4f6;
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .user-icon::before {
+            content: '';
+            width: 60%;
+            height: 60%;
+            background-color: #121111;
+            border-radius: 50%;
+            position: absolute;
+            top: 10%;
+        }
+        .user-icon::after {
+            content: '';
+            width: 80%;
+            height: 40%;
+            background-color: #050505;
+            border-radius: 0 0 50% 50%;
+            position: absolute;
+            bottom: 10%;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .main-content h1 {
+            color: #2c3e50;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .main-content form {
+            width: 100%;
+            max-width: 500px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .main-content form input,
+        .main-content form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .main-content form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #add8e6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        footer {
+            background-color: #add8e6;
+            color: #0f0f0f;
+            text-align: center;
+            padding: 10px;
+        }
+        @media (max-width: 768px) {
+            .main-content h1 {
+                font-size: 28px;
+            }
+            .main-content p {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <div class="graduation-hat">
+            <div class="hat-top"></div>
+            <div class="hat-base"></div>
+            <div class="hat-tassel"></div>
+        </div>
+        <span>TeachSmart</span>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </nav>
+    <div class="auth-buttons">
+        <a href="{% url 'logout_admin' %}" class="login-button">
+            <div class="user-icon"></div>
+            <span class="login-text">Logout</span>
+        </a>
+    </div>
+</header>
+  
+<div class="page-container">
+    <div class="form-container">
+        <h1>Teacher Registration</h1>
+        
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <form method="post" id="teacherSignupForm">
+            {% csrf_token %}
+
+
+         
+
+
+            {% for field in form %}
+                <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                {% if field.name == 'password' or field.name == 'confirm_password' %}
+                    <div class="password-container">
+                        {{ field }}
+                        <span class="toggle-password" onclick="togglePasswordVisibility(this)">👁️</span>
+                    </div>
+
+                    
+                {% if form.non_field_errors %}
+                <ul class="non-field-errors">
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+
+
+            {% endif %}
+                {% else %}
+                    {{ field }}
+                {% endif %}
+                
+                {% if field.errors %}
+                    <ul class="error-list">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endfor %}
+            
+            <button type="submit">Sign Up</button>
+        </form>
+        <div class="login-option">
+            Already have an account? <a href="{% url 'login_teacher' %}">Log In</a>
+        </div>
+    </div>
+    <div class="image-container"></div>
+</div>
+
+<script>
+    function togglePasswordVisibility(element) {
+        var passwordInput = element.previousElementSibling;
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            element.textContent = "🔒";
+        } else {
+            passwordInput.type = "password";
+            element.textContent = "👁️";
+        }
+    }
+</script>
+</body>
+
+<footer>
+    <p>&copy; 2024 TeachSmart. All rights reserved.</p>
+</footer>
+
+</body>
+</html> -->
+
+<!--   
+<div class="page-container">
+    <div class="form-container">
+        <h1>Teacher Registration</h1>
+        
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <form method="post" id="teacherSignupForm">
+            {% csrf_token %}
+
+
+         
+
+
+            {% for field in form %}
+                <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                {% if field.name == 'password' or field.name == 'confirm_password' %}
+                    <div class="password-container">
+                        {{ field }}
+                        <span class="toggle-password" onclick="togglePasswordVisibility(this)">👁️</span>
+                    </div>
+
+                    
+                {% if form.non_field_errors %}
+                <ul class="non-field-errors">
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+
+
+            {% endif %}
+                {% else %}
+                    {{ field }}
+                {% endif %}
+                
+                {% if field.errors %}
+                    <ul class="error-list">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endfor %}
+            
+            <button type="submit">Sign Up</button>
+        </form>
+        <div class="login-option">
+            Already have an account? <a href="{% url 'login_teacher' %}">Log In</a>
+        </div>
+    </div>
+    <div class="image-container"></div>
+</div>
+
+<script>
+    function togglePasswordVisibility(element) {
+        var passwordInput = element.previousElementSibling;
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            element.textContent = "🔒";
+        } else {
+            passwordInput.type = "password";
+            element.textContent = "👁️";
+        }
+    }
+</script>
+</body> -->
+
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeachSmart - Add Teacher</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #add8e6;
+            color: #0f0f0f;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .graduation-hat {
+            width: 50px;
+            height: 30px;
+            position: relative;
+            margin-right: 10px;
+        }
+        .hat-top {
+            width: 100%;
+            height: 50%;
+            background-color: #000;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: rotate(-10deg);
+        }
+        .hat-base {
+            width: 50%;
+            height: 10px;
+            background-color: #000;
+            position: absolute;
+            top: 50%;
+            left: 25%;
+        }
+        .hat-tassel {
+            width: 2px;
+            height: 20px;
+            background-color: #000;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .hat-tassel::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background-color: #000;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            padding: 0;
+            margin: 0;
+            align-items: center;
+        }
+        nav a {
+            text-decoration: none;
+            color: #0f0f0f;
+        }
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+        }
+        .login-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #0f0f0f;
+            font-size: 18px;
+        }
+        .user-icon {
+            width: 50px;
+            height: 50px;
+            background-color: #eff4f6;
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .user-icon::before {
+            content: '';
+            width: 60%;
+            height: 60%;
+            background-color: #121111;
+            border-radius: 50%;
+            position: absolute;
+            top: 10%;
+        }
+        .user-icon::after {
+            content: '';
+            width: 80%;
+            height: 40%;
+            background-color: #050505;
+            border-radius: 0 0 50% 50%;
+            position: absolute;
+            bottom: 10%;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .main-content h1 {
+            color: #2c3e50;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .main-content form {
+            width: 100%;
+            max-width: 500px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .main-content form input,
+        .main-content form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .main-content form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #add8e6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        footer {
+            background-color: #add8e6;
+            color: #0f0f0f;
+            text-align: center;
+            padding: 10px;
+        }
+        @media (max-width: 768px) {
+            .main-content h1 {
+                font-size: 28px;
+            }
+            .main-content p {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <div class="graduation-hat">
+            <div class="hat-top"></div>
+            <div class="hat-base"></div>
+            <div class="hat-tassel"></div>
+        </div>
+        <span>TeachSmart</span>
+    </div>
+    <nav>
+        <ul>
+            <li><a href="{% url 'admin_homepage' %}">Home</a></li>
+            <li><a href="/about">About</a></li>
+        </ul>
+    </nav>
+    <div class="auth-buttons">
+        <a href="{% url 'logout_admin' %}" class="login-button">
+            <div class="user-icon"></div>
+            <span class="login-text">Logout</span>
+        </a>
+    </div>
+</header>
+  
+<div class="main-content">
+    <h1>Add Teacher </h1>
+    
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="post" id="teacherSignupForm">
+        {% csrf_token %}
+
+        {% for field in form %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+            {% if field.name == 'password' %}
+                <div class="password-container">
+                    {{ field }}
+                </div>
+            {% else %}
+                {{ field }}
+            {% endif %}
+            {% if field.errors %}
+                <ul class="error-list">
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endfor %}
+        
+        <button type="submit"> Add Teacher</button>
+    </form>
+
+</div>
+
+<footer>
+    <p>&copy; 2024 TeachSmart. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

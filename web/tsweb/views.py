@@ -288,3 +288,42 @@ def teacher_subjects(request, teacher_id):
     })
  
 
+
+def add_teacher(request):
+    if request.method == 'POST':
+        form = addTeacherForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Registration completed successfully!")
+            return redirect('teacher_list')  # או לכל דף אחר שתרצה
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = addTeacherForm()
+    return render(request, 'add_teacher.html', {'form': form})
+
+
+
+def teacher_list(request):
+    teachers = Teacher.objects.all()
+    return render(request, 'teacher_list.html', {'teachers': teachers})
+
+
+# def delete_teacher(request, id):
+#     obj =Teacher.objects.get(pk=id)
+#     obj.delete()
+#     return redirect('teacher_list')
+
+def search_teacher(request):
+    if request.method=="POST":
+        searched=request.POST['searched']
+        searched = Teacher.objects.filter(first_name__icontains=searched)
+        if not searched:
+            messages.success(request, "The teacher does not exist.")
+            return render(request, 'search_teacher.html', {})
+        else:
+
+           return render(request, 'search_teacher.html', {'searched':searched})
+
+    else:
+        return render(request, 'search_teacher.html', {})

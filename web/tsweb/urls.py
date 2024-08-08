@@ -11,9 +11,9 @@ urlpatterns = [
   path('logout_student/', views.logout_student, name='logout_student'),
   path('logout_teacher/', views.logout_teacher, name='logout_teacher'),
   path('student_signup/', views.student_signup, name='student_signup'),
- path('profile_student/', views.profile_student, name='profile_student'),
- path('login_teacher/', views.login_teacher, name='login_teacher'),
- path('profile_teacher/', views.profile_teacher, name='profile_teacher'),
+  path('profile_student/', views.profile_student, name='profile_student'),
+  path('login_teacher/', views.login_teacher, name='login_teacher'),
+  path('profile_teacher/', views.profile_teacher, name='profile_teacher'),
   path('teacher/<str:id_number>/students/', views.teacher_students_list, name='teacher_students_list'),
   path('login_student/', views.login_student, name='login_student'),
   path('teacher_signup/', views.teacher_signup, name='teacher_signup'),
@@ -27,6 +27,10 @@ urlpatterns = [
   path('the_subjects/', views.the_subjects, name='the_subjects'),
    path('subject_detail/<str:name>/', views.subject_detail, name='subject_detail'),
     path('add_subject_class/<str:name>/', views.add_subject_class, name='add_subject_class'),
+  path('add_teacher/',views.add_teacher, name="add_teacher"), 
+  path('teacher_list/',views.teacher_list, name="teacher_list"),
+  path('search_teacher/',views.search_teacher, name="search_teacher"),
+
 
   path('about_us/', views.about_us, name='about_us'),
   path('teacher_subjects/<int:teacher_id>/', views.teacher_subjects, name='teacher_subjects'),
