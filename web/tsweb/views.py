@@ -270,3 +270,17 @@ def teacher_list(request):
 #     obj =Teacher.objects.get(pk=id)
 #     obj.delete()
 #     return redirect('teacher_list')
+
+def search_teacher(request):
+    if request.method=="POST":
+        searched=request.POST['searched']
+        searched = Teacher.objects.filter(first_name__icontains=searched)
+        if not searched:
+            messages.success(request, "The teacher does not exist.")
+            return render(request, 'search_teacher.html', {})
+        else:
+
+           return render(request, 'search_teacher.html', {'searched':searched})
+
+    else:
+        return render(request, 'search_teacher.html', {})

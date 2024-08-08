@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TeachSmart - Home</title>
+    <title>Search Teacher - TeachSmart</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -158,53 +158,38 @@
             font-size: 36px;
             margin-bottom: 20px;
         }
-        .main-content p {
-            color: #34495e;
-            font-size: 18px;
-            margin-bottom: 20px;
-            max-width: 800px;
-        }
-        .main-content a {
-            background-color: #add8e6;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-        .main-content a:hover {
-            background-color: #87ceeb;
-        }
-        .main-content .button-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-        }
-        .main-content .button {
-            background-color: #add8e6;
-            color: white;
-            padding: 20px;
-            border-radius: 50%;
-            text-decoration: none;
-            font-size: 18px;
-            transition: background-color 0.3s ease;
-            width: 150px;
-            height: 150px;
+        .main-content form {
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            text-align: center;
+            gap: 20px;
         }
-        .main-content .button:hover {
-            background-color: #87ceeb;
+        .main-content form input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 100%;
+            max-width: 400px;
         }
-        .main-content .button img {
-            width: 50px;
-            height: 50px;
-            margin-bottom: 10px;
+        .main-content form button {
+            padding: 10px 20px;
+            background-color: #add8e6;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .main-content .results {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 800px;
+            text-align: left;
+        }
+        .main-content .results .teacher {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
         }
         footer {
             background-color: #add8e6;
@@ -216,10 +201,35 @@
             .main-content h1 {
                 font-size: 28px;
             }
-            .main-content p {
-                font-size: 16px;
-            }
         }
+        .teacher-results {
+    width: 100%;
+    max-width: 800px;
+    border-collapse: collapse;
+    margin-top: 20px;
+    }
+
+
+    .teacher-results th, .teacher-results td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .teacher-results th {
+        background-color: #add8e6;
+        color: #0f0f0f;
+    }
+
+    .teacher-results tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .teacher-results tr:hover {
+        background-color: #ddd;
+    }
+
+        
     </style>
 </head>
 <body>
@@ -235,9 +245,9 @@
     </div>
     <nav>
         <ul>
-            <li><a href="/">Home</a></li>
+            <li><a href="{%url 'admin_homepage'%}">Home</a></li>
             <li><a href="/">about</a></li>
-            
+          
         </ul>
     </nav>
     <div class="auth-buttons">
@@ -249,58 +259,41 @@
 </header>
 
 <div class="main-content">
-    <h1>Welcome to TeachSmart</h1>
- 
-</div>
-
-<div class="main-content" id="educational-system">
-    <h2>Educational System</h2>
-    <div class="button-container">
-        <a href="#view-curriculum" class="button">
-            <!-- <img src="curriculum-icon.png" alt="Curriculum Icon"> -->
-            View Curriculum
-        </a>
+    <h1>Search Teacher</h1>
+    <div class="card">
+        <div class="card-body">
+            <form method="POST" action="{% url 'search_teacher' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <input type="text" class="form-control" placeholder="Search teacher" name="searched">
+                </div>
+                <button type="submit" class="btn btn-secondary">
+                    Search teacher
+                </button>
+            </form>
+        </div>
     </div>
-</div>
+    <br/> <br/> <br/>
 
-<div class="main-content" id="notify-teachers">
-    <h2>Notify Teachers</h2>
-    <div class="button-container">
-        <a href="#send-notification" class="button">
-            <!-- <img src="notification-icon.png" alt="Notification Icon"> -->
-            Send Notification
-        </a>
-    </div>
+    {% if searched %}
+        <table class="teacher-results">
+            <thead>
+                <tr>
+                    <th>Teacher Name</th>
+                    <!-- Add more table headers if needed -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for teacher in searched %}
+                    <tr>
+                        <td>{{ teacher }}</td>
+                        <!-- Add more table cells if you have more data to display -->
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 </div>
-
-<div class="main-content" id="manage-teachers">
-    <h2>Manage Teachers</h2>
-    <div class="button-container">
-        <a href="{% url 'add_teacher' %}" class="button">
-            <!-- <img src="add-delete-icon.png" alt="Add/Delete Teacher Icon"> -->
-            Add/Delete Teacher
-        </a>
-        <a href="{% url 'teacher_list' %}" class="button">
-            <!-- <img src="list-icon.png" alt="List of Teachers Icon"> -->
-            List of Teachers
-        </a>
-        <a href="{% url 'search_teacher' %}" class="button">
-            <!-- <img src="search-icon.png" alt="Search Teacher Icon"> -->
-            Search Teacher
-        </a>
-    </div>
-</div>
-
-<div class="main-content" id="manage-students">
-    <h2>Manage Students</h2>
-    <div class="button-container">
-        <a href="#add-delete-student" class="button">
-            <!-- <img src="add-delete-icon.png" alt="Add/Delete Student Icon"> -->
-            Add/Delete Student
-        </a>
-    </div>
-</div>
-
 <footer>
     <p>&copy; 2024 TeachSmart. All rights reserved.</p>
 </footer>

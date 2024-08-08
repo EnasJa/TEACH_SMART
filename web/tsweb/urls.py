@@ -23,6 +23,8 @@ urlpatterns = [
   path('admin_homepage/', views.admin_homepage, name='admin_homepage'),
   path('logout_admin/',views.logout_admin, name="logout_admin"), #admin logout
   path('add_teacher/',views.add_teacher, name="add_teacher"), 
-  path('teacher_list/',views.teacher_list, name="teacher_list"), 
+  path('teacher_list/',views.teacher_list, name="teacher_list"),
+  path('search_teacher/',views.search_teacher, name="search_teacher"),
+
 
 ]
