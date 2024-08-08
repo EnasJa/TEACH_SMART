@@ -1,0 +1,70 @@
+<style>
+    .logout-container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 30px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    
+    .logout-title {
+        color: #343a40;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    
+    .logout-message {
+        color: #6c757d;
+        font-size: 18px;
+        margin-bottom: 30px;
+    }
+    
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+    
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+    }
+    
+    .btn-danger:hover {
+        background-color: #c82333;
+    }
+    
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        margin-left: 10px;
+    }
+    
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+</style>
+
+<div class="logout-container">
+    <h1 class="logout-title"> confirm logout</h1>
+    <p class="logout-message">Are you sure you want to logout</p>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="confirm_logout" value="1">
+        <button type="submit" class="btn btn-danger">yes, logout</button>
+        {% if user_type == 'teacher' %}
+        <a href="{% url 'profile_teacher' %}" class="btn btn-secondary">Cancel</a>
+        {% elif user_type == 'student' %}
+        <a href="{% url 'profile_student' %}" class="btn btn-secondary">Cancel</a>
+        {% elif user_type == 'admin' %}
+        <a href="{% url 'admin_homepage' %}" class="btn btn-secondary">Cancel</a>
+        {% endif %}
+    </form>
+</div>
