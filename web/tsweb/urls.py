@@ -35,5 +35,9 @@ urlpatterns = [
   path('about_us/', views.about_us, name='about_us'),
   path('teacher_subjects/<int:teacher_id>/', views.teacher_subjects, name='teacher_subjects'),
   
+
+  path('delete_teacher/<str:id_number>/', views.delete_teacher, name='delete_teacher'),
+  path('chatbot/', views.chatbot, name='chatbot'),
+  path('getResponse',views.getResponse,name='getResponse')
 ]
 

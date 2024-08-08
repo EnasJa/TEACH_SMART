@@ -1,4 +1,5 @@
-from django.shortcuts import redirect, render
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
 from .forms import *
 from django.contrib.auth.decorators import login_required
@@ -327,3 +328,65 @@ def search_teacher(request):
 
     else:
         return render(request, 'search_teacher.html', {})
+
+
+def delete_teacher(request, id_number):
+    teacher = get_object_or_404(Teacher, id_number=id_number)
+
+    if request.method == 'POST':
+        teacher.delete()
+        messages.success(request, f'the teacher {teacher.first_name} {teacher.last_name} deleted successfully.')
+        return redirect('teacher_list')
+    return render(request, 'confirm_delete_teacher.html', {'teacher': teacher})
+
+
+
+from chatterbot import ChatBot
+from chatterbot.trainers import ListTrainer, ChatterBotCorpusTrainer
+
+bot =ChatBot('chatbot',read_only = False, logic_adapters =
+             [
+                {
+                    'import_path':'chatterbot.logic.BestMatch',
+                    # 'default_response':'Sorry, I dont Know what that means',
+                    # 'maximum_similarity_threshold':0.90,
+               
+               }
+              ])
+list_to_train=[
+    "hi",
+    "hi there",
+    "whats your name ",
+    "im just chat bot",
+     "what your fav food ",
+    "i like cheese",
+]
+# list_trainer=ListTrainer(bot)
+
+# list_trainer.train(list_to_train)
+
+
+# ChatterBotCorpusTrainer=ChatterBotCorpusTrainer(bot)
+# ChatterBotCorpusTrainer.train('chatterbot.corpus.english')
+
+
+# Create a ChatterBotCorpusTrainer instance and train with the English corpus
+corpus_trainer = ChatterBotCorpusTrainer(bot)
+corpus_trainer.train('chatterbot.corpus.english')
+
+def chatbot(request):
+    return render(request,'chatbot.html')
+
+def getResponse(request):
+    userMessage =request.GET.get('userMessage')
+    chat_response=str(bot.get_response(userMessage))
+    print(chat_response)
+    return HttpResponse(chat_response)
+
+
+
+# def getResponse(request):
+#     user_message = request.GET.get('userMessage', '')
+#     # Process the user_message and generate a response
+#     bot_response = "This is a placeholder response."
+#     return HttpResponse(bot_response)
