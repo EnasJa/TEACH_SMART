@@ -21,6 +21,16 @@
                 <p>ID: {{ student.id_number }}</p>
                 <p>Email: {{student.email }}</p>
             </div>
+            <div class="subjects-list">
+                <h2>Learning Subjects</h2>
+                <div class="subject-grid">
+                    {% for subject in subjects %}
+                        <div class="subject-item">
+                            <p>{{ subject.subject.name }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
             <div class="date-time">
                 <p id="current-date-time"></p>
             </div>
@@ -85,7 +95,40 @@
             right: 20px;
             top: 20px;
             font-size: 16px;
+
         }
+        /* Subjects List */
+      .subjects-list {
+        margin-top: 20px;
+    }
+
+    .subjects-list h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    /* Subject Grid */
+    .subject-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 20px;
+    }
+
+    .subject-item {
+        background-color:#b882c4;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+        transition: transform 0.3s ease;
+    }
+
+    .subject-item:hover {
+        transform: translateY(-5px);
+        background-color: #cfd8dc;
+    }
         </style>
         <script>
         function updateDateTime() {

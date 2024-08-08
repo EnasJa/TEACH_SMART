@@ -131,7 +131,11 @@ def profile_student(request):
         messages.error(request, 'Student not found')
         return redirect('login_student')
 
-    return render(request, 'profile_student.html', {'student': student})
+    
+    subjects = SubjectClass.objects.filter(class_name=student.grade)
+    return render(request, 'profile_student.html', {
+        'student': student,
+        'subjects': subjects})
 
 def logout_student(request):
     return render(request, 'home.html')
