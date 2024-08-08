@@ -14,6 +14,9 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth.decorators import login_required
 from .forms import AdminLoginForm
 from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from django.contrib.auth import logout
+
 
 # Create your views here.
 
@@ -133,8 +136,8 @@ def profile_student(request):
 
     return render(request, 'profile_student.html', {'student': student})
 
-def logout_student(request):
-    return render(request, 'home.html')
+# def logout_student(request):
+#     return render(request, 'home.html')
 
 def LogIn(request):
     return render(request, 'LogIn.html')
@@ -190,8 +193,8 @@ def profile_teacher(request):
         return redirect('login_teacher')
     return render(request, 'profile_teacher.html', {'teacher': teacher})
 
-def logout_teacher(request):
-    return render(request, 'home.html')
+# def logout_teacher(request):
+#     return render(request, 'home.html')
 
 
 def teacher_students_list(request, id_number):
@@ -239,10 +242,10 @@ def admin_homepage(request):
     return render(request, 'admin_homepage.html')
 
 
-def logout_admin(request):
-    if 'admin_user_id' in request.session:
-        del request.session['admin_user_id']
-    return redirect('login_admin')
+# def logout_admin(request):
+#     if 'admin_user_id' in request.session:
+#         del request.session['admin_user_id']
+#     return redirect('login_admin')
 
 
 
@@ -390,3 +393,48 @@ def delete_teacher(request, id_number):
 #     # Process the user_message and generate a response
 #     bot_response = "This is a placeholder response."
 #     return HttpResponse(bot_response)
+
+
+def logout_student(request):
+    if request.method == 'POST':
+        # Check if the user confirmed the logout
+        if request.POST.get('confirm_logout'):
+            logout(request)
+            return redirect('home')
+        else:
+            # Redirect back to the student profile page
+            return redirect('profile_student')
+    else:
+        # Render the logout page with the confirmation modal
+        return render(request, 'logout.html', {'user_type': 'student'})
+
+def logout_teacher(request):
+    if request.method == 'POST':
+        # Check if the user confirmed the logout
+        if request.POST.get('confirm_logout'):
+            logout(request)
+            return redirect('home')
+        else:
+            # Redirect back to the teacher profile page
+            return redirect('profile_teacher')
+    else:
+        # Render the logout page with the confirmation modal
+        return render(request, 'logout.html', {'user_type': 'teacher'})
+    
+
+
+def logout_admin(request):
+    # if 'admin_user_id' in request.session:
+    #     del request.session['admin_user_id']
+    # return redirect('login_admin')
+    if request.method == 'POST':
+        # Check if the user confirmed the logout
+        if request.POST.get('confirm_logout'):
+            logout(request)
+            return redirect('home')
+        else:
+            # Redirect back to the teacher profile page
+            return redirect('admin_homepage')
+    else:
+        # Render the logout page with the confirmation modal
+        return render(request, 'logout.html', {'user_type': 'admin'})

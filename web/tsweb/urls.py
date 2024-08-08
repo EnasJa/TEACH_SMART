@@ -39,5 +39,7 @@ urlpatterns = [
   path('delete_teacher/<str:id_number>/', views.delete_teacher, name='delete_teacher'),
   # path('chatbot/', views.chatbot, name='chatbot'),
   # path('getResponse',views.getResponse,name='getResponse')
+
+
 ]
 

@@ -28,13 +28,39 @@
                 
             </ul>
         </nav>
-        <div class="auth-buttons">
+        <!-- <div class="auth-buttons">
                 <a href="{% url 'LogIn' %}" class="login-button">
                     <div class="user-icon"></div>
                     <span class="login-text">Login</span>
                 </a>
         
+        </div> -->
+        {% if request.session.teacher_id %}
+        <div class="auth-buttons">
+            <a href="{% url 'logout_teacher' %}" class="login-button">
+                <div class="user-icon"></div>
+                <span class="login-text">Logout</span>
+            </a>
+
         </div>
+        {% elif request.session.student_id %}
+        <div class="auth-buttons">
+            <a href="{% url 'logout_student' %}" class="login-button">
+                <div class="user-icon"></div>
+                <span class="login-text">Logout</span>
+            </a>
+
+        </div>
+        {% else %}
+        <div class="auth-buttons">
+            <a href="{% url 'LogIn' %}" class="login-button">
+                <div class="user-icon"></div>
+                <span class="login-text">Login</span>
+            </a>
+
+        </div>
+        {% endif %}
+
          
     </header>
 
