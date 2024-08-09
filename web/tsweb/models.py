@@ -42,14 +42,23 @@ class Student(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
     
+class Subject(models.Model):
+     
+        SUBJECT_CHOICES = [
+                ('Technology', 'Technology'),
+                ('Mathematics', 'Mathematics'),
+                ('History', 'History'),
+                ( 'English', 'English'),
+                ('Geography', 'Geography'),
+                ('Literature', 'Literature'),
+                ('Science', 'Science'),
+            ]
+        name = models.CharField(max_length=20, choices=SUBJECT_CHOICES)
+        def __str__(self):
+                return self.name
 
 class Teacher(models.Model):
-    SUBJECT_CHOICES = [
-        ('Math', 'Math'),
-        ('English', 'English'),
-        ('Science', 'Science'),
-        # ניתן להוסיף כאן מקצועות נוספים לפי הצורך
-    ]
+    
     CLASS_CHOICES = [
         ('A', 'First grade'),
         ('B', 'Second grade'),
@@ -78,11 +87,7 @@ class Teacher(models.Model):
         
     )
     password = models.CharField(max_length=128)  # הוספת שדה סיסמה
-    subjects = models.CharField(
-        max_length=50,
-        choices=SUBJECT_CHOICES,
-        help_text="Select the subject the teacher can teach"
-    )
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='teachers', help_text="Select the subject the teacher can teach")
     classes = models.CharField(
         max_length=1,
         choices=CLASS_CHOICES,
@@ -137,3 +142,22 @@ class Message(models.Model):
 
 #     def __str__(self):
 #         return self.Username
+class SubjectClass(models.Model):
+    GRADE_CHOICES = Teacher.CLASS_CHOICES  # Use the same choices as in Teacher model
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='subject_classes')
+    class_name = models.CharField(max_length=1, choices=GRADE_CHOICES)  # Class name or grade
+    description = models.TextField(blank=True, help_text="Description of the subject")
+    description = models.TextField(blank=True, help_text="Description of the subject")
+    syllabus = models.TextField(blank=True, help_text="Syllabus or study path for the subject")
+    teachers = models.ManyToManyField(Teacher, related_name='subject_classes', help_text="Select teachers for this subject")
+    
+    def __str__(self):
+        return f"{self.subject.name} - {self.class_name}"
+    
+    
+ 
+    
+    
+ 
+    
+    

@@ -3,6 +3,8 @@ from . import views
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
 
+
+
 urlpatterns = [
   path('',views.home,name='home'),
   path('LogIn/', views.LogIn, name='LogIn'),
@@ -22,9 +24,20 @@ urlpatterns = [
   path('login_admin/', views.login_admin, name='login_admin'),
   path('admin_homepage/', views.admin_homepage, name='admin_homepage'),
   path('logout_admin/',views.logout_admin, name="logout_admin"), #admin logout
+  path('the_subjects/', views.the_subjects, name='the_subjects'),
+   path('subject_detail/<str:name>/', views.subject_detail, name='subject_detail'),
+    path('add_subject_class/<str:name>/', views.add_subject_class, name='add_subject_class'),
   path('add_teacher/',views.add_teacher, name="add_teacher"), 
   path('teacher_list/',views.teacher_list, name="teacher_list"),
   path('search_teacher/',views.search_teacher, name="search_teacher"),
 
 
+  path('about_us/', views.about_us, name='about_us'),
+  path('teacher_subjects/<int:teacher_id>/', views.teacher_subjects, name='teacher_subjects'),
+  
+
+  path('delete_teacher/<str:id_number>/', views.delete_teacher, name='delete_teacher'),
+  path('chatbot/', views.chatbot, name='chatbot'),
+  path('getResponse',views.getResponse,name='getResponse')
 ]
+

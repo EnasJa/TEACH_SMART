@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        #chatbot {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+            min-height: 200px;
+        }
+        .botText {
+            font-family: monospace;
+            font-size: 14px;
+            text-align: left;
+            line-height: 25px;
+            color: rgb(109,111,109);
+        }
+
+        #userInput {
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 40px;
+            width: 70%;
+            text-align: center;
+        }
+        #textInput {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+        }
+        #buttonInput {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+        .userText{
+            text-align: right;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 25px;
+            color: rgb(109,111,109);
+        }
+    </style>
+</head>
+<body>
+    <h1>Chatbot for teacher</h1>
+    <div id="chatbot">
+        <p class="botText"><span>Hi there</span></p>
+    </div>
+    <div class="userInput">
+        <input type="text" id="textInput" name="userMessage" placeholder="Type your message...">
+        <input type="submit" value="Send" id="buttonInput">
+    </div>
+
+
+
+<script>
+function getBotResponse() {
+    var userText = $("#textInput").val();
+    var userHtml = '<p class="userText"><span>' + userText + '</span></p>';
+
+    $("#textInput").val("");
+    $("#chatbot").append(userHtml);
+
+    // $.get('/getResponse',{userMessage:userText}.done(function(data){
+    //     var returnMessage = "<p class ='botText'> Chatbot: <span>"+data+"</span></p>";
+    //     $("#chatbot").append(returnMessage);
+    // }))
+    $.get('/getResponse', { userMessage: userText })
+    .done(function(data) {
+        var returnMessage = "<p class='botText'><span>Chatbot: " + data + "</span></p>";
+        $("#chatbot").append(returnMessage);
+    });
+}
+$('#buttonInput').click(function() {
+    getBotResponse();
+});
+
+
+
+</script>
+</body>
+</html>

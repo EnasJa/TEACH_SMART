@@ -1,87 +1,107 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
+{% extends "base.html" %}
+{% block content %}
+ <!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Link to your CSS file -->
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    
-    <title>Teach Smart</title>
-</head>
+    <title>Tacher Profile</title>
+     <!-- Link to your CSS file -->
+  
 <body>
-    
-    <header>
-        <div class="logo">
-            <div class="graduation-hat">
-                <div class="hat-top"></div>
-                <div class="hat-base"></div>
-                <div class="hat-tassel"></div>
+    <div class="profile-container">
+        <div class="sidebar">
+            <button class="sidebar-btn btn" onclick="location.href='{% url 'teacher_students_list' teacher.id_number %}'">
+                View List of Students
+            </button>
+            <button class="sidebar-btn btn" onclick="location.href='{% url 'teacher_subjects' teacher.id_number %}'">
+                Teacher Subjects
+            </button>
+        </div>
+        <div class="main-content">
+            <div class="profile-details">
+                <h1>Welcome, {{ teacher.first_name }}</h1>
+                <p>ID: {{ teacher.id_number }}</p>
+                <p>Email: {{ teacher.email }}</p>
             </div>
-            <span>TeachSmart</span>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="home.html#about">About</a></li>
-                
-            </ul>
-        </nav>
-        <div class="auth-buttons">
-                <a href="{% url 'logout_student' %}" class="login-button">
-                    <div class="user-icon"></div>
-                    <span class="login-text">LogOut</span>
-                </a>
-        </div>
-        <div class="notification-icon"></div>
-    </header>
-
-    <main>
-       
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Profile</title>
-</head>
-<body>
-    <h1>Welcome, {{ teacher.first_name }}</h1>
-    <p>ID: {{ teacher.id_number }}</p>
-    <p>Email: {{ teacher.email }}</p>
-    <!-- Add more student information as needed -->
-    <section class="dashboard">
-        <div class="courses">
-            <h2>My Courses</h2>
-            <!-- List of courses -->
-            <ul>
-                <li>Course 1</li>
-                <li>Course 2</li>
-                <!-- Add more courses dynamically if needed -->
-            </ul>
-        </div>
-        <div class="exams">
-            <h2>Exams</h2>
-            <!-- List of upcoming exams -->
-            <ul>
-                <li>Exam 1</li>
-                <li>Exam 2</li>
-                <!-- Add more exams dynamically if needed -->
-            </ul>
-        </div>
-        <aside class="sidebar">
-            <h2>Calendar</h2>
-            <!-- Calendar widget or upcoming events -->
-            <div class="calendar">
-                <!-- Calendar content -->
+            <div class="date-time">
+                <p id="current-date-time"></p>
             </div>
-        </aside>
-    </section>
-      <!-- Button to view list of students -->
-      <div class="student-list-button">
-        <a href="{% url 'teacher_students_list' teacher.id_number %}" class="btn">View List of Students</a>
+        </div>
     </div>
+    <style>/* General Styles */
+        body {
+            font-family: "Lucida Console", "Courier New", monospace;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        
+        /* Profile Container */
+        .profile-container {
+            display: flex;
+            height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 200px;
+            background-color: #809ba4;
+            color: #fff;
+            padding: 20px;
+        }
+        
+        .sidebar-btn {
+            display: block;
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            margin: 10px 0;
+            text-align: left;
+            width: 100%;
+            cursor: pointer;
+        }
+        
+        .sidebar-btn:hover {
+            background: #555;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+        
+        /* Profile Details */
+        .profile-details {
+            margin-bottom: 20px;
+        }
+        
+        .profile-details h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        /* Date and Time */
+        .date-time {
+            right: 20px;
+            top: 20px;
+            font-size: 16px;
+        }
+        </style>
+        <script>
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('current-date-time').innerText = now.toLocaleDateString('en-US', options);
+        }
+        
+        setInterval(updateDateTime, 1000);
+        </script>
 </body>
 </html>
+<<<<<<< HEAD
 
 <style>.user-icon {
     width: 44px;
@@ -123,3 +143,6 @@
 
 </body>
 </html>
+=======
+{% endblock %}
+>>>>>>> 85ac9f6fbf94bc83117c956440789cd3b7e86249

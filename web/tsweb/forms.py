@@ -146,6 +146,16 @@ class AdminLoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
 
 
+class SubjectClassForm(forms.ModelForm):
+    class Meta:
+        model = SubjectClass
+        fields = ['class_name', 'description', 'syllabus', 'teachers']
+    
+    teachers = forms.ModelMultipleChoiceField(
+        queryset=Teacher.objects.none(),  # Initialize with an empty queryset
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
 class addTeacherForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput, label=("Password"))
     # confirm_password = forms.CharField(widget=forms.PasswordInput, label=("Password verification"))

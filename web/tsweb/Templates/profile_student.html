@@ -1,72 +1,29 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Link to your CSS file -->
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    
-    <title>Teach Smart</title>
-</head>
-<body>
-    
-    <header>
-        <div class="logo">
-            <div class="graduation-hat">
-                <div class="hat-top"></div>
-                <div class="hat-base"></div>
-                <div class="hat-tassel"></div>
-            </div>
-            <span>TeachSmart</span>
-        </div>
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="home.html#about">About</a></li>
-                
-            </ul>
-        </nav>
-        <div class="auth-buttons">
-                <a href="{% url 'logout_teacher' %}" class="login-button">
-                    <div class="user-icon"></div>
-                    <span class="login-text">LogOut</span>
-                </a>
-        </div>
-        <div class="notification-icon"></div>
-    </header>
-
-    <main>
-       
+{% extends "base.html" %}
+{% block content %}
+ <!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Profile</title>
-</head>
+     <!-- Link to your CSS file -->
+  
 <body>
-    <h1>Welcome, {{ student.first_name }}</h1>
-    <p>ID: {{ student.id_number }}</p>
-    <p>Email: {{ student.email }}</p>
-    <!-- Add more student information as needed -->
-    <section class="dashboard">
-        <div class="courses">
-            <h2>My Courses</h2>
-            <!-- List of courses -->
-            <ul>
-                <li>Course 1</li>
-                <li>Course 2</li>
-                <!-- Add more courses dynamically if needed -->
-            </ul>
+    <div class="profile-container">
+        <div class="sidebar">
+            <button class="sidebar-btn">My Grades</button>
+            <button class="sidebar-btn">My Exams</button>
+            <button class="sidebar-btn">Learning Subjects</button>
         </div>
-        <div class="exams">
-            <h2>Exams</h2>
-            <!-- List of upcoming exams -->
-            <ul>
-                <li>Exam 1</li>
-                <li>Exam 2</li>
-                <!-- Add more exams dynamically if needed -->
-            </ul>
+        <div class="main-content">
+            <div class="profile-details">
+                <h1>Welcome, {{ student.first_name }}</h1>
+                <p>ID: {{ student.id_number }}</p>
+                <p>Email: {{student.email }}</p>
+            </div>
+            <div class="date-time">
+                <p id="current-date-time"></p>
+            </div>
         </div>
         <aside class="sidebar">
             <h2>Calendar</h2>

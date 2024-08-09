@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ subject.name }} - Detail</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: "Lucida Console", "Courier New", monospace;
+            background-image: url('https://i.pinimg.com/736x/97/c3/b7/97c3b7fbc2c00c0d1b3276cadf937c3f.jpg'); /* Background image URL */
+            background-size: 100%; /* Adjust size of the background image */
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Keeps the background image fixed in place */
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            size: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .subject-details {
+            margin-bottom: 40px;
+        }
+        .subject-class-list {
+            list-style: none;
+            padding: 0;
+        }
+        .subject-class-list li {
+            background: #ecf0f1;
+            border-radius: 6px;
+            margin: 10px 0;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .subject-class-list li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+        .subject-class-list p {
+            margin: 5px 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background: #3498db;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            transition: background 0.3s ease;
+        }
+        .btn:hover {
+            background: #2980b9;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 16px;
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .back-link:hover {
+            color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ subject.name }} Details</h1>
+        <div class="subject-details">
+        </div>
+        
+        <h2>Classes for {{ subject.name }}</h2>
+        <ul class="subject-class-list">
+            {% for subject_class in subject_classes %}
+            <li>
+                <p><strong>Class:</strong> {{ subject_class.class_name }}</p>
+                <p><strong>Description:</strong> {{ subject_class.description }}</p>
+                <p><strong>Teacher:</strong> {{ subject_class.teachers.all|join:", " }}</p>
+            </li>
+            {% empty %}
+            <li>No classes available for this subject.</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Updated link to use subject name -->
+        <a href="{% url 'add_subject_class' subject.name %}" class="btn">Add New Class</a>
+        
+    </div>
+</body>
+</html>
+
+{% endblock %}

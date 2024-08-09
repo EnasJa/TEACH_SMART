@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Education System</title>
+   
+</head>
+<body>
+    <h1>Education System</h1>
+    <ul class="subject-list">
+        <li>
+            <a href="{% url 'subject_detail' 'Technology' %}">
+                <img src="https://i.pinimg.com/736x/c1/3d/97/c13d9790e0552502118f1555d6640672.jpg" alt="Technology" class="subject-image">
+            </a>
+            <p>Technology</p>
+        </li>
+        <li>
+            <a href="{% url 'subject_detail' 'Mathematics' %}">
+                <img src="https://i.pinimg.com/736x/e9/88/a7/e988a7e530949de2d2d0cc1f7036df88.jpg" alt="Mathematics" class="subject-image">
+            </a>
+            <p>Mathematics</p>
+        </li>
+        <li>
+            <a href="{% url 'subject_detail' 'History' %}">
+                <img src="https://i.pinimg.com/736x/49/75/72/49757232c1f5b9f9300e1ff0b1f632f7.jpg" alt="History" class="subject-image">
+            </a>
+            <p>History</p>
+        </li>
+        <li>
+            <a href="{% url 'subject_detail' 'English' %}">
+                <img src="https://i.pinimg.com/736x/c9/8c/20/c98c203d5513adb9c67715cc01ce1698.jpg" alt="English" class="subject-image">
+            </a>
+            <p>English</p>
+        </li>
+        <li>
+            <a href="{% url 'subject_detail' 'Science' %}">
+                <img src="https://i.pinimg.com/736x/c2/c6/89/c2c689fe98aa5b7d595fa91d13776b15.jpg" alt="Science" class="subject-image">
+            </a>
+            <p>Literature</p>
+        </li>
+        <li>
+            <a href="{% url 'subject_detail' 'Geography' %}">
+                <img src="https://i.pinimg.com/736x/38/70/10/38701096e1d2bd6787c61c9dde0cb159.jpg" alt="Geography" class="subject-image">
+            </a>
+            <p>Geography</p>
+        </li>
+        <li>
+            <a href="{% url 'subject_detail' 'Literature' %}">
+                <img src="https://i.pinimg.com/736x/e1/d8/4e/e1d84eea7dca7a482f54bcd4d78b917b.jpg" alt="Literature" class="subject-image">
+            </a>
+            <p>Literature</p>
+        </li>
+      
+    </ul>
+    <style>
+         h1 {
+            font-family: "Lucida Console", "Courier New", monospace;
+
+            text-align: center;
+            font-size: 36px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+         
+        }
+        .subject-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        list-style-type: none;
+        padding: 0;
+    }
+    .subject-list li {
+        flex: 0 1 30%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 15px;
+        padding: 10px;
+        text-align: center;
+        border-radius: 8px;
+        transition: transform 0.2s;
+    }
+    .subject-list li:hover {
+        transform: scale(1.05);
+    }
+    .subject-image {
+        max-width: 150px; /* Set a maximum width */
+        max-height: 150px; /* Set a maximum height */
+        width: auto; /* Maintain aspect ratio */
+        height: auto; /* Maintain aspect ratio */
+        border-radius: 8px;
+        border: 5px solid #add8e6; /* Light blue border */
+        padding: 5px; /* Space between the image and the border */
+    }
+    .subject-list p {
+        margin-top: 10px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    </style>
+</body>
+
+</html>
+
+
+
+{% endblock %}
