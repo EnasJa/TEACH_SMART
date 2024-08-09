@@ -1,17 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Profile</title>
-     <!-- Link to your CSS file -->
-  
+</head>
 <body>
-    <div class="encouragement-message" id="encouragement-message">
-        <!-- הודעה תוצג כאן -->
-    </div>
     <div class="profile-container">
         <div class="sidebar">
             <button class="sidebar-btn">My Grades</button>
@@ -22,7 +18,10 @@
             <div class="profile-details">
                 <h1>Welcome, {{ student.first_name }}</h1>
                 <p>ID: {{ student.id_number }}</p>
-                <p>Email: {{student.email }}</p>
+                <p>Email: {{ student.email }}</p>
+            </div>
+            <div class="encouragement-message" id="encouragement-message">
+                <!-- Encouragement message will appear here -->
             </div>
             <div class="subjects-list">
                 <h2>Learning Subjects</h2>
@@ -39,20 +38,22 @@
             </div>
         </div>
     </div>
-    <style>/* General Styles */
+
+    <style>
+        /* General Styles */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
         }
-        
+
         /* Profile Container */
         .profile-container {
             display: flex;
             height: 100vh;
         }
-        
+
         /* Sidebar Styles */
         .sidebar {
             width: 200px;
@@ -60,7 +61,7 @@
             color: #fff;
             padding: 20px;
         }
-        
+
         .sidebar-btn {
             display: block;
             background: #b882c4;
@@ -72,150 +73,113 @@
             width: 100%;
             cursor: pointer;
         }
-        
+
         .sidebar-btn:hover {
             background: #555;
         }
-        
+
         /* Main Content Styles */
         .main-content {
             flex: 1;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
         }
-        
+
         /* Profile Details */
         .profile-details {
             margin-bottom: 20px;
         }
-        
+
         .profile-details h1 {
             margin: 0;
             font-size: 24px;
         }
-        
-       
+
+        /* Encouragement Message */
+        .encouragement-message {
+            margin-bottom: 20px;
+            background-color: #b882c4;
+            color: rgb(8, 8, 8);
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
         /* Subjects List */
-      .subjects-list {
-        margin-top: 20px;
-    }
+        .subjects-list {
+            margin-top: 20px;
+        }
 
-    .subjects-list h2 {
-        font-size: 20px;
-        margin-bottom: 10px;
-    }
+        .subjects-list h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
 
-    /* Subject Grid */
-    .subject-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        gap: 20px;
-    }
+        /* Subject Grid */
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 20px;
+        }
 
-    .subject-item {
-        background-color:#b882c4;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        text-align: center;
-        font-size: 16px;
-        font-weight: bold;
-        transition: transform 0.3s ease;
-    }
+        .subject-item {
+            background-color: #b882c4;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
 
-    .subject-item:hover {
-        transform: translateY(-5px);
-        background-color: #cfd8dc;
-    }
-    .encouragement-message {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #4CAF50; /* צבע רקע ירוק */
-    color: white; /* צבע טקסט לבן */
-    padding: 30px 50px; /* מרווחים פנימיים גדולים יותר */
-    border-radius: 20px; /* פינות עגולות יותר */
-    font-size: 26px; /* גודל טקסט גדול יותר */
-    font-weight: bold; /* טקסט מודגש */
-    text-align: center; /* יישור טקסט למרכז */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* הצללה להוספת עומק */
-    border: 3px solid #FFF; /* הוספת מסגרת לבנה */
-    display: none; /* התחל עם ההודעה מוסתרת */
-    z-index: 1000;
-}
-.user-icon {
-    width: 44px;
-    height: 44px;
-    background: linear-gradient(135deg, #00ffff, #1e90ff);
-    border-radius: 50%;
-    position: relative;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-}
+        .subject-item:hover {
+            transform: translateY(-5px);
+            background-color: #cfd8dc;
+        }
 
-.user-icon::before {
-    content: '';
-    width: 40%;
-    height: 40%;
-    background-color: white;
-    border-radius: 50%;
-    position: absolute;
-    top: 20%;
-    left: 20%;
-}
+        /* Date and Time */
+        .date-time {
+            margin-top: auto;
+            text-align: right;
+            font-size: 14px;
+        }
+    </style>
 
-.user-icon::after {
-    content: '';
-    width: 60%;
-    height: 30%;
-    background-color: white;
-    border-radius: 15px 15px 50% 50%;
-    position: absolute;
-    bottom: 20%;
-    left: 20%;
-}
-
-        </style>
-    
-        <script>
+    <script>
         function updateDateTime() {
             const now = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
             document.getElementById('current-date-time').innerText = now.toLocaleDateString('en-US', options);
         }
-        
+
         setInterval(updateDateTime, 1000);
 
         document.addEventListener('DOMContentLoaded', function() {
-    const messages = [
-        "כל הכבוד! אתה מתמיד בלמידה!",
-        "מעולה! המשך כך!",
-        "נראה שאתה משתפר כל יום!",
-        "העבודה שלך מרשימה מאוד!"
-    ];
+            const messages = [
+                "Great job! Keep up the good work!",
+                "You're doing fantastic!",
+                "You're improving every day!",
+                "Your efforts are really impressive!"
+            ];
 
-    function showEncouragementMessage() {
-        const messageElement = document.getElementById('encouragement-message');
-        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-        messageElement.textContent = randomMessage;
-        messageElement.style.display = 'block';
+            function showEncouragementMessage() {
+                const messageElement = document.getElementById('encouragement-message');
+                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                messageElement.textContent = randomMessage;
+            }
 
-        setTimeout(() => {
-            messageElement.style.display = 'none';
-        }, 5000); // הצג הודעה ל-3 שניות
-    }
+            // Display a new encouragement message every 30 seconds
+            setInterval(showEncouragementMessage, 30000);
 
-    // הצג הודעה מעודדת כל 30 שניות
-    setInterval(showEncouragementMessage, 3000);
-
-    // הצג הודעה מיד עם טעינת הדף
-    showEncouragementMessage();
-});
-
-
-        
-        </script>
+            // Display an encouragement message immediately when the page loads
+            showEncouragementMessage();
+        });
+    </script>
 </body>
 </html>
 {% endblock %}
