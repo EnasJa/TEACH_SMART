@@ -7,6 +7,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import logout
 from django.shortcuts import render, get_object_or_404
+import random
 
 
 from django.contrib.auth import authenticate, login, logout
@@ -442,3 +443,6 @@ def logout_admin(request):
     else:
         # Render the logout page with the confirmation modal
         return render(request, 'logout.html', {'user_type': 'admin'})
+    
+
+#///////////////////////////////////////////////////////
