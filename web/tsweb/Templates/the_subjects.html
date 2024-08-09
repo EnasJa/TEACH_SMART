@@ -54,7 +54,7 @@
         </li>
       
     </ul>
-    <style>
+    <!-- <style>
          h1 {
             font-family: "Lucida Console", "Courier New", monospace;
 
@@ -97,7 +97,57 @@
         font-size: 18px;
         font-weight: bold;
     }
-    </style>
+    </style> -->
+    <style>
+        h1 {
+           font-family: "Lucida Console", "Courier New", monospace;
+           text-align: center;
+           font-size: 36px;
+           margin-top: 20px;
+           margin-bottom: 40px;
+        
+       }
+       .subject-list {
+           display: flex;
+           flex-direction: row; /* להפוך את הפריסה לאופקית */
+           overflow-x: auto; /* להוסיף גלילה אופקית */
+           -webkit-overflow-scrolling: touch; /* להוסיף גלילה רצופה בהתקנים ניידים */
+           scroll-snap-type: x mandatory; /* להוסיף נקודות עגינה למהלך הגלילה */
+           padding: 20px 0; /* להוסיף מרווח מעל ומתחת לרשימה */
+           list-style-type: none;
+       }
+   
+       .subject-list li {
+           flex: 0 0 auto; /* להבטיח שהפריטים לא יצומצמו או יתפשטו */
+           scroll-snap-align: start; /* להוסיף נקודת עגינה לכל פריט */
+           margin: 0 10px; /* להוסיף מרווח בין הפריטים */
+           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+           padding: 10px;
+           text-align: center;
+           border-radius: 8px;
+           transition: transform 0.2s;
+       }
+   
+       .subject-list li:hover {
+           transform: scale(1.05);
+       }
+   
+       .subject-image {
+           max-width: 150px; /* Set a maximum width */
+           max-height: 150px; /* Set a maximum height */
+           width: auto; /* Maintain aspect ratio */
+           height: auto; /* Maintain aspect ratio */
+           border-radius: 8px;
+           border: 5px solid #add8e6; /* Light blue border */
+           padding: 5px; /* Space between the image and the border */
+       }
+   
+       .subject-list p {
+           margin-top: 10px;
+           font-size: 18px;
+           font-weight: bold;
+       }
+   </style>
 </body>
 
 </html>
