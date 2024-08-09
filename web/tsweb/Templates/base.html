@@ -7,24 +7,25 @@
     <!-- Link to your CSS file -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <title>Teach Smart</title>
 </head>
 <body>
     
     <header>
         <div class="logo">
-            <div class="graduation-hat">
-                <div class="hat-top"></div>
-                <div class="hat-base"></div>
-                <div class="hat-tassel"></div>
-            </div>
-            <span>TeachSmart</span>
+            <a href="#home" class="logo">
+                <i class="fa-solid fa-graduation-cap fa-fade" style="color: #B197FC;"></i>
+                <span>Teach Smart</span>
+            </a>
+            
         </div>
         <nav>
             <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="home.html#about">About</a></li>
+                <li><a href="#home">Home</a></li>
+                <li><a href="{% url 'about_us' %}">About</a></li>
+                <li><a href="#contact">Contact</a></li>
                 
             </ul>
         </nav>
