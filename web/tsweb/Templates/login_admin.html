@@ -179,12 +179,10 @@
             <li><a href="home.html#about">About</a></li>
         </ul>
     </nav>
-    <div class="auth-buttons">
-        <a href="#login" class="login-button">
-            <div class="user-icon"></div>
-            <span class="login-text">Login</span>
-        </a>
-    </div>
+    <a href="#login" class="login-button">
+        <span class="user-icon"></span>
+        <span class="login-text">Login</span>
+    </a>
 </header>
 <style>
     header {
@@ -276,38 +274,51 @@
         font-size: 18px;
     }
     
-    .user-icon {
-        width: 50px; /* Larger size */
-        height: 50px; /* Larger size */
-        background-color: #eff4f6; /* Baby blue color */
-        border-radius: 50%;
-        position: relative;
-        cursor: pointer;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adding shadow */
-    }
-    
-    .user-icon::before {
-        content: '';
-        width: 60%;
-        height: 60%;
-        background-color: #121111; /* White color */
-        border-radius: 50%;
-        position: absolute;
-        top: 10%;
-    }
-    
-    .user-icon::after {
-        content: '';
-        width: 80%;
-        height: 40%;
-        background-color: #050505; /* White color */
-        border-radius: 0 0 50% 50%;
-        position: absolute;
-        bottom: 10%;
-    }
+    .login-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #0f0f0f;
+    font-size: 18px;
+}
+
+.user-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #00ffff, #1e90ff);
+    border-radius: 50%;
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-icon::before {
+    content: '';
+    width: 40%;
+    height: 40%;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 20%;
+    left: 20%;
+}
+
+.user-icon::after {
+    content: '';
+    width: 60%;
+    height: 30%;
+    background-color: white;
+    border-radius: 15px 15px 50% 50%;
+    position: absolute;
+    bottom: 20%;
+    left: 20%;
+}
+
+.login-text {
+    vertical-align: middle;
+}
 </style>
 
 <div class="page-container">
