@@ -60,10 +60,30 @@
         .back-link:hover {
             color: #2980b9;
         }
+    
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #3498db;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.3s;
+            margin-top: 20px;
+        }
+        .back-button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        
         <h1>Subjects Taught by {{ teacher.first_name }} {{ teacher.last_name }}</h1>
         <ul class="subject-list">
             {% for subject_class in subjects %}
@@ -76,8 +96,10 @@
             {% empty %}
             <li>No subjects assigned to this teacher.</li>
             {% endfor %}
+           
+
         </ul>
-        <a class="back-link" href="{% url 'profile_teacher' %}">Back to Home</a>
+        <a class="back-button" href="{% url 'profile_teacher' %}">Back </a>
     </div>
 </body>
 </html>
