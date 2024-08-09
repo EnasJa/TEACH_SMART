@@ -7,6 +7,10 @@ from django.core.exceptions import ValidationError
 from datetime import date, timedelta
 from django.contrib.auth.hashers import make_password
 
+from django.test import TestCase, RequestFactory
+from django.contrib.auth.models import User
+from django.urls import reverse
+from tsweb.views import logout_student 
 
 class StudentModelTest(TestCase):
     def test_student_creation(self):
@@ -162,3 +166,112 @@ class StudentModelTests(TestCase):
         with self.assertRaises(ValidationError):
             teacher.full_clean()
 
+
+
+
+# class LogoutStudentTestCase(TestCase):
+#     def setUp(self):
+#         self.factory = RequestFactory()
+#         self.user = User.objects.create_user(username='testuser', password='12345')
+
+#     def test_logout_student_post_confirm(self):
+#         request = self.factory.post('/logout/', {'confirm_logout': 'true'})
+#         request.user = self.user
+#         response = logout_student(request)
+#         self.assertEqual(response.status_code, 302)
+#         self.assertEqual(response.url, reverse('home'))
+
+#     def test_logout_student_post_cancel(self):
+#         request = self.factory.post('/logout/')
+#         request.user = self.user
+#         response = logout_student(request)
+#         self.assertEqual(response.status_code, 302)
+#         self.assertEqual(response.url, reverse('profile_student'))
+
+#     def test_logout_student_get(self):
+#         request = self.factory.get('/logout/')
+#         request.user = self.user
+#         response = logout_student(request)
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'logout.html')
+#         self.assertEqual(response.context_data['user_type'], 'student')
+
+
+class LogoutStudentTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='12345')
+        self.client.login(username='testuser', password='12345')
+
+    def test_logout_student_post_confirm(self):
+        response = self.client.post(reverse('logout_student'), {'confirm_logout': 'true'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('home'))
+
+    def test_logout_student_post_cancel(self):
+        response = self.client.post(reverse('logout_student'))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('profile_student'))
+
+    def test_logout_student_get(self):
+        response = self.client.get(reverse('logout_student'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Are you sure you want to logout')
+        self.assertContains(response, 'student')
+
+
+
+class LogoutAdminTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='testadmin', password='12345', is_staff=True)
+        self.client.login(username='testadmin', password='12345')
+
+    def test_logout_admin_get(self):
+        response = self.client.get(reverse('logout_admin'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'logout.html')
+        self.assertEqual(response.context['user_type'], 'admin')
+
+    def test_logout_admin_post_confirmed(self):
+        response = self.client.post(reverse('logout_admin'), {'confirm_logout': 'true'})
+        self.assertRedirects(response, reverse('home'))
+        self.assertFalse('_auth_user_id' in self.client.session)
+
+    def test_logout_admin_post_not_confirmed(self):
+        response = self.client.post(reverse('logout_admin'), {})
+        self.assertRedirects(response, reverse('admin_homepage'))
+
+
+
+class LogoutTeacherTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='testteacher', password='12345')
+        self.client.login(username='testteacher', password='12345')
+
+    def test_logout_teacher_get(self):
+        response = self.client.get(reverse('logout_teacher'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'logout.html')
+        self.assertEqual(response.context['user_type'], 'teacher')
+
+    def test_logout_teacher_post_confirmed(self):
+        response = self.client.post(reverse('logout_teacher'), {'confirm_logout': 'true'})
+        self.assertRedirects(response, reverse('home'))
+        self.assertFalse('_auth_user_id' in self.client.session)
+
+    def test_logout_teacher_post_not_confirmed(self):
+        response = self.client.post(reverse('logout_teacher'), {}, follow=True)
+        expected_url = reverse('profile_teacher')
+        login_url = reverse('login_teacher')
+        
+        # Check if redirected to profile_teacher or login_teacher
+        self.assertTrue(response.redirect_chain[-1][0] in [expected_url, login_url])
+        
+        if response.redirect_chain[-1][0] == login_url:
+            self.assertEqual(response.status_code, 200)
+            # Add any additional checks for the login page if needed
+        else:
+            self.assertEqual(response.status_code, 200)
+            # Add any additional checks for the profile page if needed
