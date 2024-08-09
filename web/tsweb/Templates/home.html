@@ -19,7 +19,7 @@
         </div>
         <nav>
             <ul>
-                <li><a href="#home">Home</a></li>
+                
                 <li><a href="{% url 'about_us' %}">About</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
@@ -48,21 +48,11 @@
         <p>Phone: +123-456-7890</p>
     </section>
 
-    <footer>
-        <div class="footer-links">
-            <a href="#home">Home</a>
-            <a href="#about">About</a>
-            <a href="#courses">Courses</a>
-            <a href="#contact">Contact</a>
-        </div>
-        <div class="social-media">
-            <!-- Add social media links here -->
-        </div>
-    </footer>
+    
     <style>/* General styles */
       /* General styles */
 body {
-    font-family: "Lucida Console", "Courier New", monospace;
+    font-family: "Times New Roman", Times, serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -137,38 +127,41 @@ nav a {
 }
 
 .user-icon {
-    width: 50px;
-    height: 50px;
-    background-color: #eff4f6;
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #00ffff, #1e90ff);
     border-radius: 50%;
     position: relative;
-    cursor: pointer;
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .user-icon::before {
     content: '';
-    width: 60%;
-    height: 60%;
-    background-color: #121111;
+    width: 40%;
+    height: 40%;
+    background-color: white;
     border-radius: 50%;
     position: absolute;
-    top: 10%;
+    top: 20%;
+    left: 20%;
 }
 
 .user-icon::after {
     content: '';
-    width: 80%;
-    height: 40%;
-    background-color: #050505;
-    border-radius: 0 0 50% 50%;
+    width: 60%;
+    height: 30%;
+    background-color: white;
+    border-radius: 15px 15px 50% 50%;
     position: absolute;
-    bottom: 10%;
+    bottom: 20%;
+    left: 20%;
 }
 
+.login-text {
+    vertical-align: middle;
+}
 /* Hero section styles */
 .hero {
     display: flex;

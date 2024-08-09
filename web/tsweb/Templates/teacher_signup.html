@@ -6,7 +6,7 @@
     <title>Teacher Registration</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Arial', sans-serif;
             background-color: #f0f4f8;
             margin: 0;
             padding: 0;
@@ -166,6 +166,7 @@
             list-style-type: none;
             font-size: 12px;
         }
+        
     </style>
 </head>
 <body>
@@ -283,37 +284,41 @@
     }
     
     .user-icon {
-        width: 50px; /* Larger size */
-        height: 50px; /* Larger size */
-        background-color: #eff4f6; /* Baby blue color */
-        border-radius: 50%;
-        position: relative;
-        cursor: pointer;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adding shadow */
-    }
-    
-    .user-icon::before {
-        content: '';
-        width: 60%;
-        height: 60%;
-        background-color: #121111; /* White color */
-        border-radius: 50%;
-        position: absolute;
-        top: 10%;
-    }
-    
-    .user-icon::after {
-        content: '';
-        width: 80%;
-        height: 40%;
-        background-color: #050505; /* White color */
-        border-radius: 0 0 50% 50%;
-        position: absolute;
-        bottom: 10%;
-    }
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #00ffff, #1e90ff);
+    border-radius: 50%;
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-icon::before {
+    content: '';
+    width: 40%;
+    height: 40%;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 20%;
+    left: 20%;
+}
+
+.user-icon::after {
+    content: '';
+    width: 60%;
+    height: 30%;
+    background-color: white;
+    border-radius: 15px 15px 50% 50%;
+    position: absolute;
+    bottom: 20%;
+    left: 20%;
+}
+
+.login-text {
+    vertical-align: middle;
+}
     </style>
 
 
