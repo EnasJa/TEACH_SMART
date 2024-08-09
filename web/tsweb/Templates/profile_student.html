@@ -9,6 +9,9 @@
      <!-- Link to your CSS file -->
   
 <body>
+    <div class="encouragement-message" id="encouragement-message">
+        <!-- הודעה תוצג כאן -->
+    </div>
     <div class="profile-container">
         <div class="sidebar">
             <button class="sidebar-btn">My Grades</button>
@@ -129,6 +132,24 @@
         transform: translateY(-5px);
         background-color: #cfd8dc;
     }
+    .encouragement-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #4CAF50; /* צבע רקע ירוק */
+    color: white; /* צבע טקסט לבן */
+    padding: 30px 50px; /* מרווחים פנימיים גדולים יותר */
+    border-radius: 20px; /* פינות עגולות יותר */
+    font-size: 26px; /* גודל טקסט גדול יותר */
+    font-weight: bold; /* טקסט מודגש */
+    text-align: center; /* יישור טקסט למרכז */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* הצללה להוספת עומק */
+    border: 3px solid #FFF; /* הוספת מסגרת לבנה */
+    display: none; /* התחל עם ההודעה מוסתרת */
+    z-index: 1000;
+}
+
         </style>
         <script>
         function updateDateTime() {
@@ -138,6 +159,35 @@
         }
         
         setInterval(updateDateTime, 1000);
+
+        document.addEventListener('DOMContentLoaded', function() {
+    const messages = [
+        "כל הכבוד! אתה מתמיד בלמידה!",
+        "מעולה! המשך כך!",
+        "נראה שאתה משתפר כל יום!",
+        "העבודה שלך מרשימה מאוד!"
+    ];
+
+    function showEncouragementMessage() {
+        const messageElement = document.getElementById('encouragement-message');
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+        messageElement.textContent = randomMessage;
+        messageElement.style.display = 'block';
+
+        setTimeout(() => {
+            messageElement.style.display = 'none';
+        }, 5000); // הצג הודעה ל-3 שניות
+    }
+
+    // הצג הודעה מעודדת כל 30 שניות
+    setInterval(showEncouragementMessage, 3000);
+
+    // הצג הודעה מיד עם טעינת הדף
+    showEncouragementMessage();
+});
+
+
+        
         </script>
 </body>
 </html>
