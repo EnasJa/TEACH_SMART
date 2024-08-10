@@ -11,10 +11,10 @@
 <body>
     <div class="profile-container">
         <div class="sidebar">
-            <button class="sidebar-btn btn" onclick="location.href='{% url 'teacher_students_list' teacher.id_number %}'">
+            <button class="sidebar-btn btn" href="{% url 'teacher_students_list' teacher.id_number %}">
                 View List of Students
             </button>
-            <button class="sidebar-btn btn" onclick="location.href='{% url 'teacher_subjects' teacher.id_number %}'">
+            <button class="sidebar-btn btn" href="{% url 'teacher_subjects' teacher.id_number %}">
                 Teacher Subjects
             </button>
         </div>
