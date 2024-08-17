@@ -1,5 +1,11 @@
 *.pyc
 __pycache__/
+# Django secrets
+.env
+
+
+
+
 
 
 

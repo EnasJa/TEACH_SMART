@@ -131,16 +131,6 @@ class loginTeacherForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'password'}))
 
 
-
-
-
-##############################################################3
-#asia
-# class adminRegistrationForm(UserCreationForm):
-#     class Meta:
-#         model = User
-#         fields = ['username', 'password']
-
 class AdminLoginForm(forms.Form):
     username = forms.CharField(max_length=150)
     password = forms.CharField(widget=forms.PasswordInput)
@@ -197,3 +187,28 @@ class addTeacherForm(forms.ModelForm):
                 raise ValidationError(("The passwords do not match."))
 
         return cleaned_data
+#=============================SPRINT 3===================================
+class ExamForm(forms.ModelForm):
+    class Meta:
+        model = Exam
+        fields = ['subject', 'difficulty', 'material', 'num_questions', 'max_grade', 'grade']
+
+    def __init__(self, *args, **kwargs):
+        teacher = kwargs.pop('teacher', None)  # Pass teacher object to form
+        super().__init__(*args, **kwargs)
+
+        if teacher:
+            # Get the classes that the teacher handles
+            teacher_classes = SubjectClass.objects.filter(teachers=teacher).values_list('class_name', flat=True)
+            
+            # Get subjects for the classes the teacher handles
+            subjects = SubjectClass.objects.filter(class_name__in=teacher_classes).values_list('subject', 'subject__name')
+            
+            self.fields['subject'].queryset = Subject.objects.filter(id__in=[subject[0] for subject in subjects])
+            
+            # Filter grades based on the teacher's classes
+            self.fields['grade'].choices = [(grade, dict(Exam.GRADE_CHOICES)[grade]) for grade in teacher_classes]
+        else:
+            # Default behavior if no teacher provided (optional)
+            self.fields['subject'].queryset = Subject.objects.all()
+            self.fields['grade'].choices = Exam.GRADE_CHOICES

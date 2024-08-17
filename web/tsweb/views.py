@@ -251,8 +251,7 @@ def admin_homepage(request):
 #     if 'admin_user_id' in request.session:
 #         del request.session['admin_user_id']
 #     return redirect('login_admin')
-
-
+#--------------------------------- SPRINT 2-------------------------------------------
 
 def the_subjects(request):
     return render(request, 'the_subjects.html')
@@ -399,7 +398,7 @@ def delete_teacher(request, id_number):
 #     bot_response = "This is a placeholder response."
 #     return HttpResponse(bot_response)
 
-
+#-----------------------------HACKTON----------------------------------------------
 def logout_student(request):
     if request.method == 'POST':
         # Check if the user confirmed the logout
@@ -445,4 +444,81 @@ def logout_admin(request):
         return render(request, 'logout.html', {'user_type': 'admin'})
     
 
-#///////////////////////////////////////////////////////
+#----------------------------------  SPRINT 3 -----------------------------------------------------
+from .utils import generate_questions  # Ensure this function is defined
+
+def create_exam(request):
+    if request.method == 'POST':
+        teacher_id = request.session.get('teacher_id')
+        if not teacher_id:
+            messages.error(request, 'You must be logged in to create an exam.')
+            return redirect('login_teacher')
+        
+        try:
+            teacher = Teacher.objects.get(id_number=teacher_id)
+        except Teacher.DoesNotExist:
+            messages.error(request, 'Teacher profile not found.')
+            return redirect('login_teacher')
+        
+        # Pass the teacher instance to the form
+        exam_form = ExamForm(request.POST, teacher=teacher)
+        if exam_form.is_valid():
+            exam = exam_form.save(commit=False)
+            exam.teacher_id = teacher_id  # Explicitly set teacher_id
+            exam.save()
+            
+            # Generate questions
+            questions = generate_questions(exam)
+            for q in questions:
+                Question.objects.create(
+                    exam=exam,
+                    text=q['text'],
+                    choices=q['choices'],
+                    correct_answer=q['correct_answer'],
+                )
+
+            # Redirect to the review page
+            return redirect('review_exam', pk=exam.pk)
+    else:
+        teacher_id = request.session.get('teacher_id')
+        if not teacher_id:
+            messages.error(request, 'You must be logged in to create an exam.')
+            return redirect('login_teacher')
+        
+        try:
+            teacher = Teacher.objects.get(id_number=teacher_id)
+        except Teacher.DoesNotExist:
+            messages.error(request, 'Teacher profile not found.')
+            return redirect('login_teacher')
+        
+        # Create an empty form with the teacher context
+        exam_form = ExamForm(teacher=teacher)
+
+    return render(request, 'create_exam.html', {'form': exam_form})
+
+
+def review_exam(request, pk):
+    exam = get_object_or_404(Exam, pk=pk)
+    
+    if request.method == 'POST':
+        approved_question_ids = request.POST.getlist('approved_questions')
+        
+        for question in exam.question_set.all():  # Corrected to use question_set.all()
+            if str(question.id) in approved_question_ids:
+                question.is_approved = True  # Assuming you have an `is_approved` field in your Question model
+            else:
+                question.is_approved = False
+            question.save()
+        
+        # Check if all questions are approved
+        if all(q.is_approved for q in exam.question_set.all()):
+            exam.is_approved = True
+            messages.success(request, 'All questions approved. Exam approved successfully!')
+        else:
+            exam.is_approved = False
+            messages.warning(request, 'Not all questions were approved. Please review the questions.')
+        
+        exam.save()
+        return redirect('profile_teacher')  # Redirect to a relevant page
+
+    return render(request, 'review_exam.html', {'exam': exam})

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <!-- Link to your CSS file -->
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/base.css' %}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+        <title>Teach Smart</title>
+    </head>
+    <body>
+        
+        <header>
+            <div class="logo">
+                <a href="{% url 'home' %}" class="logo">
+                    <i class="fa-solid fa-graduation-cap fa-fade" style="color: #B197FC;"></i>
+                    <span>Teach Smart</span>
+                </a>
+                
+            </div>
+           
+        <div class="back-to-profile">
+            <a href="{% url 'profile_teacher' %}" class="btn back-btn">
+                <i class="fa-regular fa-address-card" style="color: #B197FC;"></i>
+            </a>
+        </div>
+            </header>
+            <div class="create-exam-container">
+                <div class="form-section">
+                    <h1>Create Exam</h1>
+                    <form method="post" class="exam-form">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="id_subject">Subject</label>
+                            {{ form.subject }}
+                            <span class="help-text">{{ form.subject.help_text }}</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_difficulty">Difficulty</label>
+                            {{ form.difficulty }}
+                            <span class="help-text">{{ form.difficulty.help_text }}</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_material">Material</label>
+                            {{ form.material }}
+                            <span class="help-text">{{ form.material.help_text }}</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_num_questions">Number of Questions</label>
+                            {{ form.num_questions }}
+                            <span class="help-text">{{ form.num_questions.help_text }}</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_max_grade">Max Grade</label>
+                            {{ form.max_grade }}
+                            <span class="help-text">{{ form.max_grade.help_text }}</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_grade">Grade</label>
+                            {{ form.grade }}
+                            <span class="help-text">{{ form.grade.help_text }}</span>
+                        </div>
+                        <button type="submit" class="submit-btn">Create Exam</button>
+                    </form>
+                </div>
+                <div class="image-section">
+                    <!-- Add your image here -->
+                    <img src="https://i.pinimg.com/736x/2f/f6/03/2ff603f850dd919a66451f3df1e1051c.jpg" alt="Exam Image">
+                    <p class="image-description">Create tailored exams effortlessly with the power of AI
+                                                   designed to meet your specific needs</p>
+
+                </div>
+            </div>
+            
+            <script>
+                // JavaScript to show help text when input field is focused
+                document.querySelectorAll('.form-group input, .form-group select, .form-group textarea').forEach(function(input) {
+                    input.addEventListener('focus', function() {
+                        this.parentElement.querySelector('.help-text').style.display = 'block';
+                    });
+                    input.addEventListener('blur', function() {
+                        this.parentElement.querySelector('.help-text').style.display = 'none';
+                    });
+                });
+            </script>
+</body>
+<style>body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 20px;
+}
+.back-to-profile {
+    margin-right: 20px;
+}.back-btn i {
+    margin-right: 10px;
+    font-size: 40px; /* Increased the size of the icon */
+}
+/* Container for the entire form */
+.create-exam-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.form-section {
+    flex: 1;
+    margin-right: 40px; /* Space between form and image */
+}
+.image-description {
+    margin-top: 10px;
+    font-size: 2rem;
+    color: #333;
+    text-align: center; /* Center the description text horizontally */
+}
+.image-section {
+    flex: 1;
+    
+    text-align: center; /* Center the image horizontally */
+    background-color: #f5f5f5; /* Light background color */
+    padding: 5px; /* Padding around the image */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
+}
+
+.image-section img {
+    
+    max-width: 100%; /* Ensure image fits within its container */
+    height: auto;    /* Maintain aspect ratio */
+    border-radius: 10px; /* Rounded corners for the image */
+    transition: transform 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.image-section:hover {
+
+    transform: scale(1.05); /* Slightly enlarge on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Increase shadow on hover */
+}
+
+/* Style for the main heading */
+.create-exam-container h1 {
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Form styling */
+.exam-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Form group styling */
+.form-group {
+    text-align: left;
+    position: relative;
+}
+
+/* Hide help text by default */
+.help-text {
+    display: none;
+    font-size: 12px;
+    color: #777;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    margin-top: 5px;
+    background: #f0f0f0;
+    padding: 5px;
+    border-radius: 3px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+/* Style for form fields */
+.exam-form input,
+.exam-form select,
+.exam-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+}
+
+/* Focus state for input fields */
+.exam-form input:focus,
+.exam-form select:focus,
+.exam-form textarea:focus {
+    border-color: #bdaddd;
+    outline: none;
+}
+
+/* Style for the submit button */
+.submit-btn {
+    background-color: #ADD8E6;
+    color: #fff;
+    font-size: 18px;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Hover effect for the submit button */
+.submit-btn:hover {
+    background-color: #bdaddd;
+    transform: scale(1.05);
+}
+
+</style>
+</html>

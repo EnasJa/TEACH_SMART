@@ -93,11 +93,7 @@ class Teacher(models.Model):
         choices=CLASS_CHOICES,
         help_text="Select the grade the teacher can educate"
     )
-    def save(self, *args, **kwargs):
-        # הצפנת הסיסמה לפני שמירה
-        if self.password and not self.password.startswith('pbkdf2_sha256$'):
-            self.password = make_password(self.password)
-        super().save(*args, **kwargs)
+    
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -133,15 +129,8 @@ class Message(models.Model):
 
 
 
-    ######################################Asia##################################
 
 
-# class Admin(models.Model):
-#     Username = models.CharField(max_length=200)
-#     Password = models.CharField(max_length=100)
-
-#     def __str__(self):
-#         return self.Username
 class SubjectClass(models.Model):
     GRADE_CHOICES = Teacher.CLASS_CHOICES  # Use the same choices as in Teacher model
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='subject_classes')
@@ -150,19 +139,48 @@ class SubjectClass(models.Model):
     description = models.TextField(blank=True, help_text="Description of the subject")
     syllabus = models.TextField(blank=True, help_text="Syllabus or study path for the subject")
     teachers = models.ManyToManyField(Teacher, related_name='subject_classes', help_text="Select teachers for this subject")
-    
-    def __str__(self):
-        return f"{self.subject.name} - {self.class_name}"
-    
-    
- 
-    
-    
- 
-    # /////////////////////////////////////////////////////
-# class EncouragementMessage(models.Model):
-#     message = models.CharField(max_length=200)
+#===========================================  SPRINT 3  =====================================================
+class Exam(models.Model):
+    DIFFICULTY_CHOICES = [
+        ('easy', 'Easy'),
+        ('medium', 'Medium'),
+        ('hard', 'Hard'),
+    ]
 
-#     def __str__(self):
-#         return self.message
+    GRADE_CHOICES = [
+        ('A', 'First grade'),
+        ('B', 'Second grade'),
+        ('C', 'Third grade'),
+        ('D', 'Fourth grade'),
+        ('E', 'Fifth grade'),
+        ('F', 'Sixth grade'),
+    ]
+
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    difficulty = models.CharField(max_length=10, choices=DIFFICULTY_CHOICES)
+    material = models.TextField(null=True, blank=True, help_text="Provide the material for the exam")
+    num_questions = models.IntegerField(null=True, blank=True, help_text="Number of questions for the exam")
+    max_grade = models.IntegerField(null=True, blank=True, help_text="Maximum grade for the exam")
+    grade = models.CharField(max_length=1, choices=GRADE_CHOICES, help_text="Grade level for the exam")
+    is_approved = models.BooleanField(default=False)  # New field to track approval
+    # Explicitly add a teacher_id field without a ForeignKey relationship
+    teacher_id = models.IntegerField(null=True)
+
+    def __str__(self):
+        return f"{self.subject} - {self.grade} by Teacher ID: {self.teacher_id}"
+
+class Question(models.Model):
+    exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
+    text = models.TextField()
+    choices = models.JSONField()  # Store choices as a JSON object
+    correct_answer = models.CharField(max_length=1)  # Store correct answer as a single character
+    is_approved = models.BooleanField(default=False)
+
+
+    def __str__(self):
+        return self.text[:50]
+ 
     
+    
+ 
+
