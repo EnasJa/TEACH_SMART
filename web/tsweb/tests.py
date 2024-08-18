@@ -8,7 +8,7 @@ from datetime import date, timedelta
 from django.contrib.auth.hashers import make_password
 from datetime import date
 from .forms import *
-
+from django.contrib.auth.hashers import check_password
 from django.test import TestCase, RequestFactory
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -316,6 +316,104 @@ class StudentLoginIntegrationTest(TestCase):
             password=make_password('password123')
         )
 
+
+#============================ unit test login teacher=======================
+class TeacherModelTest(TestCase):
+    def setUp(self):
+        # Create a subject for the ForeignKey relationship
+        self.subject = Subject.objects.create(name="Math")
+
+    def test_create_teacher(self):
+        # Create a teacher instance
+        teacher = Teacher.objects.create(
+            id_number='123456789',
+            first_name='John',
+            last_name='Doe',
+            date_of_birth='1980-01-01',
+            email='john.doe@example.com',
+            phone_number='0501234567',
+            password='password123',
+            subject=self.subject,
+            classes='A'
+        )
+
+        # Test if the teacher was created successfully
+        self.assertEqual(teacher.first_name, 'John')
+        self.assertEqual(teacher.last_name, 'Doe')
+        self.assertEqual(teacher.email, 'john.doe@example.com')
+        self.assertTrue(check_password('password123', teacher.password))
+
+    def test_invalid_phone_number(self):
+        teacher = Teacher(
+            id_number='123456789',
+            first_name='John',
+            last_name='Doe',
+            date_of_birth='1980-01-01',
+            email='john.doe@example.com',
+            phone_number='1234567890',  # Invalid phone number
+            password='password123',
+            subject=self.subject,
+            classes='A'
+        )
+        with self.assertRaises(ValidationError):
+            teacher.full_clean()  # This will validate the model
+
+    def test_invalid_id_number(self):
+        teacher = Teacher(
+            id_number='123',  # Invalid ID number
+            first_name='John',
+            last_name='Doe',
+            date_of_birth='1980-01-01',
+            email='john.doe@example.com',
+            phone_number='0501234567',
+            password='password123',
+            subject=self.subject,
+            classes='A'
+        )
+        with self.assertRaises(ValidationError):
+            teacher.full_clean()  # This will validate the model
+
+    def test_invalid_email(self):
+        teacher = Teacher(
+            id_number='123456789',
+            first_name='John',
+            last_name='Doe',
+            date_of_birth='1980-01-01',
+            email='invalid-email',  # Invalid email
+            phone_number='0501234567',
+            password='password123',
+            subject=self.subject,
+            classes='A'
+        )
+        with self.assertRaises(ValidationError):
+            teacher.full_clean()  # This will validate the model
+
+class LoginTeacherFormTest(TestCase):
+    def test_valid_form(self):
+        form_data = {
+            'id_number': '123456789',
+            'password': 'password123'
+        }
+        form = loginTeacherForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_invalid_id_number(self):
+        form_data = {
+            'id_number': '123',  # Invalid ID number
+            'password': 'password123'
+        }
+        form = loginTeacherForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('ID number must be exactly 9 digits.', form.errors['id_number'])
+
+    def test_missing_password(self):
+        form_data = {
+            'id_number': '123456789',
+            'password': ''  # Missing password
+        }
+        form = loginTeacherForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('This field is required.', form.errors['password'])
 
 
 
