@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='exam',
             name='teacher',
-            field=models.ForeignKey(default='null', on_delete=django.db.models.deletion.CASCADE, to='tsweb.teacher'),
+            field=models.ForeignKey(default='123456789', on_delete=django.db.models.deletion.CASCADE, to='tsweb.teacher'),
             preserve_default=False,
         ),
     ]
