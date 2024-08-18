@@ -7,6 +7,8 @@ from django.core.exceptions import ValidationError
 from datetime import date, timedelta
 from django.contrib.auth.hashers import make_password
 from datetime import date
+from .forms import *
+
 from django.test import TestCase, RequestFactory
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -29,6 +31,11 @@ from tsweb.views import logout_student
 #         # Set and hash the password
 #         student.set_password('testpassword')
 #         student.save()
+#             parent_phone='0501234567',
+#             password='testpassword'
+#         )
+#         self.assertEqual(str(student), 'John Doe')
+#         self.assertTrue(student.password.startswith('pbkdf2_sha256$'))
 
 #         # Check if the __str__ method returns the correct full name
 #         self.assertEqual(str(student), 'John Doe')
@@ -170,6 +177,144 @@ from tsweb.views import logout_student
 #         teacher = Teacher(**invalid_teacher_data)
 #         with self.assertRaises(ValidationError):
 #             teacher.full_clean()
+
+# class TeacherModelTests(TestCase):
+#     def setUp(self):
+#         self.valid_teacher_data = {
+#             'id_number': '12345',
+#             'name': 'Test Teacher',
+#             'classes': 'A',
+#             'subjects': 'Math'
+#         }
+#         self.signup_url = reverse('signup_teacher')
+
+#     def test_valid_id_number(self):
+#         teacher = Teacher(**self.valid_teacher_data)
+#         try:
+#             teacher.full_clean()
+#         except ValidationError as e:
+#             self.fail(f"Validation error: {e}")
+
+#     def test_signup_POST_invalid(self):
+#         form_data = {
+#             'id_number': '',
+#             'name': '',
+#             'classes': '',
+#             'subjects': ''
+#         }
+#         response = self.client.post(self.signup_url, data=form_data)
+#         self.assertEqual(response.status_code, 200)
+#         self.assertFormError(response, 'form', 'id_number', 'This field is required.')
+#         self.assertFormError(response, 'form', 'name', 'This field is required.')
+#         self.assertFormError(response, 'form', 'classes', 'This field is required.')
+#         self.assertFormError(response, 'form', 'subjects', 'This field is required.')
+
+# class StudentModelTests(TestCase):
+#     def setUp(self):
+#         self.valid_teacher_data = {
+#             'id_number': '12345',
+#             'name': 'Test Teacher',
+#             'classes': 'A',
+#             'subjects': 'Math'
+#         }
+
+#     def test_valid_password(self):
+#         teacher = Teacher(**self.valid_teacher_data)
+#         teacher.full_clean()
+
+#     def test_invalid_id_number(self):
+#         invalid_teacher_data = self.valid_teacher_data.copy()
+#         invalid_teacher_data['id_number'] = ''
+#         teacher = Teacher(**invalid_teacher_data)
+#         with self.assertRaises(ValidationError):
+#             teacher.full_clean()
+#--------------------------new tests--------------------------------------
+#============================uint test for login student================================
+class StudentLoginFormTest(TestCase):
+
+    def test_form_valid_data(self):
+        form = StudentLoginForm(data={
+            'id_number': '123456789',
+            'password': 'password123'
+        })
+        self.assertTrue(form.is_valid())
+
+    def test_form_invalid_id_number(self):
+        form = StudentLoginForm(data={
+            'id_number': '12345',  # Invalid ID (less than 9 digits)
+            'password': 'password123'
+        })
+        self.assertFalse(form.is_valid())
+        self.assertIn('id_number', form.errors)
+        
+    
+class StudentLoginViewTest(TestCase):
+
+    def setUp(self):
+        # Ensure password is hashed when creating the student
+        self.student = Student.objects.create(
+            id_number='123456789',
+            first_name='Test',
+            last_name='Student',
+            grade='A',
+            date_of_birth='2008-05-15',
+            email='teststudent@example.com',
+            parent_name='Parent Name',
+            parent_phone='0501234567',
+            password=make_password('password123')  # Ensure password is hashed
+        )
+
+    def test_login_view_post_success(self):
+        # Simulate a POST request to login with correct credentials
+        response = self.client.post(reverse('login_student'), {
+            'id_number': '123456789',
+            'password': 'password123'  # Use the correct password
+        })
+
+        # Check if the response redirects to the profile page (status code 302)
+        self.assertRedirects(response, reverse('profile_student'))
+
+        # Check if the session is correctly set
+        self.assertEqual(self.client.session['student_id'], '123456789')
+
+    def test_login_view_get(self):
+        # Test the GET request for the login page
+        response = self.client.get(reverse('login_student'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'login_student.html')
+
+    def test_login_view_post_invalid_id(self):
+        # Test with an incorrect ID
+        response = self.client.post(reverse('login_student'), {
+            'id_number': '987654321',
+            'password': 'password123'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Invalid ID number')
+
+    def test_login_view_post_invalid_password(self):
+        # Test with an incorrect password
+        response = self.client.post(reverse('login_student'), {
+            'id_number': '123456789',
+            'password': 'wrongpassword'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Invalid password')
+#================================IntegrationTest for login student============================        
+class StudentLoginIntegrationTest(TestCase):
+
+    def setUp(self):
+        self.student = Student.objects.create(
+            id_number='123456789',
+            first_name='Test',
+            last_name='Student',
+            grade='A',
+            date_of_birth='2008-05-15',
+            email='teststudent@example.com',
+            parent_name='Parent Name',
+            parent_phone='0501234567',
+            password=make_password('password123')
+        )
 
 
 

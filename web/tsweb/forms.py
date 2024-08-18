@@ -124,6 +124,11 @@ class MessageForm(forms.ModelForm):
 class StudentLoginForm(forms.Form):
     id_number = forms.CharField(max_length=9, widget=forms.TextInput(attrs={'placeholder': 'id_number'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'password'}))
+    def clean_id_number(self):
+        id_number = self.cleaned_data.get('id_number')
+        if not id_number.isdigit() or len(id_number) != 9:
+            raise ValidationError('ID number must be exactly 9 digits.')
+        return id_number
 
 
 class loginTeacherForm(forms.Form):
