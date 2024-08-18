@@ -17,7 +17,7 @@
         </div>
         <div class="main-content">
             <div class="profile-details">
-                <h1>Welcome, {{ student.first_name }}</h1>
+                <h1>Welcome {{ student.first_name }} {{ student.last_name }}</h1>
                 <p>ID: {{ student.id_number }}</p>
                 <p>Email: {{student.email }}</p>
             </div>
