@@ -168,7 +168,7 @@ def login_teacher(request):
                 else:
                     messages.error(request, 'Invalid password')
                     print("Invalid password")  # Debug print statement
-            except Student.DoesNotExist:
+            except Teacher.DoesNotExist:  # Catch Teacher.DoesNotExist, not Student.DoesNotExist
                 messages.error(request, 'Invalid ID number')
                 print("Invalid ID number")  # Debug print statement
         else:
