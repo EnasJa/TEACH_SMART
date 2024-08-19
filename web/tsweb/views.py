@@ -522,3 +522,15 @@ def review_exam(request, pk):
         return redirect('profile_teacher')  # Redirect to a relevant page
 
     return render(request, 'review_exam.html', {'exam': exam})
+
+
+
+def delete_student(request, id_number):
+    student = get_object_or_404(Student, id_number=id_number)
+
+    if request.method == 'POST':
+        student.delete()
+        messages.success(request, f'the student {student.first_name} {student.last_name} deleted successfully.')
+        return redirect('students_list')
+    return render(request, 'confirm_delete_student.html', {'student': student})
+
