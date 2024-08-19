@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
+from requests import session
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -60,7 +61,7 @@ def send_message(request):
     # except Admin.DoesNotExist:
     #     raise PermissionDenied("Only admins can send messages.")
 
-    admin = Admin.objects.get(username="SABA")
+    admin = Admin.objects.get(Username="admin")
 
     if request.method == 'POST':
         form = MessageForm(request.POST)
@@ -79,9 +80,10 @@ def send_message(request):
 def inbox(request):
     # נניח שיש לך מנגנון אימות מותאם אישית ששומר את ה-id_number של המורה ב-session
     # teacher_id = request.session.get('teacher_id')
-    
+    teacher_id = request.session.get('teacher_id')
+    # print(student_id)
     try:
-        teacher = Teacher.objects.get(id_number=123454675)
+        teacher = Teacher.objects.get(id_number=teacher_id)
         messages = teacher.received_messages.all().order_by('-created_at')
     except Teacher.DoesNotExist:
         raise PermissionDenied("Only teachers can view their inbox.")

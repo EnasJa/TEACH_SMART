@@ -248,7 +248,7 @@
                     <td>{{ teacher.email }}</td>
 
                     <td>
-                        <a href="#" class="btn btn-danger">delete</a>                        
+                        <a href="{% url 'delete_teacher' teacher.id_number %}" class="btn btn-danger">delete</a>                        
                     </td>
                 </tr>
                 {% empty %}
