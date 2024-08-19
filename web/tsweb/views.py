@@ -148,10 +148,11 @@ def LogIn(request):
     return render(request, 'LogIn.html')
 
 
-
+import os
 def login_teacher(request):
     print("Request method:", request.method)  # Debug print statement
     if request.method == 'POST':
+        print(os.getenv("OPENAI_API_KEY"))
         form = loginTeacherForm(request.POST)
         if form.is_valid():  # Validate form data
             print("Form is valid")  # Debug print statement
