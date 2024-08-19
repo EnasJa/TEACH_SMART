@@ -319,6 +319,7 @@ class StudentLoginIntegrationTest(TestCase):
 
 
 
+
 # # class LogoutStudentTestCase(TestCase):
 # #     def setUp(self):
 # #         self.factory = RequestFactory()
@@ -425,3 +426,181 @@ class StudentLoginIntegrationTest(TestCase):
 #         else:
 #             self.assertEqual(response.status_code, 200)
 #             # Add any additional checks for the profile page if needed
+from django.contrib.messages import get_messages
+
+class CreateExamViewTest(TestCase):
+    def setUp(self):
+        self.subject = Subject.objects.create(name='Math')
+        self.teacher = Teacher.objects.create(
+            id_number='123456789',
+            first_name='John',
+            last_name='Doe',
+            date_of_birth='1980-01-01',
+            email='john.doe@example.com',
+            phone_number='0501234567',
+            subject=self.subject
+        )
+        self.subject_class = SubjectClass.objects.create(class_name='A', subject=self.subject)
+        self.subject_class.teachers.add(self.teacher)
+    
+    def test_create_exam_get_request_without_logged_in_teacher(self):
+        response = self.client.get(reverse('create_exam'))
+        self.assertRedirects(response, reverse('login_teacher'))
+        messages_list = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages_list), 1)
+        self.assertEqual(str(messages_list[0]), 'You must be logged in to create an exam.')
+
+    def test_create_exam_post_request_valid_data(self):
+        session = self.client.session
+        session['teacher_id'] = '123456789'
+        session.save()
+        
+        form_data = {
+            'subject': self.subject.pk,
+            'difficulty': 'easy',
+            'material': 'Algebra',
+            'num_questions': 10,
+            'max_grade': 100,
+            'grade': 'A'
+        }
+        response = self.client.post(reverse('create_exam'), data=form_data)
+        
+        self.assertEqual(Exam.objects.count(), 1)
+        exam = Exam.objects.first()
+        self.assertEqual(exam.teacher_id, self.teacher.id_number)  # Ensure this matches the type used in the model
+        self.assertRedirects(response, reverse('review_exam', args=[exam.pk]))
+#======================================unit test for the subjects=============================================
+# class SubjectClassFormTest(TestCase):
+#     def setUp(self):
+#         self.subject = Subject.objects.create(name='Math')
+#         self.teacher1 = Teacher.objects.create(
+#             id_number='123456789',  # Ensure this is a string if your model uses CharField
+#             first_name='John',
+#             last_name='Doe',
+#             date_of_birth='1980-01-01',
+#             email='john.doe@example.com',
+#             phone_number='0501234567',
+#             subject=self.subject
+#         )
+#         self.teacher2 = Teacher.objects.create(
+#             id_number='987654321',
+#             first_name='Jane',
+#             last_name='Smith',
+#             date_of_birth='1985-01-01',
+#             email='jane.smith@example.com',
+#             phone_number='0507654321',
+#             subject=self.subject
+#         )
+
+#         def test_form_valid_data(self):
+#             form_data = {
+#                 'class_name': 'A',
+#                 'description': 'Advanced Math',
+#                 'syllabus': 'Algebra and Calculus',
+#                 'teachers': [self.teacher1.id_number, self.teacher2.id_number]  # Ensure this matches the form input
+#             }
+#             form = SubjectClassForm(data=form_data)
+#             self.assertTrue(form.is_valid())
+
+#         def test_form_invalid_data(self):
+#             form_data = {
+#                 'class_name': 'A',
+#                 'description': '',  # Ensure this makes the form invalid
+#                 'syllabus': 'Algebra and Calculus',
+#                 # No teachers selected
+#             }
+#             form = SubjectClassForm(data=form_data)
+#             self.assertFalse(form.is_valid())
+#             self.assertIn('teachers', form.errors)
+
+#     def test_form_with_empty_teachers(self):
+#         form_data = {
+#             'class_name': 'A',
+#             'description': 'Advanced Math',
+#             'syllabus': 'Algebra and Calculus',
+#             'teachers': []  # No teachers selected
+#         }
+#         form = SubjectClassForm(data=form_data)
+#         self.assertTrue(form.is_valid())
+
+# class AddSubjectClassViewTest(TestCase):
+#     def setUp(self):
+#         self.subject = Subject.objects.create(name='Math')
+#         self.teacher = Teacher.objects.create(
+#             id_number='123456789',  # Ensure this matches the form input
+#             first_name='John',
+#             last_name='Doe',
+#             date_of_birth='1980-01-01',
+#             email='john.doe@example.com',
+#             phone_number='0501234567',
+#             subject=self.subject
+#         )
+#         self.url = reverse('add_subject_class', args=[self.subject.name])
+
+#     def test_add_subject_class_get(self):
+#         response = self.client.get(self.url)
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'add_subject_class.html')
+#         self.assertIn('form', response.context)
+#         self.assertIn('subject', response.context)
+
+#     def test_add_subject_class_post_valid_data(self):
+#         form_data = {
+#             'class_name': 'B',
+#             'description': 'Intermediate Math',
+#             'syllabus': 'Geometry and Algebra',
+#             'teachers': [self.teacher.id_number]  # Ensure this matches the form input
+#         }
+#         response = self.client.post(self.url, data=form_data)
+#         self.assertEqual(response.status_code, 302)  # Redirect on successful form submission
+        
+#         # Check if the redirection is correct
+#         # Assume 'name' is the name of the subject you're working with
+#         expected_url = reverse('subject_detail', args=[self.subject.name])
+#         self.assertRedirects(response, expected_url)
+#         self.assertEqual(SubjectClass.objects.count(), 1)
+#         subject_class = SubjectClass.objects.first()
+#         self.assertEqual(subject_class.class_name, 'B')
+#         self.assertEqual(subject_class.teachers.count(), 1)
+
+
+#     def test_add_subject_class_post_invalid_data(self):
+#         form_data = {
+#             'class_name': '',  # Invalid data
+#             'description': '',  # Invalid data
+#             'syllabus': '',  # Invalid data
+#             'teachers': []  # Invalid data (empty list)
+#         }
+#         response = self.client.post(self.url, data=form_data)
+        
+#         # Check if the response is a form with errors
+#         self.assertContains(response, 'This field is required.', status_code=200)
+#         form = response.context['form']
+#         self.assertFalse(form.is_valid())
+#         self.assertFormError(response, 'form', 'teachers', 'This field is required.')
+
+# class SubjectDetailViewTest(TestCase):
+#     def setUp(self):
+#         self.subject = Subject.objects.create(name='Math')
+#         self.subject_class = SubjectClass.objects.create(
+#             subject=self.subject,
+#             class_name='A',
+#             description='Advanced Math',
+#             syllabus='Algebra and Calculus'
+#         )
+#         self.url = reverse('subject_detail', args=[self.subject.name])
+
+#     def test_subject_detail_view(self):
+#         response = self.client.get(self.url)
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'subject_detail.html')
+#         self.assertIn('subject', response.context)
+#         self.assertIn('subject_classes', response.context)
+#         self.assertEqual(response.context['subject'], self.subject)
+#         self.assertEqual(response.context['subject_classes'].count(), 1)
+
+# class TheSubjectsViewTest(TestCase):
+#     def test_the_subjects_view(self):
+#         response = self.client.get(reverse('the_subjects'))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'the_subjects.html')
