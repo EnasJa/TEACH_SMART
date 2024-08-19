@@ -534,3 +534,28 @@ def delete_student(request, id_number):
         return redirect('students_list')
     return render(request, 'confirm_delete_student.html', {'student': student})
 
+
+
+# @login_required
+def update_teacher_contact(request, teacher_id):
+    print("View is called!")
+    teacher = get_object_or_404(Teacher, id_number=teacher_id)
+    print(f"Teacher found: {teacher}")
+    
+    if request.method == 'POST':
+        form = TeacherContactUpdateForm(request.POST, instance=teacher)
+        print(f"Form is valid: {form.is_valid()}")  # בדוק אם הטופס תקין
+        if form.is_valid():
+            updated_teacher = form.save()
+            print(f"Updated teacher: {updated_teacher.email}, {updated_teacher.phone_number}")  # בדוק את הערכים המעודכנים
+            return redirect('profile_teacher')
+        else:
+            print(f"Form errors: {form.errors}")  # הדפס את השגיאות בטופס
+    else:
+        form = TeacherContactUpdateForm(instance=teacher)
+    
+    context = {
+        'form': form,
+        'teacher': teacher,
+    }
+    return render(request, 'update_teacher_contact.html', context)

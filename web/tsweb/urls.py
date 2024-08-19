@@ -41,6 +41,7 @@ urlpatterns = [
     path('review_exam/<int:pk>/', views.review_exam, name='review_exam'),
   path('create_exam/', views.create_exam, name='create_exam'),
   path('delete_student/<str:id_number>/', views.delete_student, name='delete_student'),
+  path('teacher/<str:teacher_id>/', views.update_teacher_contact, name='update_teacher_contact'),
 
 ]
 

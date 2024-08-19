@@ -221,3 +221,21 @@ class ExamForm(forms.ModelForm):
             # Default behavior if no teacher provided (optional)
             self.fields['subject'].queryset = Subject.objects.all()
             self.fields['grade'].choices = Exam.GRADE_CHOICES
+
+
+
+class TeacherContactUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Teacher
+        fields = ['email', 'phone_number']
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email and Teacher.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError("This email is already in use.")
+        return email
+
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data.get('phone_number')
+        # בדוק תקינות מספר טלפון אם נדרש
+        return phone_number
