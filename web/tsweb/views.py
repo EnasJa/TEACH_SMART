@@ -12,7 +12,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic.edit import CreateView
 from django.contrib.auth.decorators import login_required
-from .forms import AdminLoginForm
+from .forms import AdminLoginForm, addStudentForm
 from django.contrib.auth.models import User
 
 # Create your views here.
@@ -341,26 +341,80 @@ def delete_teacher(request, id_number):
 
 
 
-from chatterbot import ChatBot
-from chatterbot.trainers import ListTrainer, ChatterBotCorpusTrainer
+def add_student(request):
+    if request.method == 'POST':
+        form = addStudentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Registration completed successfully!")
+            return redirect('student_list')  # או לכל דף אחר שתרצה
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = addStudentForm()
+    return render(request, 'add_student.html', {'form': form})
 
-bot =ChatBot('chatbot',read_only = False, logic_adapters =
-             [
-                {
-                    'import_path':'chatterbot.logic.BestMatch',
-                    # 'default_response':'Sorry, I dont Know what that means',
-                    # 'maximum_similarity_threshold':0.90,
+def student_list(request):
+    students = Student.objects.all()
+    return render(request, 'student_list.html', {'students': students})
+
+
+
+
+
+
+########################chatbot#############################################
+# from chatterbot import ChatBot
+# from chatterbot.trainers import ListTrainer, ChatterBotCorpusTrainer
+
+# bot =ChatBot('chatbot',read_only = False, logic_adapters =
+#              [
+#                 {
+#                     'import_path':'chatterbot.logic.BestMatch',
+#                     # 'default_response':'Sorry, I dont Know what that means',
+#                     # 'maximum_similarity_threshold':0.90,
                
-               }
-              ])
-list_to_train=[
-    "hi",
-    "hi there",
-    "whats your name ",
-    "im just chat bot",
-     "what your fav food ",
-    "i like cheese",
-]
+#                }
+#               ])
+# list_to_train=[
+#     "hi",
+#     "hi there",
+#     "whats your name ",
+#     "im just chat bot",
+#      "what your fav food ",
+#     "i like cheese",
+# ]
+
+
+# bot =ChatBot('chatbot',read_only = False, logic_adapters =
+#              [
+#                 {
+#                     'import_path':'chatterbot.logic.BestMatch',
+#                     # 'default_response':'Sorry, I dont Know what that means',
+#                     # 'maximum_similarity_threshold':0.90,
+               
+               
+#                }
+#               ])
+# list_to_train=[
+#     "hi",
+#     "hi there",
+#     "whats your name ",
+#     "im just chat bot",
+#      "what your fav food ",
+#     "i like cheese",
+# ]
+
+#                }
+#               ])
+# list_to_train=[
+#     "hi",
+#     "hi there",
+#     "whats your name ",
+#     "im just chat bot",
+#      "what your fav food ",
+#     "i like cheese",
+# ]
 # list_trainer=ListTrainer(bot)
 
 # list_trainer.train(list_to_train)
@@ -371,17 +425,17 @@ list_to_train=[
 
 
 # Create a ChatterBotCorpusTrainer instance and train with the English corpus
-corpus_trainer = ChatterBotCorpusTrainer(bot)
-corpus_trainer.train('chatterbot.corpus.english')
+# corpus_trainer = ChatterBotCorpusTrainer(bot)
+# corpus_trainer.train('chatterbot.corpus.english')
 
-def chatbot(request):
-    return render(request,'chatbot.html')
+# def chatbot(request):
+#     return render(request,'chatbot.html')
 
-def getResponse(request):
-    userMessage =request.GET.get('userMessage')
-    chat_response=str(bot.get_response(userMessage))
-    print(chat_response)
-    return HttpResponse(chat_response)
+# def getResponse(request):
+#     userMessage =request.GET.get('userMessage')
+#     chat_response=str(bot.get_response(userMessage))
+#     print(chat_response)
+#     return HttpResponse(chat_response)
 
 
 

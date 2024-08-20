@@ -197,3 +197,49 @@ class addTeacherForm(forms.ModelForm):
                 raise ValidationError(("The passwords do not match."))
 
         return cleaned_data
+
+
+
+
+
+class addStudentForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput, label=("Password"))
+    # confirm_password = forms.CharField(widget=forms.PasswordInput, label=("Password verification"))
+
+    class Meta:
+        model = Student
+        fields = ['id_number', 'first_name', 'last_name', 'date_of_birth', 'email', 'parent_name', 'password','grade']
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+    def clean_date_of_birth(self):
+        dob = self.cleaned_data['date_of_birth']
+        today = date.today()
+        age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+        
+        if age < 7:
+            raise ValidationError(("The student must be at least 7 years old."))
+        elif age > 12:
+            raise ValidationError(("The student's age is unusual. Please check the birthdate."))
+        
+        return dob
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if Teacher.objects.filter(email=email).exists():
+            raise ValidationError(("The email address already exists in the system."))
+        return email
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if password and confirm_password:
+            if len(password) < 8:
+                raise ValidationError(("The password must be at least 8 characters long."))
+            if password != confirm_password:
+                raise ValidationError(("The passwords do not match."))
+
+        return cleaned_data

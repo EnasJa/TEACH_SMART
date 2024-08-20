@@ -1,11 +1,9 @@
-
-
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TeachSmart - Teacher List</title>
+    <title>TeachSmart - Student List</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -97,41 +95,38 @@
             font-size: 18px;
         }
         .user-icon {
-    width: 44px;
-    height: 44px;
-    background: linear-gradient(135deg, #00ffff, #1e90ff);
-    border-radius: 50%;
-    position: relative;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.user-icon::before {
-    content: '';
-    width: 40%;
-    height: 40%;
-    background-color: white;
-    border-radius: 50%;
-    position: absolute;
-    top: 20%;
-    left: 20%;
-}
-
-.user-icon::after {
-    content: '';
-    width: 60%;
-    height: 30%;
-    background-color: white;
-    border-radius: 15px 15px 50% 50%;
-    position: absolute;
-    bottom: 20%;
-    left: 20%;
-}
-
-.login-text {
-    vertical-align: middle;
-}
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #00ffff, #1e90ff);
+            border-radius: 50%;
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .user-icon::before {
+            content: '';
+            width: 40%;
+            height: 40%;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 20%;
+            left: 20%;
+        }
+        .user-icon::after {
+            content: '';
+            width: 60%;
+            height: 30%;
+            background-color: white;
+            border-radius: 15px 15px 50% 50%;
+            position: absolute;
+            bottom: 20%;
+            left: 20%;
+        }
+        .login-text {
+            vertical-align: middle;
+        }
         .main-content {
             flex: 1;
             display: flex;
@@ -146,36 +141,45 @@
             font-size: 36px;
             margin-bottom: 20px;
         }
-        .teacher-list {
+        .student-list {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             background-color: #fff;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: left;
         }
-        .teacher-list table {
+        .student-list table {
             width: 100%;
             border-collapse: collapse;
         }
-        .teacher-list th, .teacher-list td {
-            padding: 10px;
+        .student-list th, .student-list td {
+            padding: 15px;
             border-bottom: 1px solid #ddd;
+            text-align: left;
         }
-        .teacher-list th {
+        .student-list th {
             background-color: #add8e6;
             color: #0f0f0f;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-        .teacher-list td button {
+        .student-list tr:hover {
+            background-color: #f9f9f9;
+        }
+        .student-list td button {
             background-color: #ff4d4d;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 8px 16px;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
         }
-        .teacher-list td button:hover {
+        .student-list td button:hover {
             background-color: #ff1a1a;
         }
         footer {
@@ -201,7 +205,6 @@
         <ul>
             <li><a href="{% url 'admin_homepage' %}">Home</a></li>
             <li><a href="/about">About</a></li>
-            <li><a href="/teacher-list">Teacher List</a></li>
         </ul>
     </nav>
     <div class="auth-buttons">
@@ -213,9 +216,9 @@
 </header>
   
 <div class="main-content">
-    <h1>Teacher List</h1>
+    <h1>Student List</h1>
     
-    <div class="teacher-list">
+    <div class="student-list">
         <table>
             <thead>
                 <tr>
@@ -225,19 +228,19 @@
                 </tr>
             </thead>
             <tbody>
-                {% for teacher in teachers %}
-                <tr>    
-                    <td>{{ teacher }}</td>
-                    <!-- <td>{{ teacher.name }}</td> -->
-                    <td>{{ teacher.email }}</td>
+                
+                {% for student in students %}
+                <tr>
 
+                    <td>{{ student }}</td>
+                    <td>{{ student.email }}</td>
                     <td>
                         <a href="#" class="btn btn-danger">delete</a>                        
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="3">No teachers available.</td>
+                    <td colspan="3">No students available.</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -248,6 +251,14 @@
 <footer>
     <p>&copy; 2024 TeachSmart. All rights reserved.</p>
 </footer>
+
+<script>
+    function confirmDelete(name) {
+        if (confirm(`Are you sure you want to delete ${name}?`)) {
+            // Add your delete functionality here
+        }
+    }
+</script>
 
 </body>
 </html>

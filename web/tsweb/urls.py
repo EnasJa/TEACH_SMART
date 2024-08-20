@@ -30,6 +30,8 @@ urlpatterns = [
   path('add_teacher/',views.add_teacher, name="add_teacher"), 
   path('teacher_list/',views.teacher_list, name="teacher_list"),
   path('search_teacher/',views.search_teacher, name="search_teacher"),
+  path('add_student/',views.add_student, name="add_student"), 
+  path('student_list/',views.student_list, name="student_list"), 
 
 
   path('about_us/', views.about_us, name='about_us'),
@@ -37,7 +39,7 @@ urlpatterns = [
   
 
   path('delete_teacher/<str:id_number>/', views.delete_teacher, name='delete_teacher'),
-  path('chatbot/', views.chatbot, name='chatbot'),
-  path('getResponse',views.getResponse,name='getResponse')
+  # path('chatbot/', views.chatbot, name='chatbot'),
+  # path('getResponse',views.getResponse,name='getResponse')
 ]
 
