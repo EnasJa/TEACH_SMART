@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Link to your CSS file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+    <title>Teach Smart</title>
+  
+    <style>
+     
+   /* Header styles */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #ADD8E6; /* Light blue */
+    color: #0f0f0f;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none; /* Removes underline from the link */
+    color: inherit; /* Inherit color from parent to remove default link color */
+}
+
+.logo i {
+    margin-right: 10px; /* Increase space between icon and text */
+    font-size: 40px; /* Increase the icon size */
+}
+
+.logo span {
+    font-size: 20px; /* Decrease the font size of the text */
+    font-weight: bold; /* Optional: make the text bold */
+}
+
+.logo:hover i {
+    color: #9A6AFC; /* Optional: change icon color on hover */
+}
+
+.logo:hover span {
+    color: #9A6AFC; /* Optional: change text color on hover */
+}
+.back-to-profile {
+    margin-right: 20px;
+}.back-btn i {
+    margin-right: 10px;
+    font-size: 40px; /* Increased the size of the icon */
+}
+
+/* .btn {
+    background-color: #B197FC;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.btn:hover {
+    background-color: #a080d3;
+} */
+
+h1 {
+            text-align: center;
+            margin: 20px 0;
+            color: #050506;
+            font-size: 1em;
+        }
+
+        .exam-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 10px;
+            
+        }
+
+        .exam-card {
+            width: 500px;
+            height: 200px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            font-family: Arial, sans-serif;
+
+        }
+
+        .exam-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .exam-card a {
+            text-decoration: none;
+            color: #0a0a0a;
+            font-size: 1em;
+            font-weight: bold;
+        }
+
+        .exam-card a:hover {
+            color: #090a0b;
+            text-decoration: underline;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #888;
+            font-size: 1em;
+            margin-top: 20px;
+        }
+
+      
+      
+        
+
+        @import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;1,500&display=swap");
+
+:root {
+    --purple: #ADD8E6;
+    --blue: #bdaddd;
+    --ltblue: #15e0ff;
+    --magenta: #d000c5;
+}
+
+body {
+    background: linear-gradient(var(--blue), var(--purple));
+    height: 100vh;
+    font-size: calc(14px + (26 - 14) * ((100vw - 300px) / (1600 - 300)));
+    font-weight: 300;
+    overflow: hidden;
+    text-align: center;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #333;
+    padding: 0;
+    font-size: 1.2em;
+
+}
+
+h1 {
+    font-size: 3em;
+    margin-bottom: 0.2em;
+}
+
+h2 {
+    font-size: 2em;
+}
+
+.main {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+}
+
+.main::before,
+.main::after {
+    content: "";
+    display: block;
+    position: absolute;
+    z-index: -3;
+}
+
+.main::before {
+    right: 0;
+    bottom: -19em;
+    height: 30em;
+    width: 30em;
+    border-radius: 30em;
+    background: linear-gradient(var(--blue), var(--purple));
+    animation: gradient-fade 8s ease-in-out 3s infinite alternate;
+}
+
+.main::after {
+    top: 0;
+    left: 30em;
+    height: 10em;
+    width: 10em;
+    border-radius: 10em;
+    background: linear-gradient(var(--blue), var(--purple));
+    animation: gradient-fade-alt 6s ease-in-out 3s infinite alternate;
+}
+
+.main__text-wrapper {
+    position: relative;
+    padding: 2em;
+}
+
+.main__text-wrapper::before,
+.main__text-wrapper::after {
+    content: "";
+    display: block;
+    position: absolute;
+}
+
+.main__text-wrapper::before {
+    top: -3em;
+    right: -3em;
+    height: 13em;
+    width: 13em;
+    opacity: 0.7;
+    border-radius: 13em;
+    background: linear-gradient(var(--ltblue), var(--purple));
+    animation: rotation 7s linear infinite;
+}
+
+.main__text-wrapper::after {
+    bottom: -20em;
+    height: 20em;
+    width: 20em;
+    border-radius: 20em;
+    background: linear-gradient(var(--magenta), var(--purple));
+    animation: rotation 7s linear infinite;
+}
+
+.arrow {
+    z-index: 1000;
+    opacity: 0.5;
+    position: absolute;
+}
+
+.arrow--top {
+    top: 0;
+    left: -5em;
+}
+
+.arrow--bottom {
+    bottom: 0;
+    right: 3em;
+}
+
+.circle {
+    transform: translate(50%, -50%) rotate(0deg);
+    transform-origin: center;
+}
+
+.circle--ltblue {
+    height: 20em;
+    width: 20em;
+    border-radius: 20em;
+    background: linear-gradient(var(--ltblue), var(--blue));
+}
+
+.backdrop {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    display: block;
+    background-color: pink;
+}
+
+.dotted-circle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    opacity: 0.3;
+    animation: rotation 38s linear infinite;
+}
+
+/* Animations */
+.draw-in {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 10;
+    animation: draw 15s ease-in-out alternate infinite;
+}
+
+@keyframes draw {
+    from {
+        stroke-dashoffset: 1000;
+    }
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+.item-to {
+    animation-duration: 10s;
+    animation-iteration-count: infinite;
+    transform-origin: bottom;
+}
+
+.bounce-1 {
+    animation-name: bounce-1;
+    animation-timing-function: ease;
+}
+
+.bounce-2 {
+    animation-name: bounce-2;
+    animation-timing-function: ease;
+}
+
+.bounce-3 {
+    animation-name: bounce-3;
+    animation-timing-function: ease;
+}
+
+@keyframes bounce-1 {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(50px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce-2 {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-30px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounce-3 {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(30px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Gradient Fade */
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes gradient-fade {
+    from {
+        transform: translate(10%, -10%) rotate(0deg);
+    }
+    to {
+        transform: translate(50%, -50%) rotate(360deg);
+    }
+}
+
+@keyframes gradient-fade-alt {
+    from {
+        transform: translate(-20%, 20%) rotate(0deg);
+    }
+    to {
+        transform: translate(-60%, 60%) rotate(360deg);
+    }
+}
+
+
+    </style>
+</head>
+<body>  
+    <header>
+        <div class="logo">
+            <a href="{% url 'home' %}" class="logo">
+                <i class="fa-solid fa-graduation-cap fa-fade" style="color: #B197FC;"></i>
+                <span>Teach Smart</span>
+            </a>
+        </div>
+        <div class="back-to-profile">
+            <a href="{% url 'profile_student' %}" class="btn back-btn">
+                <i class="fa-regular fa-address-card" style="color: #B197FC;"></i>
+            </a>
+        </div>
+    </header>
+  
+    <h1>Available Exams</h1>
+    <div class="exam-container">
+        {% for exam in exams %}
+            <div class="exam-card">
+                <a href="{% url 'take_exam' exam.id %}">
+                    <div>{{ exam.subject }}</div>
+                    <div>Difficulty: {{ exam.difficulty }}</div>
+                </a>
+            </div>
+        {% empty %}
+            <div class="empty-message">No exams available for your grade.</div>
+        {% endfor %}
+    </div>
+    <div class="arrow arrow--top">
+        <svg xmlns="http://www.w3.org/2000/svg" width="270.11" height="649.9" overflow="visible">
+          <style>
+            .geo-arrow {
+              fill: none;
+              stroke: #fff;
+              stroke-width: 2;
+              stroke-miterlimit: 10
+            }
+          </style>
+          <g class="item-to bounce-1">
+            <path class="geo-arrow draw-in" d="M135.06 142.564L267.995 275.5 135.06 408.434 2.125 275.499z" />
+          </g>
+          <circle class="geo-arrow item-to bounce-2" cx="194.65" cy="69.54" r="7.96" />
+          <circle class="geo-arrow draw-in" cx="194.65" cy="39.5" r="7.96" />
+          <circle class="geo-arrow item-to bounce-3" cx="194.65" cy="9.46" r="7.96" />
+          <g class="geo-arrow item-to bounce-2">
+            <path class="st0 draw-in" d="M181.21 619.5l13.27 27 13.27-27zM194.48 644.5v-552" />
+          </g>
+        </svg>
+      </div>
+      <div class="arrow arrow--bottom">
+        <svg xmlns="http://www.w3.org/2000/svg" width="31.35" height="649.9" overflow="visible">
+          <style>
+            .geo-arrow {
+              fill: none;
+              stroke: #fff;
+              stroke-width: 2;
+              stroke-miterlimit: 10
+            }
+          </style>
+          <g class="item-to bounce-1">
+            <circle class="geo-arrow item-to bounce-3" cx="15.5" cy="580.36" r="7.96" />
+            <circle class="geo-arrow draw-in" cx="15.5" cy="610.4" r="7.96" />
+            <circle class="geo-arrow item-to bounce-2" cx="15.5" cy="640.44" r="7.96" />
+            <g class="item-to bounce-2">
+              <path class="geo-arrow draw-in" d="M28.94 30.4l-13.26-27-13.27 27zM15.68 5.4v552" />
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="main">
+        <div class="main__text-wrapper">
+        <h1 class="main__title"></h1>
+        <h2></h2>      
+          <svg xmlns="http://www.w3.org/2000/svg" class="dotted-circle" width="352" height="352" overflow="visible">
+      <circle cx="176" cy="176" r="174" fill="none" stroke="#fff" stroke-width="2" stroke-miterlimit="10" stroke-dasharray="12.921,11.9271"/>
+    </svg>
+        </div>
+      </div>
+</body>
+
+</html>

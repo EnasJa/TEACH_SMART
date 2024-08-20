@@ -10,9 +10,13 @@
 <body>
     <div class="profile-container">
         <div class="sidebar">
-            <button class="sidebar-btn">My Grades</button>
-            <button class="sidebar-btn">My Exams</button>
-            <button class="sidebar-btn">Learning Subjects</button>
+            <a href="{% url 'my_grades' %}">
+                <button class="sidebar-btn">My Grades</button>
+            </a>
+            
+            <a href="{% url 'my_exams' %}">
+                <button class="sidebar-btn">My Exams</button>
+            </a>
         </div>
         <div class="main-content">
             <div class="profile-details">

@@ -44,6 +44,10 @@ urlpatterns = [
   #--------------------------------- SPRINT 3 ----------------------------------
     path('review_exam/<int:pk>/', views.review_exam, name='review_exam'),
   path('create_exam/', views.create_exam, name='create_exam'),
+  path('my_exams/', views.my_exams, name='my_exams'),
+    path('take_exam/<int:exam_id>/', views.take_exam, name='take_exam'),
+    path('my_grades/', views.my_grades, name='my_grades'),
+    
 
 ]
 
