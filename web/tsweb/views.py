@@ -661,3 +661,88 @@ def my_grades(request):
     feedbacks = ExamFeedback.objects.filter(student=student)
 
     return render(request, 'my_grades.html', {'feedbacks': feedbacks})
+import pandas as pd
+
+from .utils import analyze_grades_with_openai  # Ensure this function is defined
+
+def grades_analysis(request):
+    # Check if the user is a teacher in the session
+    teacher_id = request.session.get('teacher_id')
+    
+    if not teacher_id:
+        messages.error(request, 'You must be a teacher to access this page.')
+        return redirect('login_teacher')  # Redirect to teacher login or another page if not a teacher
+
+    # Fetch teacher object from database
+    teacher = get_object_or_404(Teacher, id_number=teacher_id)
+
+    # Fetch feedbacks associated with the teacher's exams using teacher_id
+    feedbacks = ExamFeedback.objects.filter(exam__teacher_id=teacher_id)
+    
+    if feedbacks.exists():
+        # Prepare data for analysis
+        data = feedbacks.values('numeric_grade', 'exam__subject__name')
+        df = pd.DataFrame(list(data))
+        
+        # Summarize the data
+        analysis = df.groupby('exam__subject__name')['numeric_grade'].agg(['mean', 'std', 'max', 'min']).reset_index()
+        grades_summary = analysis.to_string(index=False)
+        
+        # Get insights from OpenAI
+        insights = analyze_grades_with_openai(grades_summary)
+    else:
+        insights = "No exam feedbacks available for analysis."
+
+    return render(request, 'grades_analysis.html', {'insights': insights})
+# def grades_analysis(request):
+#     # Check if the user is a teacher in the session
+#     teacher_id = request.session.get('teacher_id')
+    
+#     if not teacher_id:
+#         messages.error(request, 'You must be a teacher to access this page.')
+#         return redirect('login_teacher')  # Redirect to teacher login or another page if not a teacher
+
+#     # Fetch teacher object from database
+#     teacher = get_object_or_404(Teacher, id_number=teacher_id)
+
+#     # Fetch feedbacks associated with all exams taken by the teacher
+#     feedbacks = ExamFeedback.objects.filter(exam__teacher_id=teacher_id)
+    
+#     if feedbacks.exists():
+#         # Organize feedbacks by exam
+#         exams_feedback = feedbacks.values('exam__id', 'exam__subject__name', 'numeric_grade')
+        
+#         # Prepare data structure for analysis
+#         exam_data = {}
+#         for feedback in exams_feedback:
+#             exam_id = feedback['exam__id']
+#             subject_name = feedback['exam__subject__name']
+#             grade = feedback['numeric_grade']
+            
+#             if exam_id not in exam_data:
+#                 exam_data[exam_id] = {'subject_name': subject_name, 'grades': []}
+            
+#             exam_data[exam_id]['grades'].append(grade)
+        
+#         # Analyze each exam's feedback
+#         analysis_results = []
+#         for exam_id, data in exam_data.items():
+#             df = pd.DataFrame(data['grades'], columns=['numeric_grade'])
+            
+#             # Summarize the data
+#             analysis = df['numeric_grade'].agg(['mean', 'std', 'max', 'min'])
+#             grades_summary = analysis.to_frame().reset_index()
+#             grades_summary.columns = ['Metric', 'Value']
+            
+#             # Get insights from OpenAI or another analysis tool
+#             insights = analyze_grades_with_openai(grades_summary.to_string(index=False))
+            
+#             analysis_results.append({
+#                 'subject_name': data['subject_name'],
+#                 'analysis': analysis,
+#                 'insights': insights
+#             })
+#     else:
+#         analysis_results = "No exam feedbacks available for analysis."
+
+#     return render(request, 'grades_analysis.html', {'analysis_results': analysis_results})

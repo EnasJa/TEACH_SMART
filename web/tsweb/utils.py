@@ -109,3 +109,24 @@ def evaluate_student_answers(student, exam):
     feedback = response.choices[0].message['content'].strip()
 
     return numeric_grade, feedback 
+
+def analyze_grades_with_openai(grades_summary):    
+    # Create a prompt for OpenAI
+    prompt = (
+        f"Analyze the following grade data and provide insights:\n"
+        f"{grades_summary}\n"
+        f"Provide suggestions for improvement and identify any potential trends or patterns."
+    )
+    
+    # Get completion from OpenAI
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant that provides detailed insights and suggestions based on the provided data."},
+            {"role": "user", "content": prompt}
+        ],
+        max_tokens=500,
+        temperature=0.7
+    )
+    
+    return response.choices[0].message['content'].strip()    

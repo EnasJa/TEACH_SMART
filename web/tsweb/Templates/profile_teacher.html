@@ -11,12 +11,15 @@
 <body>
     <div class="profile-container">
         <div class="sidebar">
-            <button class="sidebar-btn btn" href="{% url 'teacher_students_list' teacher.id_number %}">
+            <a class="sidebar-btn" href="{% url 'teacher_students_list' teacher.id_number %}">
                 View List of Students
-            </button>
-            <button class="sidebar-btn btn" href="{% url 'teacher_subjects' teacher.id_number %}">
+            </a>
+            <a class="sidebar-btn" href="{% url 'teacher_subjects' teacher.id_number %}">
                 Teacher Subjects
-            </button>
+            </a>
+            <a class="sidebar-btn" href="{% url 'grades_analysis' %}">
+                Grades Analysis
+            </a>
         </div>
         <div class="main-content">
             <div class="profile-details">
@@ -43,12 +46,13 @@
             height: 100vh;
         }
         
-        /* Sidebar Styles */
-        .sidebar {
+         /* Place the CSS directly here if not using an external stylesheet */
+         .sidebar {
             width: 200px;
             background-color: #809ba4;
             color: #fff;
             padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* Optional: Adds a subtle shadow to the sidebar */
         }
         
         .sidebar-btn {
@@ -61,12 +65,19 @@
             text-align: left;
             width: 100%;
             cursor: pointer;
+            text-decoration: none; /* Remove underline for anchor tags */
+            border-radius: 5px; /* Optional: Rounded corners for a modern look */
+            font-size: 16px; /* Adjust font size if needed */
+            transition: background 0.3s ease; /* Smooth transition for hover effect */
         }
         
-        .sidebar-btn:hover {
-            background: #555;
+        .sidebar-btn:hover,
+        .sidebar-btn:focus {
+            background: #8a6d93; /* Adjusted hover background color for better contrast */
+            color: #fff; /* Optional: Change text color on hover */
+            outline: none; /* Remove default outline on focus */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Optional: Add a shadow effect on hover/focus */
         }
-        
         /* Main Content Styles */
         .main-content {
             flex: 1;
@@ -131,4 +142,4 @@
 
 </body>
 </html>
-{% endblock %}
+

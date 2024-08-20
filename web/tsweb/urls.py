@@ -47,6 +47,8 @@ urlpatterns = [
   path('my_exams/', views.my_exams, name='my_exams'),
     path('take_exam/<int:exam_id>/', views.take_exam, name='take_exam'),
     path('my_grades/', views.my_grades, name='my_grades'),
+    path('grades_analysis/', views.grades_analysis, name='grades_analysis'),
+
     
 
 ]
