@@ -13,7 +13,7 @@ import random
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic.edit import CreateView
 from django.contrib.auth.decorators import login_required
-from .forms import AdminLoginForm
+from .forms import AdminLoginForm, addStudentForm
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
@@ -351,6 +351,32 @@ def delete_teacher(request, id_number):
 # from chatterbot import ChatBot
 # from chatterbot.trainers import ListTrainer, ChatterBotCorpusTrainer
 
+def add_student(request):
+    if request.method == 'POST':
+        form = addStudentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Registration completed successfully!")
+            return redirect('student_list')  # או לכל דף אחר שתרצה
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = addStudentForm()
+    return render(request, 'add_student.html', {'form': form})
+
+def student_list(request):
+    students = Student.objects.all()
+    return render(request, 'student_list.html', {'students': students})
+
+
+
+
+
+
+########################chatbot#############################################
+# from chatterbot import ChatBot
+# from chatterbot.trainers import ListTrainer, ChatterBotCorpusTrainer
+
 # bot =ChatBot('chatbot',read_only = False, logic_adapters =
 #              [
 #                 {
@@ -370,6 +396,38 @@ def delete_teacher(request, id_number):
 # ]
 # # list_trainer=ListTrainer(bot)
 
+
+# bot =ChatBot('chatbot',read_only = False, logic_adapters =
+#              [
+#                 {
+#                     'import_path':'chatterbot.logic.BestMatch',
+#                     # 'default_response':'Sorry, I dont Know what that means',
+#                     # 'maximum_similarity_threshold':0.90,
+               
+               
+#                }
+#               ])
+# list_to_train=[
+#     "hi",
+#     "hi there",
+#     "whats your name ",
+#     "im just chat bot",
+#      "what your fav food ",
+#     "i like cheese",
+# ]
+
+#                }
+#               ])
+# list_to_train=[
+#     "hi",
+#     "hi there",
+#     "whats your name ",
+#     "im just chat bot",
+#      "what your fav food ",
+#     "i like cheese",
+# ]
+# list_trainer=ListTrainer(bot)
+
 # # list_trainer.train(list_to_train)
 
 
@@ -378,6 +436,7 @@ def delete_teacher(request, id_number):
 
 
 # # Create a ChatterBotCorpusTrainer instance and train with the English corpus
+# Create a ChatterBotCorpusTrainer instance and train with the English corpus
 # corpus_trainer = ChatterBotCorpusTrainer(bot)
 # corpus_trainer.train('chatterbot.corpus.english')
 

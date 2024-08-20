@@ -180,6 +180,56 @@
             showEncouragementMessage();
         });
     </script>
+        <aside class="sidebar">
+            <h2>Calendar</h2>
+            <!-- Calendar widget or upcoming events -->
+            <div class="calendar">
+                <!-- Calendar content -->
+            </div>
+        </aside>
+    </section>
 </body>
 </html>
-{% endblock %}
+
+<style>.user-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #00ffff, #1e90ff);
+    border-radius: 50%;
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-icon::before {
+    content: '';
+    width: 40%;
+    height: 40%;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 20%;
+    left: 20%;
+}
+
+.user-icon::after {
+    content: '';
+    width: 60%;
+    height: 30%;
+    background-color: white;
+    border-radius: 15px 15px 50% 50%;
+    position: absolute;
+    bottom: 20%;
+    left: 20%;
+}
+
+.login-text {
+    vertical-align: middle;
+}</style>
+    </main>
+
+</body>
+</html>
+
+

@@ -179,12 +179,10 @@
             <li><a href="home.html#about">About</a></li>
         </ul>
     </nav>
-    <div class="auth-buttons">
-        <a href="#login" class="login-button">
-            <div class="user-icon"></div>
-            <span class="login-text">Login</span>
-        </a>
-    </div>
+    <a href="#login" class="login-button">
+        <span class="user-icon"></span>
+        <span class="login-text">Login</span>
+    </a>
 </header>
 <style>
     header {
@@ -277,6 +275,16 @@
     }
     
     .user-icon {
+    .login-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #0f0f0f;
+    font-size: 18px;
+}
+
+.user-icon {
     width: 44px;
     height: 44px;
     background: linear-gradient(135deg, #00ffff, #1e90ff);
@@ -309,6 +317,9 @@
     left: 20%;
 }
 
+.login-text {
+    vertical-align: middle;
+}
 </style>
 
 <div class="page-container">
