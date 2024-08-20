@@ -12,10 +12,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 #===========Using AI in our project======================
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import os
 
-load_dotenv()  # Load environment variables from .env file
+# load_dotenv()  # Load environment variables from .env file
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 #======================================================

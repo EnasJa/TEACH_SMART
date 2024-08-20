@@ -15,7 +15,7 @@ admin.site.register(Exam)
 admin.site.register(Question)
 admin.site.register(StudentAnswer)
 admin.site.register(ExamFeedback)
-
+admin.site.register(MessageTeacher)
 
 
 

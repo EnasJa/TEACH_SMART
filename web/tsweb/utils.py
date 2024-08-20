@@ -1,7 +1,7 @@
-import openai
+# import openai
 from django.conf import settings
 
-openai.api_key = settings.OPENAI_API_KEY
+# openai.api_key = settings.OPENAI_API_KEY
 
 def generate_questions(exam):
     prompt = f"""

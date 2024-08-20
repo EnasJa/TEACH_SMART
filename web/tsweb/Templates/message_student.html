@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="chat-header">
+        <h2>Message Box</h2>
+        <span class="message-count">{{ messages|length }} messages</span>
+    </div>
+    <div class="chat-messages">
+        {% for message in messages %}
+            <div class="message-bubble {% if message.sender == request.user %}outgoing{% else %}incoming{% endif %}">
+                <div class="message-info">
+                    <span class="sender">{{ message.sender }}</span>
+                    <span class="time">{{ message.created_at|time:"H:i" }}</span>
+                </div>
+                <div class="message-content">
+                    <h3 class="subject" onclick="toggleContent(this)">{{ message.subject }}</h3>
+                    <p class="content" style="display: none;">{{ message.content }}</p>
+                </div>
+                <!-- <div class="message-actions">
+                    <button class="action-btn reply">Reply</button>
+                    <button class="action-btn forward">Forward</button>
+                    <button class="action-btn delete">Delete</button>
+                </div> -->
+            </div>
+        {% empty %}
+            <div class="no-messages">
+                <p>There are no messages in your inbox.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function toggleContent(subjectElement) {
+    var content = subjectElement.nextElementSibling;
+    if (content.style.display === "none") {
+        content.style.display = "block";
+    } else {
+        content.style.display = "none";
+    }
+}
+</script>
+
+
+
+<style>
+    .chat-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        background-color: #f0f8ff;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(173, 216, 230, 0.3);
+    }
+
+    .chat-header {
+        background-color: #add8e6;
+        color: #fff;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chat-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+    }
+
+    .message-count {
+        background-color: #fff;
+        color: #add8e6;
+        padding: 0.3rem 0.7rem;
+        border-radius: 20px;
+        font-weight: bold;
+    }
+
+    .chat-messages {
+        padding: 1rem;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    .message-bubble {
+        max-width: 100%;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-radius: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .message-bubble:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .incoming {
+        background-color: #fff;
+        margin-right: auto;
+        border-bottom-left-radius: 0;
+    }
+
+    .outgoing {
+        background-color: #add8e6;
+        color: #fff;
+        margin-left: auto;
+        border-bottom-right-radius: 0;
+    }
+
+    .message-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .sender {
+        font-weight: bold;
+    }
+
+    .time {
+        opacity: 0.7;
+    }
+
+    .subject {
+        margin: 0 0 0.5rem 0;
+        font-size: 1.1rem;
+    }
+
+    /* .message-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 1rem;
+    } */
+
+    .action-btn {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        font-size: 0.9rem;
+        margin-left: 1rem;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+    }
+
+    .action-btn:hover {
+        opacity: 1;
+    }
+
+    .no-messages {
+        text-align: center;
+        padding: 2rem;
+        color: #777;
+    }
+
+    .no-messages img {
+        width: 100px;
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 600px) {
+        .chat-container {
+            margin: 1rem;
+        }
+
+        .message-bubble {
+            max-width: 90%;
+        }
+    }
+</style>
+{% endblock %}

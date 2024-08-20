@@ -267,3 +267,27 @@ class addStudentForm(forms.ModelForm):
                 raise ValidationError(("The passwords do not match."))
 
         return cleaned_data
+
+
+class MessageteacherForm(forms.ModelForm):
+    all_student = forms.BooleanField(required=False, label='Send to all teachers')
+
+    class Meta:
+        model = MessageTeacher
+        fields = ['subject', 'content', 'recipients']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['recipients'].queryset = Student.objects.all()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        all_student = cleaned_data.get('all_student')
+        recipients = cleaned_data.get('recipients')
+
+        if all_student:
+            cleaned_data['recipients'] = Student.objects.all()
+        elif not recipients:
+            raise forms.ValidationError("You must select at least one recipient or choose 'Send to all teachers.")
+
+        return cleaned_data

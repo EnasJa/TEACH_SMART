@@ -47,7 +47,10 @@ urlpatterns = [
   path('my_exams/', views.my_exams, name='my_exams'),
     path('take_exam/<int:exam_id>/', views.take_exam, name='take_exam'),
     path('my_grades/', views.my_grades, name='my_grades'),
-    
+  path('send_messade_t/',views.send_messade_t, name="send_messade_t"), 
+  path('message_student/',views.message_student, name="message_student"), 
+  path('message_sent_s/', views.message_sent_s, name='message_sent_s'),
+
 
 ]
 

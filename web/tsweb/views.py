@@ -661,3 +661,48 @@ def my_grades(request):
     feedbacks = ExamFeedback.objects.filter(student=student)
 
     return render(request, 'my_grades.html', {'feedbacks': feedbacks})
+
+
+
+def send_messade_t(request):
+    # # נניח שיש לך מנגנון אימות מותאם אישית ששומר את ה-username של האדמין ב-session
+    # admin_username = request.session.get('admin_username')
+    
+    # try:
+    #     admin = Admin.objects.get(username=admin_username)
+    # except Admin.DoesNotExist:
+    #     raise PermissionDenied("Only admins can send messages.")
+
+    teacher = Teacher.objects.get(id_number="212975874")
+ 
+    if request.method == 'POST':
+        form = MessageteacherForm(request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.sender = teacher
+            #admin
+            message.save()
+            form.save_m2m()
+            return redirect('send_messade_t')
+    else:
+        form = MessageteacherForm()
+    
+    return render(request, 'send_messade_t.html', {'form': form})
+
+
+def message_student(request):
+    # נניח שיש לך מנגנון אימות מותאם אישית ששומר את ה-id_number של המורה ב-session
+    # teacher_id = request.session.get('teacher_id')
+    
+    try:
+        student = Student.objects.get(id_number=212975873)
+        messages = student.received_messages.all().order_by('-created_at')
+    except Student.DoesNotExist:
+        raise PermissionDenied("Only student can view their inbox.")
+    
+    return render(request, 'message_student.html', {'messages': messages})
+
+
+def message_sent_s(request):
+    MessageTeacher.success(request, 'ההודעה נשלחה בהצלחה!')
+    return render(request, 'message_sent_s.html')
