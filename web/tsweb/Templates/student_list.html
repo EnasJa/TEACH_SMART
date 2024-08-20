@@ -1,14 +1,12 @@
-
-
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TeachSmart - Add Teacher</title>
+    <title>TeachSmart - Student List</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f0f4f8;
             margin: 0;
             padding: 0;
@@ -97,41 +95,38 @@
             font-size: 18px;
         }
         .user-icon {
-    width: 44px;
-    height: 44px;
-    background: linear-gradient(135deg, #00ffff, #1e90ff);
-    border-radius: 50%;
-    position: relative;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.user-icon::before {
-    content: '';
-    width: 40%;
-    height: 40%;
-    background-color: white;
-    border-radius: 50%;
-    position: absolute;
-    top: 20%;
-    left: 20%;
-}
-
-.user-icon::after {
-    content: '';
-    width: 60%;
-    height: 30%;
-    background-color: white;
-    border-radius: 15px 15px 50% 50%;
-    position: absolute;
-    bottom: 20%;
-    left: 20%;
-}
-
-.login-text {
-    vertical-align: middle;
-}
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #00ffff, #1e90ff);
+            border-radius: 50%;
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .user-icon::before {
+            content: '';
+            width: 40%;
+            height: 40%;
+            background-color: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 20%;
+            left: 20%;
+        }
+        .user-icon::after {
+            content: '';
+            width: 60%;
+            height: 30%;
+            background-color: white;
+            border-radius: 15px 15px 50% 50%;
+            position: absolute;
+            bottom: 20%;
+            left: 20%;
+        }
+        .login-text {
+            vertical-align: middle;
+        }
         .main-content {
             flex: 1;
             display: flex;
@@ -146,46 +141,52 @@
             font-size: 36px;
             margin-bottom: 20px;
         }
-        .main-content form {
+        .student-list {
             width: 100%;
-            max-width: 500px;
+            max-width: 900px;
             background-color: #fff;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: left;
         }
-        .main-content form input,
-        .main-content form select {
+        .student-list table {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
+            border-collapse: collapse;
         }
-        .main-content form button {
-            width: 100%;
-            padding: 10px;
+        .student-list th, .student-list td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        .student-list th {
             background-color: #add8e6;
+            color: #0f0f0f;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .student-list tr:hover {
+            background-color: #f9f9f9;
+        }
+        .student-list td button {
+            background-color: #ff4d4d;
             color: white;
             border: none;
+            padding: 8px 16px;
             border-radius: 4px;
-            font-size: 16px;
             cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .student-list td button:hover {
+            background-color: #ff1a1a;
         }
         footer {
             background-color: #add8e6;
             color: #0f0f0f;
             text-align: center;
             padding: 10px;
-        }
-        @media (max-width: 768px) {
-            .main-content h1 {
-                font-size: 28px;
-            }
-            .main-content p {
-                font-size: 16px;
-            }
         }
     </style>
 </head>
@@ -215,45 +216,49 @@
 </header>
   
 <div class="main-content">
-    <h1>Add Teacher </h1>
+    <h1>Student List</h1>
     
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+    <div class="student-list">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                {% for student in students %}
+                <tr>
 
-    <form method="post" id="teacherSignupForm">
-        {% csrf_token %}
-
-        {% for field in form %}
-            <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
-            {% if field.name == 'password' %}
-                <div class="password-container">
-                    {{ field }}
-                </div>
-            {% else %}
-                {{ field }}
-            {% endif %}
-            {% if field.errors %}
-                <ul class="error-list">
-                    {% for error in field.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endfor %}
-        
-        <button type="submit"> Add Teacher</button>
-    </form>
-
+                    <td>{{ student }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>
+                        <a href="#" class="btn btn-danger">delete</a>                        
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">No students available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <footer>
     <p>&copy; 2024 TeachSmart. All rights reserved.</p>
 </footer>
+
+<script>
+    function confirmDelete(name) {
+        if (confirm(`Are you sure you want to delete ${name}?`)) {
+            // Add your delete functionality here
+        }
+    }
+</script>
 
 </body>
 </html>

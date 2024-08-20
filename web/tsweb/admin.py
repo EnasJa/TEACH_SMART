@@ -13,5 +13,10 @@ admin.site.register(SubjectClass)
 #------- SPRINT 3 ----------
 admin.site.register(Exam)
 admin.site.register(Question)
+admin.site.register(StudentAnswer)
+admin.site.register(ExamFeedback)
+
+
+
 
 

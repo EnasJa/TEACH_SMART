@@ -32,6 +32,10 @@ urlpatterns = [
   path('add_teacher/',views.add_teacher, name="add_teacher"), 
   path('teacher_list/',views.teacher_list, name="teacher_list"),
   path('search_teacher/',views.search_teacher, name="search_teacher"),
+  path('add_student/',views.add_student, name="add_student"), 
+  path('student_list/',views.student_list, name="student_list"), 
+
+
   path('about_us/', views.about_us, name='about_us'),
   path('teacher_subjects/<int:teacher_id>/', views.teacher_subjects, name='teacher_subjects'),
   path('delete_teacher/<str:id_number>/', views.delete_teacher, name='delete_teacher'),
@@ -40,6 +44,10 @@ urlpatterns = [
   #--------------------------------- SPRINT 3 ----------------------------------
     path('review_exam/<int:pk>/', views.review_exam, name='review_exam'),
   path('create_exam/', views.create_exam, name='create_exam'),
+  path('my_exams/', views.my_exams, name='my_exams'),
+    path('take_exam/<int:exam_id>/', views.take_exam, name='take_exam'),
+    path('my_grades/', views.my_grades, name='my_grades'),
+    
 
 ]
 

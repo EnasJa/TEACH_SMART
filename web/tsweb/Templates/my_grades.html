@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Link to your CSS file -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <title>Teach Smart</title>
+</head>
+<body>
+    
+    <header>
+        <div class="logo">
+            <a href="{% url 'home' %}" class="logo">
+                <i class="fa-solid fa-graduation-cap fa-fade" style="color: #B197FC;"></i>
+                <span>Teach Smart</span>
+            </a>
+            
+        </div>
+       
+    <div class="back-to-profile">
+        <a href="{% url 'profile_student' %}" class="btn back-btn">
+            <i class="fa-regular fa-address-card" style="color: #B197FC;"></i>
+        </a>
+    </div>
+        </header>
+
+<h1>My Grades</h1>
+
+<div class="exam-container">
+    {% if feedbacks %}
+        {% for feedback in feedbacks %}
+        <div class="exam-card">
+            <strong>Exam:</strong> {{ feedback.exam }}<br>
+            <strong>Grade:</strong> {{ feedback.numeric_grade }}<br>
+            <strong>Feedback:</strong> {{ feedback.feedback }}<br>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="empty-message">No exam results available.</p>
+    {% endif %}
+</div>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.back-to-profile {
+    margin-right: 20px;
+}.back-btn i {
+    margin-right: 10px;
+    font-size: 40px; /* Increased the size of the icon */
+}
+h1 {
+    text-align: center;
+    color: #050606;
+    margin: 20px 0;
+}
+
+/* Container for the exam results */
+.exam-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+    gap: 20px;
+}
+
+/* Style for individual exam cards */
+.exam-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 1000px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Style for feedback paragraphs */
+.exam-card p {
+    margin: 10px 0;
+}
+
+/* Message for no results */
+.empty-message {
+    text-align: center;
+    color: #777;
+}
+</style>

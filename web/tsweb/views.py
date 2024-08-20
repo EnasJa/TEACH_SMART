@@ -13,7 +13,7 @@ import random
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic.edit import CreateView
 from django.contrib.auth.decorators import login_required
-from .forms import AdminLoginForm
+from .forms import AdminLoginForm, addStudentForm
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
@@ -148,10 +148,11 @@ def LogIn(request):
     return render(request, 'LogIn.html')
 
 
-
+import os
 def login_teacher(request):
     print("Request method:", request.method)  # Debug print statement
     if request.method == 'POST':
+        print(os.getenv("OPENAI_API_KEY"))
         form = loginTeacherForm(request.POST)
         if form.is_valid():  # Validate form data
             print("Form is valid")  # Debug print statement
@@ -351,6 +352,32 @@ def delete_teacher(request, id_number):
 # from chatterbot import ChatBot
 # from chatterbot.trainers import ListTrainer, ChatterBotCorpusTrainer
 
+def add_student(request):
+    if request.method == 'POST':
+        form = addStudentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Registration completed successfully!")
+            return redirect('student_list')  # או לכל דף אחר שתרצה
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = addStudentForm()
+    return render(request, 'add_student.html', {'form': form})
+
+def student_list(request):
+    students = Student.objects.all()
+    return render(request, 'student_list.html', {'students': students})
+
+
+
+
+
+
+########################chatbot#############################################
+# from chatterbot import ChatBot
+# from chatterbot.trainers import ListTrainer, ChatterBotCorpusTrainer
+
 # bot =ChatBot('chatbot',read_only = False, logic_adapters =
 #              [
 #                 {
@@ -370,6 +397,38 @@ def delete_teacher(request, id_number):
 # ]
 # # list_trainer=ListTrainer(bot)
 
+
+# bot =ChatBot('chatbot',read_only = False, logic_adapters =
+#              [
+#                 {
+#                     'import_path':'chatterbot.logic.BestMatch',
+#                     # 'default_response':'Sorry, I dont Know what that means',
+#                     # 'maximum_similarity_threshold':0.90,
+               
+               
+#                }
+#               ])
+# list_to_train=[
+#     "hi",
+#     "hi there",
+#     "whats your name ",
+#     "im just chat bot",
+#      "what your fav food ",
+#     "i like cheese",
+# ]
+
+#                }
+#               ])
+# list_to_train=[
+#     "hi",
+#     "hi there",
+#     "whats your name ",
+#     "im just chat bot",
+#      "what your fav food ",
+#     "i like cheese",
+# ]
+# list_trainer=ListTrainer(bot)
+
 # # list_trainer.train(list_to_train)
 
 
@@ -378,6 +437,7 @@ def delete_teacher(request, id_number):
 
 
 # # Create a ChatterBotCorpusTrainer instance and train with the English corpus
+# Create a ChatterBotCorpusTrainer instance and train with the English corpus
 # corpus_trainer = ChatterBotCorpusTrainer(bot)
 # corpus_trainer.train('chatterbot.corpus.english')
 
@@ -522,3 +582,82 @@ def review_exam(request, pk):
         return redirect('profile_teacher')  # Redirect to a relevant page
 
     return render(request, 'review_exam.html', {'exam': exam})
+
+def my_exams(request):
+    student_id = request.session.get('student_id')
+    if not student_id:
+        messages.error(request, 'You must be logged in to view your exams.')
+        return redirect('login_student')
+
+    student = get_object_or_404(Student, id_number=student_id)
+    exams = Exam.objects.filter(grade=student.grade, is_approved=True)
+    return render(request, 'my_exams.html', {'exams': exams})
+
+
+    
+from .utils import evaluate_student_answers
+def take_exam(request, exam_id):
+    student_id = request.session.get('student_id')
+
+    if not student_id:
+        messages.error(request, 'You must be logged in as a student to take an exam.')
+        return redirect('login_student')
+
+    try:
+        student = get_object_or_404(Student, id_number=student_id)
+    except Student.DoesNotExist:
+        messages.error(request, 'No matching student found. Please log in again.')
+        return redirect('login_student')
+    
+    exam = get_object_or_404(Exam, pk=exam_id)
+    questions = Question.objects.filter(exam=exam).order_by('id')
+    
+    if request.method == 'POST':
+        total_questions = questions.count()
+        correct_answers = 0
+
+        for question in questions:
+            selected_answer = request.POST.get(f'question_{question.id}')
+            is_correct = selected_answer == question.correct_answer
+
+            if is_correct:
+                correct_answers += 1
+
+            StudentAnswer.objects.create(
+                student=student,
+                exam=exam,
+                question=question,
+                selected_answer=selected_answer,
+                is_correct=is_correct
+            )
+
+        numeric_grade = (correct_answers / total_questions) * exam.max_grade
+
+        # Get feedback from AI
+        feedback = evaluate_student_answers(student, exam)
+
+        # Save the feedback to the database
+        ExamFeedback.objects.update_or_create(
+            student=student,
+            exam=exam,
+            defaults={'numeric_grade': numeric_grade, 'feedback': feedback}
+        )
+
+        messages.success(request, f'Your exam is submitted successfully! Your grade is {numeric_grade:.2f}.')
+        return redirect('my_grades')
+
+    return render(request, 'take_exam.html', {'exam': exam, 'questions': questions})
+def my_grades(request):
+    student_id = request.session.get('student_id')
+
+    if not student_id:
+        messages.error(request, 'You must be logged in to view your grades.')
+        return redirect('login_student')
+
+    # Fetch the student
+    student = get_object_or_404(Student, id_number=student_id)
+
+    # Retrieve feedback for the student
+    feedbacks = ExamFeedback.objects.filter(student=student)
+
+    return render(request, 'my_grades.html', {'feedbacks': feedbacks})

@@ -1,14 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Teacher Registration{% endblock %}
+{% block title %}Add Student{% endblock %}
 
 {% block content %}
-
-
-    
 <div class="page-container">
     <div class="form-container">
-        <h1>Student Registration</h1>
+        <h1>Add Student</h1>
         
         {% if messages %}
         <ul class="messages">
@@ -21,10 +18,6 @@
         <form method="post" id="StudentSignUpForm">
             {% csrf_token %}
 
-
-         
-
-
             {% for field in form %}
                 <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
                 {% if field.name == 'password' or field.name == 'confirm_password' %}
@@ -32,17 +25,6 @@
                         {{ field }}
                         <span class="toggle-password" onclick="togglePasswordVisibility(this)">👁️</span>
                     </div>
-
-                    
-                {% if form.non_field_errors %}
-                <ul class="non-field-errors">
-                    {% for error in form.non_field_errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-
-
-            {% endif %}
                 {% else %}
                     {{ field }}
                 {% endif %}
@@ -55,14 +37,15 @@
                     </ul>
                 {% endif %}
             {% endfor %}
+
             
-            <button type="submit">Sign Up</button>
+            
+            <button type="submit">Add Student</button>
         </form>
+
         <div class="login-option">
-            Already have an account? <a href="{% url 'login_student' %}">Log In</a>
         </div>
     </div>
-    <div class="image-container"></div>
 </div>
 
 <script>
@@ -80,7 +63,7 @@
 
 <style>
     body {
-        font-family: 'Arial', sans-serif;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background-color: #f0f4f8;
         margin: 0;
         padding: 0;
@@ -90,33 +73,19 @@
         flex-direction: column;
     }
     .page-container {
-        display: flex;
         width: 80%;
-        max-width: 1000px;
+        max-width: 600px;
         background-color: #ffffff;
         border-radius: 15px;
-        overflow: hidden;
-        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         margin: 80px auto 20px;
-    }
-    .form-container {
-        flex: 1;
         padding: 20px;
     }
- 
-    .image-container {
-        flex: 1;
-        background-image: url('https://i.pinimg.com/originals/1d/e2/8f/1de28fec9c6b888d3c7084f8fd9712e1.jpg');
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        min-height: 400px;
-    }
-    
     h1 {
         color: #2c3e50;
         margin-bottom: 20px;
         font-size: 24px;
+        text-align: center;
     }
     form {
         display: flex;
@@ -186,70 +155,6 @@
         list-style-type: none;
         font-size: 12px;
     }
-    .user-icon {
-    width: 44px;
-    height: 44px;
-    background: linear-gradient(135deg, #00ffff, #1e90ff);
-    border-radius: 50%;
-    position: relative;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.user-icon::before {
-    content: '';
-    width: 40%;
-    height: 40%;
-    background-color: white;
-    border-radius: 50%;
-    position: absolute;
-    top: 20%;
-    left: 20%;
-}
-
-.user-icon::after {
-    content: '';
-    width: 60%;
-    height: 30%;
-    background-color: white;
-    border-radius: 15px 15px 50% 50%;
-    position: absolute;
-    bottom: 20%;
-    left: 20%;
-}
-
-.login-text {
-    vertical-align: middle;
-}
-    @media (max-width: 768px) {
-        .page-container {
-            flex-direction: column;
-            width: 95%;
-        }
-        .image-container {
-            min-height: 200px;
-        }
-    }
-
-  /* זה לסיסמה */
-
-  .password-container {
-        position: relative;
-    }
-    .toggle-password {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-        font-size: 20px;
-    }
-    .password-container input {
-        padding-right: 35px;
-    }
-    
-    /* Already have an account? */
     .login-option {
         text-align: center;
         margin-top: 20px;
@@ -263,57 +168,19 @@
     .login-option a:hover {
         text-decoration: underline;
     }
-
-
-
-    .non-field-errors {
-        color: #721c24;
-        background-color: #f8d7da;
-        border: 1px solid #f5c6cb;
-        border-radius: 4px;
-        padding: 5px;
-        margin-top: 3px;
-        list-style-type: none;
-        font-size: 12px;
+    .password-container {
+        position: relative;
     }
-    .user-icon {
-    width: 44px;
-    height: 44px;
-    background: linear-gradient(135deg, #00ffff, #1e90ff);
-    border-radius: 50%;
-    position: relative;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.user-icon::before {
-    content: '';
-    width: 40%;
-    height: 40%;
-    background-color: white;
-    border-radius: 50%;
-    position: absolute;
-    top: 20%;
-    left: 20%;
-}
-
-.user-icon::after {
-    content: '';
-    width: 60%;
-    height: 30%;
-    background-color: white;
-    border-radius: 15px 15px 50% 50%;
-    position: absolute;
-    bottom: 20%;
-    left: 20%;
-}
-
-.login-text {
-    vertical-align: middle;
-}
+    .toggle-password {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 20px;
+    }
+    .password-container input {
+        padding-right: 35px;
+    }
 </style>
-
-
-
 {% endblock %}
