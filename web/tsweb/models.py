@@ -33,7 +33,11 @@ class Student(models.Model):
     )
 
     password = models.CharField(max_length=128)
-
+    def save(self, *args, **kwargs):
+        # הצפנת הסיסמה לפני שמירה
+        if self.password and not self.password.startswith('pbkdf2_sha256$'):
+            self.password = make_password(self.password)
+        super().save(*args, **kwargs)
   
 
 
@@ -184,9 +188,24 @@ class Question(models.Model):
 
  
 
+class StudentAnswer(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    selected_answer = models.CharField(max_length=1)
+    is_correct = models.BooleanField()
 
+    def _str_(self):
+        return f"Student {self.student} - {self.exam} - Question {self.question.id}"
  
     
-    
+class ExamFeedback(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
+    feedback = models.TextField()
+    numeric_grade = models.FloatField() 
+
+    def _str_(self):
+        return f"Feedback for Student {self.student} - Exam {self.exam}"    
  
 

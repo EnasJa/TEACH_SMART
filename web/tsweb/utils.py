@@ -61,3 +61,51 @@ def generate_questions(exam):
             })
     
     return questions
+from .models import StudentAnswer
+def evaluate_student_answers(student, exam):
+    # Get all answers for the given student and exam
+    student_answers = StudentAnswer.objects.filter(student=student, exam=exam)
+    
+    # Calculate the total number of questions and correct answers
+    total_questions = student_answers.count()
+    correct_answers = student_answers.filter(is_correct=True).count()
+    
+    # Calculate the numeric grade
+    if total_questions > 0:
+        numeric_grade = (correct_answers / total_questions) * exam.max_grade
+    else:
+        numeric_grade = 0
+
+    # Gather incorrect answers and their details
+    incorrect_answers = student_answers.filter(is_correct=False)
+    incorrect_details = [
+        {
+            'question': answer.question.text,
+            'correct_option': answer.question.correct_answer,
+            'student_option': answer.selected_answer
+        }
+        for answer in incorrect_answers
+    ]
+
+    # Create a summary for AI
+    performance_summary = (
+        f"The student answered {correct_answers} out of {total_questions} questions correctly. "
+        f"Here are the details of incorrect answers:\n"
+        f" 'Question: {'question'}, Correct Answer: {'correct_option'}, Your Answer: {'student_option'}' for d in incorrect_details])\n\n"
+        f"Provide constructive feedback to help the student improve based on these details."
+    )
+
+    # Generate feedback using OpenAI's chat model
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",  # or "gpt-3.5-turbo" if preferred
+        messages=[
+            {"role": "system", "content": "You are a helpful and constructive tutor."},
+            {"role": "user", "content": performance_summary},
+        ],
+        max_tokens=300,
+        temperature=0.7,
+    )
+
+    feedback = response.choices[0].message['content'].strip()
+
+    return numeric_grade, feedback 
