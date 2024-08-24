@@ -831,12 +831,13 @@ class MyExamsViewTest(TestCase):
         self.client.session.delete()
 #=====================================================================================================================
 #=================================================== unit test for take exam =========================================\
+from .utils import evaluate_student_answers
+from unittest.mock import patch
+from .utils import evaluate_student_answers
+from unittest.mock import patch
 class TakeExamViewTest(TestCase):
-
     def setUp(self):
-        self.client = Client()
-
-        # Create a test student
+        # Create a student
         self.student = Student.objects.create(
             id_number='123456789',
             first_name='John',
@@ -848,66 +849,99 @@ class TakeExamViewTest(TestCase):
             parent_phone='0501234567',
             password='password'
         )
-
-        # Create a test exam
+        
+        # Create a subject
+        self.subject = Subject.objects.create(name='Mathematics')
+        
+        # Create an exam
         self.exam = Exam.objects.create(
-            subject='Mathematics',
+            subject=self.subject,
             difficulty='easy',
-            material='Sample material',
-            num_questions=3,
+            material='Basic math material',
+            num_questions=2,
             max_grade=100,
             grade='A',
             is_approved=True,
             teacher_id='987654321'
         )
-
+        
         # Create questions for the exam
-        self.question1 = Question.objects.create(exam=self.exam, text='2 + 2 = ?', correct_answer='4')
-        self.question2 = Question.objects.create(exam=self.exam, text='3 + 5 = ?', correct_answer='8')
-        self.question3 = Question.objects.create(exam=self.exam, text='5 + 7 = ?', correct_answer='12')
+        self.question1 = Question.objects.create(
+            exam=self.exam,
+            text='2 + 2 = ?',
+            choices=['1', '2', '3', '4'],
+            correct_answer='4'
+        )
+        self.question2 = Question.objects.create(
+            exam=self.exam,
+            text='5 - 3 = ?',
+            choices=['1', '2', '3', '4'],
+            correct_answer='2'
+        )
 
-    def test_student_not_logged_in(self):
-        # Access the exam page without logging in
-        response = self.client.get(reverse('take_exam', kwargs={'exam_id': self.exam.id}))
-        self.assertEqual(response.status_code, 302)  # Redirect to login
-        self.assertRedirects(response, reverse('login_student'))
+    def test_take_exam_view_authenticated(self):
+        session = self.client.session
+        session['student_id'] = self.student.id_number
+        session.save()  # Save the session, not the client
 
-    def test_student_logged_in_no_submission(self):
-        # Log in the student
-        self.client.session['student_id'] = self.student.id_number
-        self.client.session.save()
-
-        # Access the exam page and submit without answers
-        response = self.client.post(reverse('take_exam', kwargs={'exam_id': self.exam.id}))
-        self.assertEqual(response.status_code, 302)  # Redirect after POST
-
-        # Check if the feedback was created (empty feedback for no submission)
-        feedback = ExamFeedback.objects.filter(student=self.student, exam=self.exam).first()
-        self.assertIsNotNone(feedback)
-        self.assertEqual(feedback.numeric_grade, 0)
-        self.assertIn('You must submit answers to get feedback', feedback.feedback)
-
-    def test_student_logged_in_with_submission(self):
-        # Log in the student
-        self.client.session['student_id'] = self.student.id_number
-        self.client.session.save()
-
-        # Submit the exam with answers
-        response = self.client.post(reverse('take_exam', kwargs={'exam_id': self.exam.id}), {
+        response = self.client.post(reverse('take_exam', args=[self.exam.id]), {
             f'question_{self.question1.id}': '4',
-            f'question_{self.question2.id}': '8',
-            f'question_{self.question3.id}': '10',  # Incorrect answer
+            f'question_{self.question2.id}': '2'
         })
-        self.assertEqual(response.status_code, 302)  # Redirect after POST
 
-        # Check if the feedback was created
-        feedback = ExamFeedback.objects.filter(student=self.student, exam=self.exam).first()
-        self.assertIsNotNone(feedback)
-        self.assertGreater(feedback.numeric_grade, 0)  # Check if numeric grade is calculated
-        self.assertIn('Provide constructive feedback', feedback.feedback)
+        self.assertEqual(response.status_code, 302)  # Redirect to 'my_grades'
 
-    def tearDown(self):
-        self.client.session.delete()
+        # Additional assertions for StudentAnswer and ExamFeedback
+        self.assertEqual(StudentAnswer.objects.count(), 2)
+        feedback = ExamFeedback.objects.get(student=self.student, exam=self.exam)
+        self.assertEqual(feedback.numeric_grade, 100)
+
+
+    def test_take_exam_view_not_authenticated(self):
+        response = self.client.post(reverse('take_exam', args=[self.exam.id]), {
+            f'question_{self.question1.id}': '4',
+            f'question_{self.question2.id}': '2'
+        }, follow=True)  # Follow the redirect
+
+        self.assertEqual(response.status_code, 200)  # Ensure the follow worked
+
+        # Now you can access the messages
+        messages = list(response.context['messages'])
+        self.assertEqual(str(messages[0]), 'You must be logged in as a student to take an exam.')
+
+
+    def test_take_exam_view_student_not_found(self):
+    # Simulate an invalid student ID in session
+        session = self.client.session
+        session['student_id'] = 'invalid_id'  # Invalid ID
+        session.save()
+
+        # Make the POST request and expect a 404 error
+        response = self.client.post(reverse('take_exam', args=[self.exam.id]))
+
+            # heck that the response status code is 404 (student not found)
+        self.assertEqual(response.status_code, 404)
+
+
+    @patch('tsweb.views.evaluate_student_answers', return_value='Excellent performance!')
+    def test_take_exam_view_with_mocked_feedback(self, mock_evaluate_student_answers):
+        session = self.client.session
+        session['student_id'] = self.student.id_number
+        session.save()
+
+        response = self.client.post(reverse('take_exam', args=[self.exam.id]), {
+            f'question_{self.question1.id}': '4',
+            f'question_{self.question2.id}': '2'
+        })
+
+        self.assertEqual(response.status_code, 302)  # Redirect to 'my_grades'
+
+        feedback = ExamFeedback.objects.get(student=self.student, exam=self.exam)
+        self.assertEqual(feedback.feedback, 'Excellent performance!')
+        mock_evaluate_student_answers.assert_called_once_with(self.student, self.exam)
+
+#=====================================================================================================================
+
 #=====================================================================================================================
 
 class MyGradesViewTests(TestCase):
@@ -949,6 +983,466 @@ class MyGradesViewTests(TestCase):
         # Check if an error message is displayed
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(str(messages[0]), 'You must be logged in to view your grades.')
+        
+        
+        #========================unit test for my grade+feedback============================================
+       
+class MyGradesViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        
+        # Create a test subject
+        self.subject = Subject.objects.create(name='Mathematics')
+
+        # Create a test student
+        self.student = Student.objects.create(
+            id_number='123456789',
+            first_name='Test',
+            last_name='Student',
+            grade='A',
+            date_of_birth='2010-01-01',
+            email='test@student.com',
+            parent_name='Test Parent',
+            parent_phone='0501234567',
+            password='password123'
+        )
+
+        # Create a test exam
+        self.exam = Exam.objects.create(
+            subject=self.subject,
+            difficulty='easy',
+            grade='A',
+            teacher_id='987654321'
+        )
+
+        # Create test feedback for the student
+        self.feedback = ExamFeedback.objects.create(
+            student=self.student,
+            exam=self.exam,
+            feedback='Great job!',
+            numeric_grade=95.0
+        )
+
+        # Set the student ID in the session
+        session = self.client.session
+        session['student_id'] = self.student.id_number
+        session.save()
+
+    def test_my_grades_view_logged_in(self):
+        # Test the view with a logged-in student
+        response = self.client.get(reverse('my_grades'))
+
+        # Check that the response is 200 OK
+        self.assertEqual(response.status_code, 200)
+
+        # Check that the template used is my_grades.html
+        self.assertTemplateUsed(response, 'my_grades.html')
+
+        # Check that the feedback data is in the response context
+        self.assertEqual(len(response.context['feedbacks']), 1)
+        self.assertEqual(response.context['feedbacks'][0], self.feedback)
+
+        # Check that the feedback and grade are present in the response
+        self.assertContains(response, 'Great job!')
+        self.assertContains(response, '95.0')
+
+    def test_my_grades_view_not_logged_in(self):
+        # Simulate a student not being logged in by clearing the session
+        session = self.client.session
+        session['student_id'] = None
+        session.save()
+
+        # Attempt to access the my_grades view
+        response = self.client.get(reverse('my_grades'))
+
+        # Check that the user is redirected to the login page
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('login_student'))
+
+        # Check that an error message was added to the messages framework
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), 'You must be logged in to view your grades.')
+        
+        #==================unit test list for teacher student list=========================
+class TeacherStudentListViewTests(TestCase):
+    def setUp(self):
+        # Create a test client
+        self.client = Client()
+
+        # Create a subject
+        self.subject = Subject.objects.create(name='Mathematics')
+
+        # Create a teacher assigned to a specific class (grade)
+        self.teacher = Teacher.objects.create(
+            id_number='123456789',
+            first_name='John',
+            last_name='Doe',
+            date_of_birth='1980-01-01',
+            email='johndoe@example.com',
+            phone_number='0501234567',
+            password='password123',
+            subject=self.subject,
+            classes='A'  # Teacher assigned to "First grade"
+        )
+
+        # Create students in the same class as the teacher
+        self.student1 = Student.objects.create(
+            id_number='987654321',
+            first_name='Alice',
+            last_name='Smith',
+            grade='A',  # Same grade as the teacher's class
+            date_of_birth='2010-01-01',
+            email='alice@example.com',
+            parent_name='Parent Smith',
+            parent_phone='0501234567',
+            password='password123'
+        )
+
+        self.student2 = Student.objects.create(
+            id_number='876543210',
+            first_name='Bob',
+            last_name='Johnson',
+            grade='A',  # Same grade as the teacher's class
+            date_of_birth='2009-05-01',
+            email='bob@example.com',
+            parent_name='Parent Johnson',
+            parent_phone='0509876543',
+            password='password123'
+        )
+
+        # Create a student in a different class (grade)
+        self.student3 = Student.objects.create(
+            id_number='765432109',
+            first_name='Charlie',
+            last_name='Brown',
+            grade='B',  # Different grade
+            date_of_birth='2011-02-01',
+            email='charlie@example.com',
+            parent_name='Parent Brown',
+            parent_phone='0508765432',
+            password='password123'
+        )
+
+    def test_teacher_student_list_view(self):
+        # Simulate the teacher being logged in
+        session = self.client.session
+        session['teacher_id'] = self.teacher.id_number
+        session.save()
+
+        # Make a GET request to the teacher's student list view
+        response = self.client.get(reverse('teacher_students_list', args=[self.teacher.id_number]))
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+
+        # Check if the correct template is used
+        self.assertTemplateUsed(response, 'teacher_students_list.html')
+
+        # Check if the correct students are passed to the template
+        students = response.context['students']
+        self.assertEqual(len(students), 2)
+        self.assertIn(self.student1, students)
+        self.assertIn(self.student2, students)
+        self.assertNotIn(self.student3, students)  # Ensure student from a different grade is not included
+
+    def test_teacher_student_list_view_no_students(self):
+        # Delete all students in the teacher's class
+        Student.objects.filter(grade=self.teacher.classes).delete()
+
+        # Simulate the teacher being logged in
+        session = self.client.session
+        session['teacher_id'] = self.teacher.id_number
+        session.save()
+
+        # Make a GET request to the teacher's student list view
+        response = self.client.get(reverse('teacher_students_list', args=[self.teacher.id_number]))
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+
+        # Check that no students are in the context
+        students = response.context['students']
+        self.assertEqual(len(students), 0)
+
+        # Check for the 'No students found.' message
+        self.assertContains(response, 'No students found.')
+       
+ #=========================unit test for learning subject teacher=======================
+class TeacherSubjectsViewTests(TestCase):
+    def setUp(self):
+        # Create a test client
+        self.client = Client()
+
+        # Create subjects
+        self.subject_math = Subject.objects.create(name='Mathematics')
+        self.subject_science = Subject.objects.create(name='Science')
+
+        # Create a teacher
+        self.teacher = Teacher.objects.create(
+            id_number='123456789',
+            first_name='John',
+            last_name='Doe',
+            date_of_birth='1980-01-01',
+            email='johndoe@example.com',
+            phone_number='0501234567',
+            password='password123',
+            subject=self.subject_math,  # Assign one subject
+            classes='A'  # Teacher assigned to "First grade"
+        )
+
+        # Create SubjectClass and associate the teacher using ManyToManyField
+        self.subject_class1 = SubjectClass.objects.create(
+            subject=self.subject_math,
+            class_name='A',  # First grade
+            description='Basic math principles',
+            syllabus='Introduction to Algebra'
+        )
+        self.subject_class1.teachers.add(self.teacher)  # Add the teacher to the ManyToManyField
+
+        self.subject_class2 = SubjectClass.objects.create(
+            subject=self.subject_science,
+            class_name='A',  # First grade
+            description='Basic science principles',
+            syllabus='Introduction to Biology'
+        )
+        self.subject_class2.teachers.add(self.teacher)  # Add the teacher to the ManyToManyField
+
+    def test_teacher_subjects_view(self):
+        # Simulate the teacher being logged in
+        session = self.client.session
+        session['teacher_id'] = self.teacher.id_number
+        session.save()
+
+        # Make a GET request to the teacher's subjects view
+        response = self.client.get(reverse('teacher_subjects', args=[self.teacher.id_number]))
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+
+        # Check if the correct template is used
+        self.assertTemplateUsed(response, 'teacher_subjects.html')
+
+        # Check if the correct subjects are passed to the template
+        subjects = response.context['subjects']
+        self.assertEqual(len(subjects), 2)
+        self.assertIn(self.subject_class1, subjects)
+        self.assertIn(self.subject_class2, subjects)
+
+    def test_teacher_subjects_view_no_subjects(self):
+        # Clear all subjects for the teacher
+        self.teacher.subject_classes.clear()
+
+        # Make a GET request to the teacher's subjects view
+        response = self.client.get(reverse('teacher_subjects', args=[self.teacher.id_number]))
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+
+        # Check that no subjects are in the context
+        subjects = response.context['subjects']
+        self.assertEqual(len(subjects), 0)
+
+        # Check for the 'No subjects assigned to this teacher' message
+        self.assertContains(response, 'No subjects assigned to this teacher.')
+#===========================unit test for list of subject student======================
+class ProfileStudentViewTests(TestCase):
+    def setUp(self):
+        # Create a test client
+        self.client = Client()
+
+        # Create subjects
+        self.subject_math = Subject.objects.create(name='Mathematics')
+        self.subject_science = Subject.objects.create(name='Science')
+
+        # Create a student
+        self.student = Student.objects.create(
+            id_number='123456789',
+            first_name='Alice',
+            last_name='Smith',
+            grade='A',  # First grade
+            date_of_birth='2010-01-01',
+            email='alice@example.com',
+            parent_name='Parent Smith',
+            parent_phone='0501234567',
+            password='password123'
+        )
+
+        # Create SubjectClass and associate them with the student's grade
+        self.subject_class1 = SubjectClass.objects.create(
+            subject=self.subject_math,
+            class_name='A',  # First grade
+            description='Basic math principles',
+            syllabus='Introduction to Algebra'
+        )
+        
+        self.subject_class2 = SubjectClass.objects.create(
+            subject=self.subject_science,
+            class_name='A',  # First grade
+            description='Basic science principles',
+            syllabus='Introduction to Biology'
+        )
+
+    def test_profile_student_view(self):
+        # Simulate the student being logged in by setting session data
+        session = self.client.session
+        session['student_id'] = self.student.id_number
+        session.save()
+
+        # Make a GET request to the student's profile view
+        response = self.client.get(reverse('profile_student'))
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+
+        # Check if the correct template is used
+        self.assertTemplateUsed(response, 'profile_student.html')
+
+        # Check if the correct student and subjects are passed to the template
+        self.assertEqual(response.context['student'], self.student)
+        subjects = response.context['subjects']
+        self.assertEqual(len(subjects), 2)
+        self.assertIn(self.subject_class1, subjects)
+        self.assertIn(self.subject_class2, subjects)
+
+    def test_profile_student_view_no_subjects(self):
+        # Clear all subjects for the student's grade
+        SubjectClass.objects.filter(class_name=self.student.grade).delete()
+
+        # Simulate the student being logged in
+        session = self.client.session
+        session['student_id'] = self.student.id_number
+        session.save()
+
+        # Make a GET request to the student's profile view
+        response = self.client.get(reverse('profile_student'))
+
+        # Check if the response is successful
+        self.assertEqual(response.status_code, 200)
+
+        # Check that no subjects are in the context
+        subjects = response.context['subjects']
+        self.assertEqual(len(subjects), 0)
+
+    def test_profile_student_view_not_logged_in(self):
+        # Make a GET request to the profile view without the student being logged in
+        response = self.client.get(reverse('profile_student'))
+
+        # Check if the response redirects to the login page
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('login_student'))
+
+    def test_profile_student_view_student_does_not_exist(self):
+        # Simulate a session with a non-existent student ID
+        session = self.client.session
+        session['student_id'] = '999999999'  # Non-existent student ID
+        session.save()
+
+        # Make a GET request to the student's profile view
+        response = self.client.get(reverse('profile_student'))
+
+        # Check if the response redirects to the login page due to student not existing
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('login_student'))
+        
+        #===================================== unit test for  grades_analysis=================================================
+from .utils import analyze_grades_with_openai
+import pandas as pd
+class GradeAnalyzer:
+    def analyze_grades(self, grades):
+        if not grades:
+            return "No grades to analyze."
+        average = sum(grades) / len(grades)
+        highest = max(grades)
+        lowest = min(grades)
+        return {
+            'average': average,
+            'highest': highest,
+            'lowest': lowest
+        }
+
+class GradeAnalyzerTests(TestCase):
+    def setUp(self):
+        self.analyzer = GradeAnalyzer()  # Initialize the class containing the method
+
+    def test_analyze_grades_with_valid_data(self):
+        grades = [90, 85, 78, 92, 88]
+        result = self.analyzer.analyze_grades(grades)
+        expected_result = {
+            'average': 86.6,
+            'highest': 92,
+            'lowest': 78
+        }
+        self.assertEqual(result, expected_result)
+
+    def test_analyze_grades_with_no_data(self):
+        grades = []
+        result = self.analyzer.analyze_grades(grades)
+        self.assertEqual(result, "No grades to analyze.")
+
+    def test_analyze_grades_with_single_value(self):
+        grades = [75]
+        result = self.analyzer.analyze_grades(grades)
+        expected_result = {
+            'average': 75,
+            'highest': 75,
+            'lowest': 75
+        }
+        self.assertEqual(result, expected_result) 
+import unittest
+from unittest.mock import patch, MagicMock
+
+class TestAnalyzeGradesWithOpenAI(unittest.TestCase):
+
+    @patch('openai.ChatCompletion.create')  # Mock OpenAI API call
+    def test_analyze_grades_with_openai(self, mock_openai):
+        # Arrange: Set up the mock response
+        mock_response = MagicMock()
+        mock_response.choices = [MagicMock(message={'content': 'This is a mock response with insights and suggestions.'})]
+        mock_openai.return_value = mock_response
+        
+        # Define the grades summary to test
+        grades_summary = {
+            "average": 85,
+            "highest": 95,
+            "lowest": 75,
+            "trends": "Increasing average over the last semester."
+        }
+        
+        # Act: Call the function under test
+        result = analyze_grades_with_openai(grades_summary)
+        
+        # Assert: Verify the function returns the expected result
+        expected_result = 'This is a mock response with insights and suggestions.'
+        self.assertEqual(result, expected_result)
+
+    @patch('openai.ChatCompletion.create')  # Mock OpenAI API call
+    def test_analyze_grades_with_openai_empty_response(self, mock_openai):
+        # Arrange: Set up the mock response with an empty message
+        mock_response = MagicMock()
+        mock_response.choices = [MagicMock(message={'content': ''})]
+        mock_openai.return_value = mock_response
+        
+        # Define the grades summary to test
+        grades_summary = {
+            "average": 80,
+            "highest": 90,
+            "lowest": 70,
+            "trends": "No significant trends."
+        }
+        
+        # Act: Call the function under test
+        result = analyze_grades_with_openai(grades_summary)
+        
+        # Assert: Verify the function handles empty response properly
+        expected_result = ''
+        self.assertEqual(result, expected_result)
+
+# This block should be outside the class definition
+if __name__ == '__main__':
+    unittest.main()
+    
+#=============================================================================================================
 #======================================unit test for the subjects=============================================
 # class SubjectClassFormTest(TestCase):
 #     def setUp(self):
