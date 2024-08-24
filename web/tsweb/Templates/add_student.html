@@ -1,8 +1,31 @@
-{% extends "base.html" %}
 
-{% block title %}Add Student{% endblock %}
 
-{% block content %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeachSmart - Add Teacher</title>
+</head>
+<body>
+
+        <header>
+            <div class="logo">
+                <a href="{% url 'home' %}" class="logo">
+                    <i class="fa-solid fa-graduation-cap fa-fade" style="color: #B197FC;"></i>
+                    <span>Teach Smart</span>
+                </a>
+                
+            </div>
+           
+        <div class="back-to-profile">
+            <a href="{% url 'admin_homepage' %}" class="btn back-btn">
+                <i class="fa-regular fa-address-card" style="color: #B197FC;"></i>
+            </a>
+        </div>
+        </header>
 <div class="page-container">
     <div class="form-container">
         <h1>Add Student</h1>
@@ -62,16 +85,57 @@
 </script>
 
 <style>
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background-color: #f0f4f8;
-        margin: 0;
-        padding: 0;
-        color: #333;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
+             body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+  
+        header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #ADD8E6; /* Light blue */
+    color: #0f0f0f;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none; /* Removes underline from the link */
+    color: inherit; /* Inherit color from parent to remove default link color */
+}
+
+.logo i {
+    margin-right: 10px; /* Increase space between icon and text */
+    font-size: 40px; /* Increase the icon size */
+}
+
+.logo span {
+    font-size: 20px; /* Decrease the font size of the text */
+    font-weight: bold; /* Optional: make the text bold */
+}
+
+.logo:hover i {
+    color: #9A6AFC; /* Optional: change icon color on hover */
+}
+
+.logo:hover span {
+    color: #9A6AFC; /* Optional: change text color on hover */
+}
+.back-to-profile {
+    margin-right: 20px;
+}.back-btn i {
+    margin-right: 10px;
+    font-size: 40px; /* Increased the size of the icon */
+}
     .page-container {
         width: 80%;
         max-width: 600px;
@@ -183,4 +247,5 @@
         padding-right: 35px;
     }
 </style>
-{% endblock %}
+</body>
+</html>

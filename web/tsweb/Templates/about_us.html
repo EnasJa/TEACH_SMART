@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us</title>
@@ -8,12 +10,30 @@
 </head>
 <body>
     <header>
-        <h1>About Us</h1>
-    </header>
-    <main>
-        <div class="image-container">
-            <img src="https://i.pinimg.com/736x/59/4d/08/594d08518d21717334427f0abd7de379.jpg" class="center-image">
+       
+        <div class="logo">
+            <a href="{% url 'home' %}" class="logo">
+                <i class="fa-solid fa-graduation-cap fa-fade" style="color: #B197FC;"></i>
+                <span>Teach Smart</span>
+            </a>
+            <div class="shape-container butterfly-container">
+                <div class="shape butterfly">
+                    <svg viewBox="0 0 100 100" width="50" height="50">
+                        <g class="butterfly__wing">
+                            <path d="M10 10 C20 20, 40 20, 50 10 Q55 20, 50 30 C40 20, 20 20, 10 30 Z"></path>
+                        </g>
+                        <g class="butterfly__wing">
+                            <path d="M10 10 C20 0, 40 0, 50 10 Q55 0, 50 -10 C40 0, 20 0, 10 -10 Z"></path>
+                        </g>
+                        <g class="butterfly__body">
+                            <rect x="45" y="10" width="10" height="30" rx="5" ry="5"></rect>
+                        </g>
+                    </svg>
+                </div>
         </div>
+    </header>
+    <main> 
+        <h1>About Us</h1>
         <section class="about-section">
             <h2>The Problem</h2>
             <p>In many schools, teachers face significant gaps in the learning levels of students within a single classroom. Managing a wide range of learning levels and personal progress creates substantial challenges in classroom management and curriculum adaptation.</p>
@@ -44,6 +64,67 @@
 </html>
 
 <style>
+/* Define a custom property for progress */
+@property --progress {
+  initial-value: 0;
+  inherits: false;
+  syntax: '<number>';
+}
+
+/* Keyframes for the butterfly animation */
+@keyframes progress {
+  0% {
+    --progress: 0;
+  }
+  50% {
+    --progress: 1;
+  }
+  100% {
+    --progress: 0;
+  }
+}
+
+.shape-container {
+  --PI: 3.1415;
+  --WAVE-COUNT: 2; /* Number of wave cycles to complete */
+  --TOTAL-ANGLE: calc(var(--WAVE-COUNT) * 2 * var(--PI));
+  --UNIT: 1vw; /* Unit for calculations */
+  --r: 10; /* Radius for butterfly wings */
+  --CONTAINER-WIDTH: 100; /* Container's width in units */
+  
+  --x: calc(var(--progress) * var(--CONTAINER-WIDTH));
+  --ROTATION-PER-LENGTH-UNIT: calc(var(--TOTAL-ANGLE) / var(--CONTAINER-WIDTH));
+  --alpha-reference-angle: calc(var(--ROTATION-PER-LENGTH-UNIT) * var(--x) * 1rad);
+  --y: calc(var(--r) * sin(var(--alpha-reference-angle)));
+  
+  --x-with-unit: calc(var(--x) * var(--UNIT));
+  --y-with-unit: calc(var(--y) * var(--UNIT));
+
+  --tan: calc(var(--r) * var(--ROTATION-PER-LENGTH-UNIT) * cos(var(--alpha-reference-angle)));
+  --beta-tangent-angle: atan(var(--tan));
+
+  position: fixed;
+  top: 50px;
+  left: 0;
+  width: calc(var(--CONTAINER-WIDTH) * var(--UNIT));
+  animation: progress 6s ease-in-out infinite;
+}
+
+.shape {
+  --shape-width: 50px;
+  --shape-height: 30px;
+  position: absolute;
+  z-index: 1;
+  top: calc(-0.5 * var(--shape-height));
+  left: calc(-0.5 * var(--shape-width));
+  width: var(--shape-width);
+  height: var(--shape-height);
+  background: #9A6AFC;
+  clip-path: polygon(50% 0%, 100% 25%, 75% 100%, 50% 75%, 25% 100%, 0% 25%);
+  translate: var(--x-with-unit) var(--y-with-unit);
+  rotate: var(--beta-tangent-angle);
+}
+
     body {
         font-family: 'Arial', sans-serif;
         margin: 0;
@@ -53,16 +134,45 @@
     }
     
     header {
-        background: #add8e6;
-        color: white;
-        padding: 40px 0;
-        text-align: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #ADD8E6; /* Light blue */
+    color: #0f0f0f;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none; /* Removes underline from the link */
+    color: inherit; /* Inherit color from parent to remove default link color */
+}
+
+.logo i {
+    margin-right: 10px; /* Increase space between icon and text */
+    font-size: 40px; /* Increase the icon size */
+}
+
+.logo span {
+    font-size: 20px; /* Decrease the font size of the text */
+    font-weight: bold; /* Optional: make the text bold */
+}
+
+.logo:hover i {
+    color: #9A6AFC; /* Optional: change icon color on hover */
+}
+
+.logo:hover span {
+    color: #9A6AFC; /* Optional: change text color on hover */
+}
     
-    header h1 {
+     h1 {
         margin: 0;
         font-size: 2.5em;
+        text-align: center;
+
     }
     
     main {

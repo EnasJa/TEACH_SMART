@@ -1,10 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
+{% load static %}
+
+
  <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'CSS/base.css' %}">
+
     <title>Tacher Profile</title>
      <!-- Link to your CSS file -->
   
@@ -16,6 +21,9 @@
             </a>
             <a class="sidebar-btn" href="{% url 'teacher_subjects' teacher.id_number %}">
                 Teacher Subjects
+            </a>
+            <a class="sidebar-btn" href="{% url 'create_exam' %}">
+                Create Exams
             </a>
             <a class="sidebar-btn" href="{% url 'grades_analysis' %}">
                 Grades Analysis

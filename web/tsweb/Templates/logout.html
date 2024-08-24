@@ -50,8 +50,52 @@
     .btn-secondary:hover {
         background-color: #5a6268;
     }
-</style>
+    header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #ADD8E6; /* Light blue */
+    color: #0f0f0f;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none; /* Removes underline from the link */
+    color: inherit; /* Inherit color from parent to remove default link color */
+}
+
+.logo i {
+    margin-right: 10px; /* Increase space between icon and text */
+    font-size: 40px; /* Increase the icon size */
+}
+
+.logo span {
+    font-size: 20px; /* Decrease the font size of the text */
+    font-weight: bold; /* Optional: make the text bold */
+}
+
+.logo:hover i {
+    color: #9A6AFC; /* Optional: change icon color on hover */
+}
+
+.logo:hover span {
+    color: #9A6AFC; /* Optional: change text color on hover */
+}
+</style>
+<header>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <div class="logo">
+        <a href="{% url 'home' %}" class="logo">
+            <i class="fa-solid fa-graduation-cap fa-fade" style="color: #B197FC;"></i>
+            <span>Teach Smart</span>
+        </a>
+        
+    </div>
+</header>
 <div class="logout-container">
     <h1 class="logout-title"> confirm logout</h1>
     <p class="logout-message">Are you sure you want to logout</p>

@@ -1,13 +1,26 @@
-{% extends "base.html" %}
-{% block content %}
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>Education System</title>
-   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 </head>
 <body>
+    <header>
+        <div class="logo">
+            <a href="{% url 'home' %}" class="logo">
+                <i class="fa-solid fa-graduation-cap fa-fade" style="color: #B197FC;"></i>
+                <span>Teach Smart</span>
+            </a>
+            
+        </div>
+       
+    <div class="back-to-profile">
+        <a href="{% url 'admin_homepage' %}" class="btn back-btn">
+            <i class="fa-regular fa-address-card" style="color: #B197FC;"></i>
+        </a>
+    </div>
+    </header>
     <h1>Education System</h1>
     <ul class="subject-list">
         <li>
@@ -58,6 +71,56 @@
    
 
     <style>
+body {
+font-family: 'Arial', sans-serif;
+background-color: #f0f4f8;
+margin: 0;
+padding: 0;
+color: #333;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #ADD8E6; /* Light blue */
+    color: #0f0f0f;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none; /* Removes underline from the link */
+    color: inherit; /* Inherit color from parent to remove default link color */
+}
+
+.logo i {
+    margin-right: 10px; /* Increase space between icon and text */
+    font-size: 40px; /* Increase the icon size */
+}
+
+.logo span {
+    font-size: 20px; /* Decrease the font size of the text */
+    font-weight: bold; /* Optional: make the text bold */
+}
+
+.logo:hover i {
+    color: #9A6AFC; /* Optional: change icon color on hover */
+}
+
+.logo:hover span {
+    color: #9A6AFC; /* Optional: change text color on hover */
+}
+.back-to-profile {
+    margin-right: 20px;
+}.back-btn i {
+    margin-right: 10px;
+    font-size: 40px; /* Increased the size of the icon */
+}
         h1 {
            font-family:'Arial', sans-serif;
            text-align: center;
@@ -92,7 +155,7 @@
        }
    
        .subject-image {
-           max-width: 150px; /* Set a maximum width */
+           max-width: 800px; /* Set a maximum width */
            max-height: 150px; /* Set a maximum height */
            width: auto; /* Maintain aspect ratio */
            height: auto; /* Maintain aspect ratio */
@@ -131,4 +194,3 @@
 
 
 
-{% endblock %}

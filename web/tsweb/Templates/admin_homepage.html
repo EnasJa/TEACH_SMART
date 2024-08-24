@@ -130,70 +130,101 @@
 .login-text {
     vertical-align: middle;
 }
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 40px 20px;
-        }
-        .main-content h1 {
-            color: #2c3e50;
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
-        .main-content p {
-            color: #34495e;
-            font-size: 18px;
-            margin-bottom: 20px;
-            max-width: 800px;
-        }
-        .main-content a {
-            background-color: #add8e6;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 20px;
-            transition: background-color 0.3s ease;
-        }
-        .main-content a:hover {
-            background-color: #87ceeb;
-        }
-        .main-content .button-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-        }
-        .main-content .button {
-            font-family: 'Garamond', serif;
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 1px; 
 
-            background-color: #add8e6;
-            color: rgb(9, 8, 8);
-            padding: 20px;
-            border-radius: 50%;
-            text-decoration: none;
-            font-size: 18px;
-            transition: background-color 0.3s ease;
-            width: 150px;
-            height: 150px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-        .main-content .button:hover {
-            background-color: #87ceeb;
-        }
-        .main-content .button img {
-            width: 50px;
-            height: 50px;
-            margin-bottom: 10px;
-        }
+    padding: 40px 20px;
+}
+
+.main-content h1 {
+    color: #2c3e50;
+    font-size: 36px;
+    margin-bottom: 1px; 
+}
+
+.main-content p {
+    color: #34495e;
+    font-size: 18px;
+    margin-bottom: 1px; 
+    max-width: 800px;
+}
+
+.main-content a {
+    background-color: #add8e6;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.main-content a:hover {
+    background-color: #87ceeb;
+    margin-bottom: 1px; 
+
+}
+
+.main-content .button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 1px; 
+
+}
+
+.main-content .button {
+    font-family: 'Garamond', serif;
+    background-color: #add8e6;
+    color: rgb(9, 8, 8);
+    padding: 30px;
+    border-radius: 50%;
+    text-decoration: none;
+    font-size: 18px;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    width: 150px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 1px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+}
+
+.main-content .button:hover {
+    background-color: #87ceeb;
+    transform: scale(1.05); /* Slightly increase the size on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* More pronounced shadow on hover */
+    animation: buttonAnimation 1s ease-in-out infinite; /* Add animation on hover */
+}
+
+.main-content .button img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 1px; 
+}
+
+@keyframes buttonAnimation {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(10deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
         footer {
             background-color: #add8e6;
             color: #0f0f0f;
@@ -231,7 +262,7 @@
 </header>
 
 <div class="main-content">
-    <h1>Welcome to TeachSmart</h1>
+    <h1>Welcome Admin</h1>
  
 </div>
 
@@ -259,7 +290,7 @@
     <div class="button-container">
         <a href="{% url 'add_teacher' %}" class="button">
             <!-- <img src="add-delete-icon.png" alt="Add/Delete Teacher Icon"> -->
-            Add/Delete Teacher
+            Add Teacher
         </a>
         <a href="{% url 'teacher_list' %}" class="button">
             <!-- <img src="list-icon.png" alt="List of Teachers Icon"> -->
@@ -277,14 +308,12 @@
     <div class="button-container">
         <a href="{% url 'add_student' %}" class="button">
             <!-- <img src="add-delete-icon.png" alt="Add/Delete Student Icon"> -->
-            Add/Delete Student
+            Add Student
         </a>
     </div>
 </div>
 
-<footer>
-    <p>&copy; 2024 TeachSmart. All rights reserved.</p>
-</footer>
+
 
 </body>
 </html>
