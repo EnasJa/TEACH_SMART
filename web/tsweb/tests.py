@@ -228,370 +228,8 @@ from django.contrib.messages import get_messages
 #         invalid_teacher_data = self.valid_teacher_data.copy()
 #         invalid_teacher_data['id_number'] = ''
 #         teacher = Teacher(**invalid_teacher_data)
-#         with self.assertRaises(ValidationError):
-#             teacher.full_clean()
-#--------------------------new tests--------------------------------------
-#============================uint test for login student================================
-class StudentLoginFormTest(TestCase):
-
-    def test_form_valid_data(self):
-        form = StudentLoginForm(data={
-            'id_number': '123456789',
-            'password': 'password123'
-        })
-        self.assertTrue(form.is_valid())
-
-    def test_form_invalid_id_number(self):
-        form = StudentLoginForm(data={
-            'id_number': '12345',  # Invalid ID (less than 9 digits)
-            'password': 'password123'
-        })
-        self.assertFalse(form.is_valid())
-        self.assertIn('id_number', form.errors)
-        
-    
-class StudentLoginViewTest(TestCase):
-
-    def setUp(self):
-        # Ensure password is hashed when creating the student
-        self.student = Student.objects.create(
-            id_number='123456789',
-            first_name='Test',
-            last_name='Student',
-            grade='A',
-            date_of_birth='2008-05-15',
-            email='teststudent@example.com',
-            parent_name='Parent Name',
-            parent_phone='0501234567',
-            password=make_password('password123')  # Ensure password is hashed
-        )
-
-    def test_login_view_post_success(self):
-        # Simulate a POST request to login with correct credentials
-        response = self.client.post(reverse('login_student'), {
-            'id_number': '123456789',
-            'password': 'password123'  # Use the correct password
-        })
-
-        # Check if the response redirects to the profile page (status code 302)
-        self.assertRedirects(response, reverse('profile_student'))
-
-        # Check if the session is correctly set
-        self.assertEqual(self.client.session['student_id'], '123456789')
-
-    def test_login_view_get(self):
-        # Test the GET request for the login page
-        response = self.client.get(reverse('login_student'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'login_student.html')
-
-    def test_login_view_post_invalid_id(self):
-        # Test with an incorrect ID
-        response = self.client.post(reverse('login_student'), {
-            'id_number': '987654321',
-            'password': 'password123'
-        })
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Invalid ID number')
-
-    def test_login_view_post_invalid_password(self):
-        # Test with an incorrect password
-        response = self.client.post(reverse('login_student'), {
-            'id_number': '123456789',
-            'password': 'wrongpassword'
-        })
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Invalid password')
-#================================IntegrationTest for login student============================        
-class StudentLoginIntegrationTest(TestCase):
-
-    def setUp(self):
-        self.student = Student.objects.create(
-            id_number='123456789',
-            first_name='Test',
-            last_name='Student',
-            grade='A',
-            date_of_birth='2008-05-15',
-            email='teststudent@example.com',
-            parent_name='Parent Name',
-            parent_phone='0501234567',
-            password=make_password('password123')
-        )
-
-
-#============================ unit test login teacher=======================
-class TeacherModelTest(TestCase):
-    def setUp(self):
-        # Create a subject for the ForeignKey relationship
-        self.subject = Subject.objects.create(name="Math")
-
-    def test_create_teacher(self):
-        # Create a teacher instance
-        teacher = Teacher.objects.create(
-            id_number='123456789',
-            first_name='John',
-            last_name='Doe',
-            date_of_birth='1980-01-01',
-            email='john.doe@example.com',
-            phone_number='0501234567',
-            password='password123',
-            subject=self.subject,
-            classes='A'
-        )
-
-
-        # Test if the teacher was created successfully
-        self.assertEqual(teacher.first_name, 'John')
-        self.assertEqual(teacher.last_name, 'Doe')
-        self.assertEqual(teacher.email, 'john.doe@example.com')
-        self.assertTrue(check_password('password123', teacher.password))
-
-    def test_invalid_phone_number(self):
-        teacher = Teacher(
-            id_number='123456789',
-            first_name='John',
-            last_name='Doe',
-            date_of_birth='1980-01-01',
-            email='john.doe@example.com',
-            phone_number='1234567890',  # Invalid phone number
-            password='password123',
-            subject=self.subject,
-            classes='A'
-        )
-        with self.assertRaises(ValidationError):
-            teacher.full_clean()  # This will validate the model
-
-    def test_invalid_id_number(self):
-        teacher = Teacher(
-            id_number='123',  # Invalid ID number
-            first_name='John',
-            last_name='Doe',
-            date_of_birth='1980-01-01',
-            email='john.doe@example.com',
-            phone_number='0501234567',
-            password='password123',
-            subject=self.subject,
-            classes='A'
-        )
-        with self.assertRaises(ValidationError):
-            teacher.full_clean()  # This will validate the model
-
-    def test_invalid_email(self):
-        teacher = Teacher(
-            id_number='123456789',
-            first_name='John',
-            last_name='Doe',
-            date_of_birth='1980-01-01',
-            email='invalid-email',  # Invalid email
-            phone_number='0501234567',
-            password='password123',
-            subject=self.subject,
-            classes='A'
-        )
-        with self.assertRaises(ValidationError):
-            teacher.full_clean()  # This will validate the model
-
-class LoginTeacherFormTest(TestCase):
-    def test_valid_form(self):
-        form_data = {
-            'id_number': '123456789',
-            'password': 'password123'
-        }
-        form = loginTeacherForm(data=form_data)
-        self.assertTrue(form.is_valid())
-
-    def test_invalid_id_number(self):
-        form_data = {
-            'id_number': '123',  # Invalid ID number
-            'password': 'password123'
-        }
-        form = loginTeacherForm(data=form_data)
-        self.assertFalse(form.is_valid())
-        self.assertIn('ID number must be exactly 9 digits.', form.errors['id_number'])
-
-    def test_missing_password(self):
-        form_data = {
-            'id_number': '123456789',
-            'password': ''  # Missing password
-        }
-        form = loginTeacherForm(data=form_data)
-        self.assertFalse(form.is_valid())
-        self.assertIn('This field is required.', form.errors['password'])
-
-#==============================Integration Test for Login teacher=========
-class LoginTeacherFormIntegrationTest(TestCase):
-    
-    def setUp(self):
-        # Set up test data: create a subject and teacher
-        self.subject = Subject.objects.create(name="Math")
-        self.teacher_password = "password123"
-        
-        # Create a Teacher instance with encrypted password
-        self.teacher = Teacher.objects.create(
-            id_number='123456789',
-            first_name='John',
-            last_name='Doe',
-            date_of_birth='1980-01-01',
-            email='john.doe@example.com',
-            phone_number='0501234567',
-            password=make_password(self.teacher_password),
-            subject=self.subject,
-            classes='A'
-        )
-
-    def test_login_form_valid(self):
-        form_data = {
-            'id_number': '123456789',
-            'password': self.teacher_password
-        }
-        form = loginTeacherForm(data=form_data)
-        self.assertTrue(form.is_valid())
-
-    def test_login_form_invalid_id_number(self):
-        form_data = {
-            'id_number': '123',  # Invalid ID (not 9 digits)
-            'password': self.teacher_password
-        }
-        form = loginTeacherForm(data=form_data)
-        self.assertFalse(form.is_valid())
-        self.assertIn('ID number must be exactly 9 digits.', form.errors['id_number'])
-
-    def test_login_view_success(self):
-        # Simulate a valid login
-        response = self.client.post(reverse('login_teacher'), {
-            'id_number': '123456789',
-            'password': self.teacher_password
-        })
-        
-        # Check if redirected to the dashboard
-        self.assertRedirects(response, reverse('profile_teacher'))  # Replace with your actual dashboard view name
-        
-   
-#=============================================================================================
-
-#================unit test profie student=================================
-class StudentModelTest(TestCase):
-    def setUp(self):
-        # Set up a student instance for the tests
-        self.student = Student.objects.create(
-            id_number='123456789',
-            first_name='John',
-            last_name='Doe',
-            grade='A',
-            date_of_birth='2010-01-01',
-            email='john.doe@example.com',
-            parent_name='Jane Doe',
-            parent_phone='0501234567'
-        )
-
-    def test_student_creation(self):
-        # Test that the student instance is created correctly
-        self.assertEqual(self.student.first_name, 'John')
-        self.assertEqual(self.student.grade, 'A')
-        self.assertEqual(self.student.email, 'john.doe@example.com')
-
-    def test_invalid_phone_number(self):
-        # Test invalid phone number
-        student = Student(
-            id_number='987654321',
-            first_name='Jane',
-            last_name='Smith',
-            grade='B',
-            date_of_birth='2011-01-01',
-            email='jane.smith@example.com',
-            parent_name='John Smith',
-            parent_phone='1234567890'  # Invalid phone number
-        )
-        with self.assertRaises(ValidationError):
-            student.full_clean()  # This will validate the model
-
-    def test_invalid_id_number(self):
-        # Test invalid ID number
-        student = Student(
-            id_number='123',  # Invalid ID number
-            first_name='Jane',
-            last_name='Smith',
-            grade='B',
-            date_of_birth='2011-01-01',
-            email='jane.smith@example.com',
-            parent_name='John Smith',
-            parent_phone='0501234567'
-        )
-        with self.assertRaises(ValidationError):
-            student.full_clean()  # This will validate the model
-
-class ProfileStudentViewTest(TestCase):
-    def setUp(self):
-        # Create a student instance for the test
-        self.student = Student.objects.create(
-            id_number='123456789',
-            first_name='John',
-            last_name='Doe',
-            grade='A',
-            date_of_birth='2010-01-01',
-            email='john.doe@example.com',
-            parent_name='Jane Doe',
-            parent_phone='0501234567'
-        )
-
-    def test_profile_student_with_valid_student_id(self):
-        # Simulate a session with a valid student ID
-        session = self.client.session
-        session['student_id'] = '123456789'
-        session.save()
-
-        # Make a GET request to the profile_student view
-        response = self.client.get(reverse('profile_student'))
-
-        # Check that the response is successful
-        self.assertEqual(response.status_code, 200)
-
-    def test_profile_student_with_invalid_student_id(self):
-        # Simulate a session with an invalid student ID
-        session = self.client.session
-        session['student_id'] = '987654321'  # Non-existent student ID
-        session.save()
-
-        # Make a GET request to the profile_student view
-        response = self.client.get(reverse('profile_student'))
-
-        # Check that the user is redirected to the login page
-        self.assertRedirects(response, reverse('login_student'))
-
-        # Check that an error message is shown
-        messages_list = list(messages.get_messages(response.wsgi_request))
-        self.assertEqual(len(messages_list), 1)
-        self.assertEqual(str(messages_list[0]), 'Student not found')
-
-    def test_profile_student_without_student_id_in_session(self):
-        # Make a GET request to the profile_student view without a session
-        response = self.client.get(reverse('profile_student'))
-
-        # Check that the user is redirected to the login page
-        self.assertRedirects(response, reverse('login_student'))
-#======================================================
-
-        #=================== unit test about us==========================
-class AboutUsViewTest(TestCase):
-    def test_about_us_view(self):
-        # Make a GET request to the 'about_us' view
-        response = self.client.get(reverse('about_us'))
-
-        # Check that the response is 200 OK
-        self.assertEqual(response.status_code, 200)
-
-        # Check that the correct template was used
-        self.assertTemplateUsed(response, 'about_us.html')
-
-        # Check if the page contains the expected title and content
-        self.assertContains(response, '<h1>About Us</h1>')
-        self.assertContains(response, '<h2>The Problem</h2>')
-        self.assertContains(response, '<h2>Our Solution</h2>')
-        self.assertContains(response, '<h2>Our Team</h2>')
-        self.assertContains(response, '<h2>Our Vision</h2>')
- #====================================================================================================  
-
-  #===================================================================
+#         with s  
+# #===================================================================
         
         
 # # class LogoutStudentTestCase(TestCase):
@@ -700,6 +338,301 @@ class AboutUsViewTest(TestCase):
 #         else:
 #             self.assertEqual(response.status_code, 200)
 #             # Add any additional checks for the profile page if needed
+#--------------------------new tests--------------------------------------
+#============================uint test for login student================================
+class StudentLoginFormTest(TestCase):
+
+    def test_form_valid_data(self):
+        form = StudentLoginForm(data={
+            'id_number': '123456789',
+            'password': 'password123'
+        })
+        self.assertTrue(form.is_valid())
+
+    def test_form_invalid_id_number(self):
+        form = StudentLoginForm(data={
+            'id_number': '12345',  # Invalid ID (less than 9 digits)
+            'password': 'password123'
+        })
+        self.assertFalse(form.is_valid())
+        self.assertIn('id_number', form.errors)
+        
+    
+class StudentLoginViewTest(TestCase):
+
+    def setUp(self):
+        # Ensure password is hashed when creating the student
+        self.student = Student.objects.create(
+            id_number='123456789',
+            first_name='Test',
+            last_name='Student',
+            grade='A',
+            date_of_birth='2008-05-15',
+            email='teststudent@example.com',
+            parent_name='Parent Name',
+            parent_phone='0501234567',
+            password=make_password('password123')  # Ensure password is hashed
+        )
+
+    def test_login_view_post_success(self):
+        # Simulate a POST request to login with correct credentials
+        response = self.client.post(reverse('login_student'), {
+            'id_number': '123456789',
+            'password': 'password123'  # Use the correct password
+        })
+
+        # Check if the response redirects to the profile page (status code 302)
+        self.assertRedirects(response, reverse('profile_student'))
+
+        # Check if the session is correctly set
+        self.assertEqual(self.client.session['student_id'], '123456789')
+
+    def test_login_view_get(self):
+        # Test the GET request for the login page
+        response = self.client.get(reverse('login_student'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'login_student.html')
+
+    def test_login_view_post_invalid_id(self):
+        # Test with an incorrect ID
+        response = self.client.post(reverse('login_student'), {
+            'id_number': '987654321',
+            'password': 'password123'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Invalid ID number')
+
+    def test_login_view_post_invalid_password(self):
+        # Test with an incorrect password
+        response = self.client.post(reverse('login_student'), {
+            'id_number': '123456789',
+            'password': 'wrongpassword'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Invalid password')
+#============================ unit test login teacher=======================
+class TeacherModelTest(TestCase):
+    def setUp(self):
+        # Create a subject for the ForeignKey relationship
+        self.subject = Subject.objects.create(name="Math")
+
+    def test_create_teacher(self):
+        # Create a teacher instance
+        teacher = Teacher.objects.create(
+            id_number='123456789',
+            first_name='John',
+            last_name='Doe',
+            date_of_birth='1980-01-01',
+            email='john.doe@example.com',
+            phone_number='0501234567',
+            password='password123',
+            subject=self.subject,
+            classes='A'
+        )
+
+
+        # Test if the teacher was created successfully
+        self.assertEqual(teacher.first_name, 'John')
+        self.assertEqual(teacher.last_name, 'Doe')
+        self.assertEqual(teacher.email, 'john.doe@example.com')
+        self.assertTrue(check_password('password123', teacher.password))
+
+    def test_invalid_phone_number(self):
+        teacher = Teacher(
+            id_number='123456789',
+            first_name='John',
+            last_name='Doe',
+            date_of_birth='1980-01-01',
+            email='john.doe@example.com',
+            phone_number='1234567890',  # Invalid phone number
+            password='password123',
+            subject=self.subject,
+            classes='A'
+        )
+        with self.assertRaises(ValidationError):
+            teacher.full_clean()  # This will validate the model
+
+    def test_invalid_id_number(self):
+        teacher = Teacher(
+            id_number='123',  # Invalid ID number
+            first_name='John',
+            last_name='Doe',
+            date_of_birth='1980-01-01',
+            email='john.doe@example.com',
+            phone_number='0501234567',
+            password='password123',
+            subject=self.subject,
+            classes='A'
+        )
+        with self.assertRaises(ValidationError):
+            teacher.full_clean()  # This will validate the model
+
+    def test_invalid_email(self):
+        teacher = Teacher(
+            id_number='123456789',
+            first_name='John',
+            last_name='Doe',
+            date_of_birth='1980-01-01',
+            email='invalid-email',  # Invalid email
+            phone_number='0501234567',
+            password='password123',
+            subject=self.subject,
+            classes='A'
+        )
+        with self.assertRaises(ValidationError):
+            teacher.full_clean()  # This will validate the model
+
+class LoginTeacherFormTest(TestCase):
+    def test_valid_form(self):
+        form_data = {
+            'id_number': '123456789',
+            'password': 'password123'
+        }
+        form = loginTeacherForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_invalid_id_number(self):
+        form_data = {
+            'id_number': '123',  # Invalid ID number
+            'password': 'password123'
+        }
+        form = loginTeacherForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('ID number must be exactly 9 digits.', form.errors['id_number'])
+
+    def test_missing_password(self):
+        form_data = {
+            'id_number': '123456789',
+            'password': ''  # Missing password
+        }
+        form = loginTeacherForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn('This field is required.', form.errors['password'])        
+   
+#=============================================================================================
+
+#================unit test profie student=================================
+class StudentModelTest(TestCase):
+    def setUp(self):
+        # Set up a student instance for the tests
+        self.student = Student.objects.create(
+            id_number='123456789',
+            first_name='John',
+            last_name='Doe',
+            grade='A',
+            date_of_birth='2010-01-01',
+            email='john.doe@example.com',
+            parent_name='Jane Doe',
+            parent_phone='0501234567'
+        )
+
+    def test_student_creation(self):
+        # Test that the student instance is created correctly
+        self.assertEqual(self.student.first_name, 'John')
+        self.assertEqual(self.student.grade, 'A')
+        self.assertEqual(self.student.email, 'john.doe@example.com')
+
+    def test_invalid_phone_number(self):
+        # Test invalid phone number
+        student = Student(
+            id_number='987654321',
+            first_name='Jane',
+            last_name='Smith',
+            grade='B',
+            date_of_birth='2011-01-01',
+            email='jane.smith@example.com',
+            parent_name='John Smith',
+            parent_phone='1234567890'  # Invalid phone number
+        )
+        with self.assertRaises(ValidationError):
+            student.full_clean()  # This will validate the model
+
+    def test_invalid_id_number(self):
+        # Test invalid ID number
+        student = Student(
+            id_number='123',  # Invalid ID number
+            first_name='Jane',
+            last_name='Smith',
+            grade='B',
+            date_of_birth='2011-01-01',
+            email='jane.smith@example.com',
+            parent_name='John Smith',
+            parent_phone='0501234567'
+        )
+        with self.assertRaises(ValidationError):
+            student.full_clean()  # This will validate the model
+
+class ProfileStudentViewTest(TestCase):
+    def setUp(self):
+        # Create a student instance for the test
+        self.student = Student.objects.create(
+            id_number='123456789',
+            first_name='John',
+            last_name='Doe',
+            grade='A',
+            date_of_birth='2010-01-01',
+            email='john.doe@example.com',
+            parent_name='Jane Doe',
+            parent_phone='0501234567'
+        )
+
+    def test_profile_student_with_valid_student_id(self):
+        # Simulate a session with a valid student ID
+        session = self.client.session
+        session['student_id'] = '123456789'
+        session.save()
+
+        # Make a GET request to the profile_student view
+        response = self.client.get(reverse('profile_student'))
+
+        # Check that the response is successful
+        self.assertEqual(response.status_code, 200)
+
+    def test_profile_student_with_invalid_student_id(self):
+        # Simulate a session with an invalid student ID
+        session = self.client.session
+        session['student_id'] = '987654321'  # Non-existent student ID
+        session.save()
+
+        # Make a GET request to the profile_student view
+        response = self.client.get(reverse('profile_student'))
+
+        # Check that the user is redirected to the login page
+        self.assertRedirects(response, reverse('login_student'))
+
+        # Check that an error message is shown
+        messages_list = list(messages.get_messages(response.wsgi_request))
+        self.assertEqual(len(messages_list), 1)
+        self.assertEqual(str(messages_list[0]), 'Student not found')
+
+    def test_profile_student_without_student_id_in_session(self):
+        # Make a GET request to the profile_student view without a session
+        response = self.client.get(reverse('profile_student'))
+
+        # Check that the user is redirected to the login page
+        self.assertRedirects(response, reverse('login_student'))
+#======================================================
+
+#=================== unit test about us==========================
+class AboutUsViewTest(TestCase):
+    def test_about_us_view(self):
+        # Make a GET request to the 'about_us' view
+        response = self.client.get(reverse('about_us'))
+
+        # Check that the response is 200 OK
+        self.assertEqual(response.status_code, 200)
+
+        # Check that the correct template was used
+        self.assertTemplateUsed(response, 'about_us.html')
+
+        # Check if the page contains the expected title and content
+        self.assertContains(response, '<h1>About Us</h1>')
+        self.assertContains(response, '<h2>The Problem</h2>')
+        self.assertContains(response, '<h2>Our Solution</h2>')
+        self.assertContains(response, '<h2>Our Team</h2>')
+        self.assertContains(response, '<h2>Our Vision</h2>')
+ #====================================================================================================  
+ 
 from django.contrib.messages import get_messages
 
 class CreateExamViewTest(TestCase):
@@ -743,6 +676,279 @@ class CreateExamViewTest(TestCase):
         exam = Exam.objects.first()
         self.assertEqual(exam.teacher_id, self.teacher.id_number)  # Ensure this matches the type used in the model
         self.assertRedirects(response, reverse('review_exam', args=[exam.pk]))
+
+#==================================== unit test for review exam ==============================================
+class ExamTestCase(TestCase):
+
+    def setUp(self):
+        # Set up the necessary objects for the tests
+        self.subject = Subject.objects.create(name="Mathematics")
+        self.teacher = Teacher.objects.create(
+            id_number="123456789",
+            first_name="John",
+            last_name="Doe",
+            date_of_birth="1980-01-01",
+            email="johndoe@example.com",
+            phone_number="0501234567",
+            password="password123",
+            subject=self.subject,
+            classes='A'
+        )
+        self.exam = Exam.objects.create(
+            subject=self.subject,
+            difficulty="medium",
+            material="Mathematics material",
+            num_questions=5,
+            max_grade=100,
+            grade="A",
+            is_approved=False,
+            teacher_id=self.teacher.id_number
+        )
+        self.question1 = Question.objects.create(
+            exam=self.exam,
+            text="What is 2+2?",
+            choices={"A": "3", "B": "4", "C": "5"},
+            correct_answer="B",
+            is_approved=False
+        )
+        self.question2 = Question.objects.create(
+            exam=self.exam,
+            text="What is 3+3?",
+            choices={"A": "6", "B": "7", "C": "8"},
+            correct_answer="A",
+            is_approved=False
+        )
+
+    def test_review_exam_view(self):
+        # Approve the question
+        self.question1.is_approved = True
+        self.question1.save()
+        
+        # Check if the question is approved
+        self.assertTrue(self.question1.is_approved)
+        
+        # Check the review_exam view
+        response = self.client.get(reverse('review_exam', args=[self.exam.pk]))
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_partial_approval(self):
+        # Log in the test client
+        self.client.login(username='testuser', password='testpassword')
+
+        # Post the request and follow redirects
+        response = self.client.post(reverse('review_exam', args=[self.exam.pk]), {'approved_questions': [self.exam.question_set.first().id]}, follow=True)
+
+        # Check if the redirection is correct
+        self.assertRedirects(response, reverse('login_teacher'))
+
+    def test_teacher_str(self):
+        # Test the string representation of the Teacher model
+        self.assertEqual(str(self.teacher), "John Doe")
+
+    def test_exam_str(self):
+        # Test the string representation of the Exam model
+        self.assertEqual(str(self.exam), "Mathematics - A by Teacher ID: 123456789")
+
+    def test_question_str(self):
+        # Test the string representation of the Question model
+        self.assertEqual(str(self.question1), "What is 2+2?"[:50])        
+#=============================================================================================================
+#====================================== unit test for my_exams================================================
+class MyExamsViewTest(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+
+        # Create a test student and save them to the database
+        self.student = Student.objects.create(
+            id_number='123456789',
+            first_name='John',
+            last_name='Doe',
+            grade='A',
+            date_of_birth='2010-01-01',
+            email='john.doe@example.com',
+            parent_name='Jane Doe',
+            parent_phone='0501234567',
+            password='password'
+        )
+
+        # Create a test subject
+        self.subject = Subject.objects.create(name='Mathematics')
+
+        # Create a test exam for the student
+        self.exam = Exam.objects.create(
+            subject=self.subject,
+            difficulty='easy',
+            material='Sample material',
+            num_questions=5,
+            max_grade=50,
+            grade='A',
+            is_approved=True,
+            teacher_id='987654321'
+        )
+
+    def test_student_not_logged_in(self):
+        # Make a request without setting the student_id in the session
+        response = self.client.get(reverse('my_exams'))
+        
+        # Check if the response is a redirect
+        self.assertEqual(response.status_code, 302)
+        
+        # Check that the redirect URL is to the login page
+        self.assertRedirects(response, reverse('login_student'))
+
+    def test_student_logged_in_no_exams(self):
+        # Log in the student
+        self.client.session['student_id'] = self.student.id_number
+        self.client.session.save()
+        
+        # Ensure no exams are available for this student
+        # Note: You may need to ensure that no exams are associated with the student’s grade
+        response = self.client.get(reverse('my_exams'))
+        
+        # Check if the response is still a redirect
+        self.assertEqual(response.status_code, 302)
+
+        # Check if the student is redirected (check if redirect URL is correct)
+        self.assertRedirects(response, reverse('login_student'))
+
+    def test_student_logged_in_with_exams(self):
+        # Log in the student
+        self.client.session['student_id'] = self.student.id_number
+        self.client.session.save()
+
+        # Ensure the exam is in the database and visible
+        response = self.client.get(reverse('my_exams'))
+        
+        # Check if the response is still a redirect
+        self.assertEqual(response.status_code, 302)
+
+        # Check if the student is redirected (check if redirect URL is correct)
+        self.assertRedirects(response, reverse('login_student'))
+
+    def tearDown(self):
+        self.client.session.delete()
+#=====================================================================================================================
+#=================================================== unit test for take exam =========================================\
+class TakeExamViewTest(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+
+        # Create a test student
+        self.student = Student.objects.create(
+            id_number='123456789',
+            first_name='John',
+            last_name='Doe',
+            grade='A',
+            date_of_birth='2010-01-01',
+            email='john.doe@example.com',
+            parent_name='Jane Doe',
+            parent_phone='0501234567',
+            password='password'
+        )
+
+        # Create a test exam
+        self.exam = Exam.objects.create(
+            subject='Mathematics',
+            difficulty='easy',
+            material='Sample material',
+            num_questions=3,
+            max_grade=100,
+            grade='A',
+            is_approved=True,
+            teacher_id='987654321'
+        )
+
+        # Create questions for the exam
+        self.question1 = Question.objects.create(exam=self.exam, text='2 + 2 = ?', correct_answer='4')
+        self.question2 = Question.objects.create(exam=self.exam, text='3 + 5 = ?', correct_answer='8')
+        self.question3 = Question.objects.create(exam=self.exam, text='5 + 7 = ?', correct_answer='12')
+
+    def test_student_not_logged_in(self):
+        # Access the exam page without logging in
+        response = self.client.get(reverse('take_exam', kwargs={'exam_id': self.exam.id}))
+        self.assertEqual(response.status_code, 302)  # Redirect to login
+        self.assertRedirects(response, reverse('login_student'))
+
+    def test_student_logged_in_no_submission(self):
+        # Log in the student
+        self.client.session['student_id'] = self.student.id_number
+        self.client.session.save()
+
+        # Access the exam page and submit without answers
+        response = self.client.post(reverse('take_exam', kwargs={'exam_id': self.exam.id}))
+        self.assertEqual(response.status_code, 302)  # Redirect after POST
+
+        # Check if the feedback was created (empty feedback for no submission)
+        feedback = ExamFeedback.objects.filter(student=self.student, exam=self.exam).first()
+        self.assertIsNotNone(feedback)
+        self.assertEqual(feedback.numeric_grade, 0)
+        self.assertIn('You must submit answers to get feedback', feedback.feedback)
+
+    def test_student_logged_in_with_submission(self):
+        # Log in the student
+        self.client.session['student_id'] = self.student.id_number
+        self.client.session.save()
+
+        # Submit the exam with answers
+        response = self.client.post(reverse('take_exam', kwargs={'exam_id': self.exam.id}), {
+            f'question_{self.question1.id}': '4',
+            f'question_{self.question2.id}': '8',
+            f'question_{self.question3.id}': '10',  # Incorrect answer
+        })
+        self.assertEqual(response.status_code, 302)  # Redirect after POST
+
+        # Check if the feedback was created
+        feedback = ExamFeedback.objects.filter(student=self.student, exam=self.exam).first()
+        self.assertIsNotNone(feedback)
+        self.assertGreater(feedback.numeric_grade, 0)  # Check if numeric grade is calculated
+        self.assertIn('Provide constructive feedback', feedback.feedback)
+
+    def tearDown(self):
+        self.client.session.delete()
+#=====================================================================================================================
+
+class MyGradesViewTests(TestCase):
+    def setUp(self):
+        # Create a student and relevant data
+        self.client = Client()
+        self.student = Student.objects.create(id_number='12345678', name='Test Student')
+        self.subject = Subject.objects.create(name='Mathematics')
+        self.exam = Exam.objects.create(subject=self.subject, difficulty='easy', grade='A', teacher_id=1)
+        self.feedback = ExamFeedback.objects.create(student=self.student, exam=self.exam, feedback='Well done!', numeric_grade=95.0)
+
+        # Set the student in session
+        session = self.client.session
+        session['student_id'] = self.student.id_number
+        session.save()
+
+    def test_my_grades_view_logged_in(self):
+        # Simulate accessing the page while logged in
+        response = self.client.get(reverse('my_grades'))
+
+        # Check if the page renders correctly
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'my_grades.html')
+        self.assertContains(response, 'Well done!')
+        self.assertContains(response, '95.0')
+
+    def test_my_grades_view_not_logged_in(self):
+        # Simulate accessing the page without being logged in
+        session = self.client.session
+        session['student_id'] = None
+        session.save()
+
+        response = self.client.get(reverse('my_grades'))
+
+        # Check if the user is redirected to the login page
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('login_student'))
+
+        # Check if an error message is displayed
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), 'You must be logged in to view your grades.')
 #======================================unit test for the subjects=============================================
 # class SubjectClassFormTest(TestCase):
 #     def setUp(self):

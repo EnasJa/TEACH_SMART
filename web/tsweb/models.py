@@ -171,7 +171,7 @@ class Exam(models.Model):
     is_approved = models.BooleanField(default=False)  # New field to track approval
     # Explicitly add a teacher_id field without a ForeignKey relationship
     teacher_id =models.CharField(max_length=9)  # Ensure this matches your test
-
+    
 
     def __str__(self):
         return f"{self.subject} - {self.grade} by Teacher ID: {self.teacher_id}"
