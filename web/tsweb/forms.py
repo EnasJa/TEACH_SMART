@@ -61,7 +61,7 @@ class TeacherSignUpForm(forms.ModelForm):
 
     class Meta:
         model = Teacher
-        fields = ['id_number', 'first_name', 'last_name', 'date_of_birth', 'email', 'phone_number', 'password']
+        fields = ['id_number', 'first_name', 'last_name', 'date_of_birth', 'email', 'phone_number', 'password','subject','classes']
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
         }

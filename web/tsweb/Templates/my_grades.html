@@ -64,7 +64,46 @@ h1 {
     color: #050606;
     margin: 20px 0;
 }
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #ADD8E6; /* Light blue */
+    color: #0f0f0f;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none; /* Removes underline from the link */
+    color: inherit; /* Inherit color from parent to remove default link color */
+}
+
+.logo i {
+    margin-right: 10px; /* Increase space between icon and text */
+    font-size: 40px; /* Increase the icon size */
+}
+
+.logo span {
+    font-size: 20px; /* Decrease the font size of the text */
+    font-weight: bold; /* Optional: make the text bold */
+}
+
+.logo:hover i {
+    color: #9A6AFC; /* Optional: change icon color on hover */
+}
+
+.logo:hover span {
+    color: #9A6AFC; /* Optional: change text color on hover */
+}
+.back-to-profile {
+    margin-right: 20px;
+}.back-btn i {
+    margin-right: 10px;
+    font-size: 40px; /* Increased the size of the icon */
+}
 /* Container for the exam results */
 .exam-container {
     display: flex;
