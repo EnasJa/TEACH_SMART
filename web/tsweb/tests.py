@@ -1,10 +1,12 @@
+import unittest
+from unittest.mock import patch
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import *
 from .forms import StudentSignUpForm
 from django.core.exceptions import ValidationError
-from datetime import date, timedelta
+from datetime import date, timedelta, timezone
 from django.contrib.auth.hashers import make_password
 from datetime import date
 from .forms import *
@@ -1578,3 +1580,60 @@ if __name__ == '__main__':
 #         response = self.client.get(reverse('the_subjects'))
 #         self.assertEqual(response.status_code, 200)
 #         self.assertTemplateUsed(response, 'the_subjects.html')
+
+
+class UpdateTeacherContactTests(TestCase):
+    def setUp(self):
+        # יצירת Subject לצורך הבדיקות
+        self.subject = Subject.objects.create(name="Math")
+        
+        self.teacher = Teacher.objects.create(
+            id_number='123456789',
+            first_name='Test',
+            last_name='Teacher',
+            date_of_birth=date(1980, 1, 1),
+            email='teacher@example.com',
+            phone_number='0501234567',
+            password=make_password('testpassword'),
+            subject=self.subject,
+            classes='A'
+        )
+        self.url = reverse('update_teacher_contact', args=[self.teacher.id_number])
+
+    def test_get_request(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'update_teacher_contact.html')
+        self.assertIsInstance(response.context['form'], TeacherContactUpdateForm)
+
+    def test_post_request_valid_form(self):
+        new_email = 'new_email@example.com'
+        new_phone = '0509876543'
+        response = self.client.post(self.url, data={
+            'email': new_email,
+            'phone_number': new_phone
+        })
+
+        self.assertRedirects(response, reverse('profile_teacher'), fetch_redirect_response=False)
+        self.teacher.refresh_from_db()
+        self.assertEqual(self.teacher.email, new_email)
+        self.assertEqual(self.teacher.phone_number, new_phone)
+
+    def test_post_request_invalid_form(self):
+        response = self.client.post(self.url, data={
+            'email': 'invalid_email',
+            'phone_number': '0509876543'
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'update_teacher_contact.html')
+        self.assertIsInstance(response.context['form'], TeacherContactUpdateForm)
+        self.assertFormError(response, 'form', 'email', 'Enter a valid email address.')
+
+    def test_teacher_not_found(self):
+        url = reverse('update_teacher_contact', args=['999999999'])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+if __name__ == '__main__':
+    unittest.main()

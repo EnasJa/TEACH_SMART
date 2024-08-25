@@ -65,12 +65,12 @@
 </head>
 <body>
     <div class="confirmation-container">
-        <h1>Confirmation of deletion of a teacher</h1>
-        <p>Are you sure you want to delete the teacher{{ teacher.first_name }} {{ teacher.last_name }}?</p>
+        <h1>Confirmation of deletion of a student</h1>
+        <p>Are you sure you want to delete the student {{ student.first_name }} {{ student.last_name }} ?</p>
         <form method="post">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger">Yes, delete</button>
-            <a href="{% url 'teacher_list' %}" class="btn btn-secondary">Cancel</a>
+            <a href="#" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 </body>

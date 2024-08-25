@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages
+from requests import session
 from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -60,7 +61,7 @@ def send_message(request):
     # except Admin.DoesNotExist:
     #     raise PermissionDenied("Only admins can send messages.")
 
-    admin = Admin.objects.get(username="SABA")
+    admin = Admin.objects.get(Username="admin")
 
     if request.method == 'POST':
         form = MessageForm(request.POST)
@@ -79,9 +80,10 @@ def send_message(request):
 def inbox(request):
     # נניח שיש לך מנגנון אימות מותאם אישית ששומר את ה-id_number של המורה ב-session
     # teacher_id = request.session.get('teacher_id')
-    
+    teacher_id = request.session.get('teacher_id')
+    # print(student_id)
     try:
-        teacher = Teacher.objects.get(id_number=123454675)
+        teacher = Teacher.objects.get(id_number=teacher_id)
         messages = teacher.received_messages.all().order_by('-created_at')
     except Teacher.DoesNotExist:
         raise PermissionDenied("Only teachers can view their inbox.")
@@ -746,3 +748,39 @@ def grades_analysis(request):
 #         analysis_results = "No exam feedbacks available for analysis."
 
 #     return render(request, 'grades_analysis.html', {'analysis_results': analysis_results})
+
+
+def delete_student(request, id_number):
+    student = get_object_or_404(Student, id_number=id_number)
+
+    if request.method == 'POST':
+        student.delete()
+        messages.success(request, f'the student {student.first_name} {student.last_name} deleted successfully.')
+        return redirect('students_list')
+    return render(request, 'confirm_delete_student.html', {'student': student})
+
+
+
+# @login_required
+def update_teacher_contact(request, teacher_id):
+    print("View is called!")
+    teacher = get_object_or_404(Teacher, id_number=teacher_id)
+    print(f"Teacher found: {teacher}")
+    
+    if request.method == 'POST':
+        form = TeacherContactUpdateForm(request.POST, instance=teacher)
+        print(f"Form is valid: {form.is_valid()}")  # בדוק אם הטופס תקין
+        if form.is_valid():
+            updated_teacher = form.save()
+            print(f"Updated teacher: {updated_teacher.email}, {updated_teacher.phone_number}")  # בדוק את הערכים המעודכנים
+            return redirect('profile_teacher')
+        else:
+            print(f"Form errors: {form.errors}")  # הדפס את השגיאות בטופס
+    else:
+        form = TeacherContactUpdateForm(instance=teacher)
+    
+    context = {
+        'form': form,
+        'teacher': teacher,
+    }
+    return render(request, 'update_teacher_contact.html', context)

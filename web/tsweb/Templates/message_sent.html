@@ -138,27 +138,28 @@
         }
     }
 </style>
-
 <div class="page-wrapper">
     <main class="main-content">
         <div class="card">
             <div class="card-header">
-                הודעה נשלחה בהצלחה
+                Message Sent Successfully
             </div>
             <div class="card-body">
                 <p class="success-message">
-                    ההודעה שלך נשלחה בהצלחה לכל הנמענים שנבחרו.
+                    Your message has been successfully sent to all selected recipients.
                 </p>
                 <div class="button-group">
-                    <a href="#" class="btn btn-primary">שלח הודעה נוספת</a>
-                    <a href="#" class="btn btn-secondary">היסטוריית הודעות</a>
+                    <a href="{% url 'send_message' %}"class="btn btn-primary">Send Another Message</a>
+                    <!-- <a href="#" class="btn btn-secondary">Message History</a> -->
                 </div>
             </div>
         </div>
     </main>
 
+
+
     <footer class="footer">
-        <p>© 2024 TeachSmart. כל הזכויות שמורות.</p>
+        <p>© 2024 TeachSmart. </p>
     </footer>
 </div>
 {% endblock %}
