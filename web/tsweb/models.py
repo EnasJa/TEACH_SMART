@@ -168,7 +168,7 @@ class Exam(models.Model):
     num_questions = models.IntegerField(null=True, blank=True, help_text="Number of questions for the exam")
     max_grade = models.IntegerField(null=True, blank=True, help_text="Maximum grade for the exam")
     grade = models.CharField(max_length=1, choices=GRADE_CHOICES, help_text="Grade level for the exam")
-    is_approved = models.BooleanField(default=False)  # New field to track approval
+    is_approved = models.BooleanField(default=True)  # New field to track approval
     # Explicitly add a teacher_id field without a ForeignKey relationship
     teacher_id =models.CharField(max_length=9)  # Ensure this matches your test
     
