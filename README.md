@@ -54,7 +54,22 @@ python manage.py migrate --run-syncdb
 
 # Run the development server
 python manage.py runserver
+
+#Integration with OpenAI
+TEACH SMART uses the OpenAI API to:
+
+Generate exam questions based on provided material, difficulty level, and student grade.
+
+Provide a chatbot that teachers can use for lesson assistance, planning help, and finding teaching resources.
+
+Analyze and improve feedback for students using natural language understanding.
+
+Ensure you have your OpenAI API key set as an environment variable or in a .env file:
+
+OPENAI_API_KEY=your_api_key_here
+
 ```
+
 License & Copyright
 
 © Enas Jaber, Anfal Alnbbari, Rawan Khateeb, Asia Nbary.
